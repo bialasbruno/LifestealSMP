@@ -1,0 +1,16 @@
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.idea/
+.vscode/
+*.iml
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.zip
+*.class
+*.db
+data.db
+out/
+.DS_Store
+backups/
+.lifesteal-deploy-backups/

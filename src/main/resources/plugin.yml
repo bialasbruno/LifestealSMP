@@ -1,0 +1,24 @@
+name: LifestealCore
+version: '${version}'
+main: dev.lifesteal.core.LifestealCorePlugin
+api-version: '26.2'
+description: Core lifesteal heart mechanics for SMP servers.
+author: Bruno
+
+commands:
+  hearts:
+    description: Shows your current maximum hearts.
+    usage: /hearts
+    permission: lifesteal.hearts
+  lifesteal:
+    description: Administrative commands for LifestealCore.
+    usage: /lifesteal <sethearts|givebrokenheart|giveheart> ...
+    permission: lifesteal.admin
+
+permissions:
+  lifesteal.hearts:
+    description: Allows checking your own heart count.
+    default: true
+  lifesteal.admin:
+    description: Allows administrative control over hearts and heart items.
+    default: op

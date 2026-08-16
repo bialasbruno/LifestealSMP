@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '9.6.1'
+}
+
+group = 'dev.lifesteal'
+version = '0.1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc'
+        url = uri('https://repo.papermc.io/repository/maven-public/')
+    }
+}
+
+dependencies {
+    // Provided by the server at runtime - never shaded.
+    compileOnly 'io.papermc.paper:paper-api:26.2.build.112-stable'
+
+    // Bundled into the plugin jar because Paper does not ship a JDBC/SQLite driver.
+    implementation 'org.xerial:sqlite-jdbc:3.53.2.1'
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(25)
+    options.compilerArgs.add('-Xlint:deprecation')
+}
+
+processResources {
+    filteringCharset = 'UTF-8'
+    def props = [version: version]
+    inputs.properties props
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    // Do NOT relocate org.sqlite. sqlite-jdbc uses JNI and its native symbols
+    // are bound to the original org.sqlite package names. Relocation causes
+    // UnsatisfiedLinkError at runtime.
+    // Do not minimize either. The driver loads services and native binaries
+    // reflectively, so every sqlite-jdbc entry must remain in the final JAR.
+}
+
+// Keep the unshaded artifact separate. The production plugin is always the
+// classifier-less ShadowJar at build/libs/LifestealCore-0.1.0.jar.
+jar {
+    archiveClassifier.set('plain')
+}
+
+// Make the plain `build` task produce the shaded (runnable) jar.
+tasks.build {
+    dependsOn tasks.shadowJar
+}
+
+test {
+    useJUnitPlatform()
+}

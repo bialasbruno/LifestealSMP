@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if [[ "${EUID}" -eq 0 ]]; then
+  echo "ERROR: Uruchom ten skrypt jako zwykly uzytkownik, bez 'sudo'."
+  echo "Skrypt sam poprosi o sudo tylko tam, gdzie jest potrzebne."
+  exit 1
+fi
+
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
+
+if [[ ! -f "$ROOT/deploy.env" ]]; then
+  echo "ERROR: Brak deploy.env"
+  exit 1
+fi
+
+# shellcheck disable=SC1091
+source "$ROOT/deploy.env"
+
+for cmd in sudo docker python3 sha1sum curl; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo "ERROR: Brak wymaganej komendy: $cmd"
+    exit 1
+  fi
+done
+
+echo "======================================"
+echo " LifestealSMP deploy"
+echo "======================================"
+echo
+echo "1/7 Autoryzacja sudo..."
+sudo -v
+
+if ! sudo test -d "$SERVER_VOL"; then
+  echo "ERROR: Nie istnieje volume Pterodactyla:"
+  echo "  $SERVER_VOL"
+  exit 1
+fi
+
+if ! sudo test -f "$SERVER_VOL/server.properties"; then
+  echo "ERROR: Brak server.properties w:"
+  echo "  $SERVER_VOL"
+  exit 1
+fi
+
+if [[ ! -f "$SERVERPACK_SOURCE/pack.mcmeta" ]]; then
+  echo "ERROR: Brak $SERVERPACK_SOURCE/pack.mcmeta"
+  exit 1
+fi
+
+echo
+echo "2/7 Build pluginu + testy..."
+# build-vps.sh uses Docker. The user is intentionally not in the docker group,
+# so we run only this build step through sudo.
+sudo ./build-vps.sh
+
+if [[ ! -f "$PLUGIN_BUILD_JAR" ]]; then
+  echo "ERROR: Build zakonczyl sie bez oczekiwanego JAR-a:"
+  echo "  $PLUGIN_BUILD_JAR"
+  exit 1
+fi
+
+# Give the normal user ownership of build artifacts produced by root/Docker.
+sudo chown -R "$(id -u):$(id -g)" "$ROOT/build"
+
+echo
+echo "3/7 Budowanie ServerPack.zip..."
+rm -f "$SERVERPACK_BUILD"
+
+python3 - "$SERVERPACK_SOURCE" "$SERVERPACK_BUILD" <<'PY'
+from pathlib import Path
+import sys, zipfile
+
+src = Path(sys.argv[1]).resolve()
+dst = Path(sys.argv[2]).resolve()
+dst.parent.mkdir(parents=True, exist_ok=True)
+
+skip_names = {".DS_Store", "Thumbs.db"}
+with zipfile.ZipFile(dst, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+    for path in sorted(src.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(src)
+        if any(part.startswith("__MACOSX") for part in rel.parts):
+            continue
+        if path.name in skip_names:
+            continue
+        zf.write(path, rel)
+
+with zipfile.ZipFile(dst) as zf:
+    names = set(zf.namelist())
+    if "pack.mcmeta" not in names:
+        raise SystemExit("ServerPack.zip nie ma pack.mcmeta w root ZIP-a")
+    if not any(name.startswith("assets/") for name in names):
+        raise SystemExit("ServerPack.zip nie zawiera assets/")
+
+print(f"OK: {dst}")
+PY
+
+PACK_SHA1="$(sha1sum "$SERVERPACK_BUILD" | awk '{print $1}')"
+
+echo
+echo "4/7 Backup aktualnego deploymentu..."
+STAMP="$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR="$HOME/.lifesteal-deploy-backups/$STAMP"
+mkdir -p "$BACKUP_DIR"
+
+if sudo test -f "$SERVER_VOL/plugins/$PLUGIN_TARGET_NAME"; then
+  sudo cp -a "$SERVER_VOL/plugins/$PLUGIN_TARGET_NAME" "$BACKUP_DIR/plugin.jar"
+fi
+
+sudo cp -a "$SERVER_VOL/server.properties" "$BACKUP_DIR/server.properties"
+
+if sudo test -f "$WEB_PACK"; then
+  sudo cp -a "$WEB_PACK" "$BACKUP_DIR/ServerPack.zip"
+fi
+
+sudo chown -R "$(id -u):$(id -g)" "$BACKUP_DIR"
+
+echo
+echo "5/7 Deploy pluginu i resource packa..."
+
+# Atomic JAR replacement. This is safer even if the Minecraft process is still
+# running because the old open file remains available until restart.
+PLUGIN_DIR="$SERVER_VOL/plugins"
+sudo install -o pterodactyl -g pterodactyl -m 0644 \
+  "$PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${PLUGIN_TARGET_NAME}.new"
+sudo mv -f "$PLUGIN_DIR/.${PLUGIN_TARGET_NAME}.new" \
+  "$PLUGIN_DIR/$PLUGIN_TARGET_NAME"
+
+WEB_DIR="$(dirname "$WEB_PACK")"
+sudo mkdir -p "$WEB_DIR"
+sudo install -o www-data -g www-data -m 0644 \
+  "$SERVERPACK_BUILD" "$WEB_DIR/.ServerPack.zip.new"
+sudo mv -f "$WEB_DIR/.ServerPack.zip.new" "$WEB_PACK"
+
+echo
+echo "6/7 Aktualizacja server.properties..."
+
+# Modify in-place to preserve the Pterodactyl file ownership/inode metadata.
+sudo python3 - \
+  "$SERVER_VOL/server.properties" \
+  "$PACK_URL" \
+  "$PACK_SHA1" \
+  "$REQUIRE_RESOURCE_PACK" \
+  "$RESOURCE_PACK_PROMPT" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+values = {
+    "resource-pack": sys.argv[2],
+    "resource-pack-sha1": sys.argv[3],
+    "require-resource-pack": sys.argv[4],
+    "resource-pack-prompt": sys.argv[5],
+}
+
+text = path.read_text(encoding="utf-8")
+lines = text.splitlines()
+seen = set()
+out = []
+
+for line in lines:
+    if "=" in line and not line.lstrip().startswith("#"):
+        key = line.split("=", 1)[0]
+        if key in values:
+            out.append(f"{key}={values[key]}")
+            seen.add(key)
+            continue
+    out.append(line)
+
+for key, value in values.items():
+    if key not in seen:
+        out.append(f"{key}={value}")
+
+with path.open("w", encoding="utf-8", newline="\n") as f:
+    f.write("\n".join(out) + "\n")
+PY
+
+echo
+echo "7/7 Weryfikacja..."
+DEPLOYED_SHA1="$(sudo sha1sum "$WEB_PACK" | awk '{print $1}')"
+
+if [[ "$DEPLOYED_SHA1" != "$PACK_SHA1" ]]; then
+  echo "ERROR: SHA-1 pliku po deployu nie zgadza sie."
+  echo "Build:  $PACK_SHA1"
+  echo "Deploy: $DEPLOYED_SHA1"
+  exit 1
+fi
+
+HTTP_COPY="$(mktemp)"
+trap 'rm -f "$HTTP_COPY"' EXIT
+
+if ! curl -fsSL --retry 3 --retry-delay 1 "$PACK_URL" -o "$HTTP_COPY"; then
+  echo "ERROR: Publiczny ServerPack nie jest dostepny pod adresem:"
+  echo "  $PACK_URL"
+  exit 1
+fi
+
+HTTP_SHA1="$(sha1sum "$HTTP_COPY" | awk '{print $1}')"
+if [[ "$HTTP_SHA1" != "$PACK_SHA1" ]]; then
+  echo "ERROR: Publicznie pobrany ServerPack ma niepoprawny SHA-1."
+  echo "Build: $PACK_SHA1"
+  echo "HTTP:  $HTTP_SHA1"
+  exit 1
+fi
+
+rm -f "$HTTP_COPY"
+trap - EXIT
+HTTP_STATUS="OK (pobrano plik i potwierdzono SHA-1)"
+
+echo
+echo "======================================"
+echo " DEPLOY SUCCESSFUL"
+echo "======================================"
+echo "Plugin:       $PLUGIN_DIR/$PLUGIN_TARGET_NAME"
+echo "ServerPack:   $WEB_PACK"
+echo "Pack URL:     $PACK_URL"
+echo "Pack SHA-1:   $PACK_SHA1"
+echo "HTTP check:   $HTTP_STATUS"
+echo "Backup:       $BACKUP_DIR"
+echo
+echo "Teraz wykonaj pelny Restart serwera w Pterodactylu."
+echo "Po restarcie klient Minecraft pobierze nowa wersje packa po nowym SHA-1."

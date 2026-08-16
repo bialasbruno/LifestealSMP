@@ -1,0 +1,10 @@
+hearts:
+  starting: 10
+  minimum: 1
+  maximum: 20
+
+broken-heart:
+  drop-on-pvp-death: true
+
+messages:
+  maximum-hearts: "You already have the maximum number of hearts."

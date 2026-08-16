@@ -1,0 +1,10 @@
+{
+  "heart_consume": {
+    "sounds": [
+      {
+        "name": "serverpack:items/heart_consume",
+        "stream": false
+      }
+    ]
+  }
+}
