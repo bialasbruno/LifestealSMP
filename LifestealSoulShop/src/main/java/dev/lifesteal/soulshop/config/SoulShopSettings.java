@@ -75,6 +75,7 @@ public record SoulShopSettings(
                         List.of(
                                 "<gray>A netherite tool inhabited by restless souls.</gray>",
                                 "<dark_purple>Their whispers guide every strike.</dark_purple>",
+                                "<aqua>Mines a 3x3 area.</aqua>",
                                 "",
                                 "<gray>Price:</gray> <light_purple>{price} Souls</light_purple>",
                                 "",

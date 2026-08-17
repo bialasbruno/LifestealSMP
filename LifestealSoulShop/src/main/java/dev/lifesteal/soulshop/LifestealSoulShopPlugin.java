@@ -20,7 +20,7 @@ public final class LifestealSoulShopPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        migrateLaunchProductConfig();
+        migrateConfig();
         settings = SoulShopSettings.load(getConfig(), getLogger());
 
         RegisteredServiceProvider<LifestealSoulsApi> soulsRegistration =
@@ -76,12 +76,32 @@ public final class LifestealSoulShopPlugin extends JavaPlugin {
         }
     }
 
-    private void migrateLaunchProductConfig() {
-        if (getConfig().contains("config-version", true)
-                && getConfig().getInt("config-version", 1) >= 2) {
+    private void migrateConfig() {
+        int version = getConfig().contains("config-version", true)
+                ? getConfig().getInt("config-version", 1)
+                : 1;
+        if (version >= 3) {
             return;
         }
 
+        if (version < 2) {
+            migrateLaunchProduct();
+        }
+        if (version < 3 && getConfig().getStringList("menu.product-lore").equals(List.of(
+                "<gray>A netherite tool inhabited by restless souls.</gray>",
+                "<dark_purple>Their whispers guide every strike.</dark_purple>",
+                "",
+                "<gray>Price:</gray> <light_purple>{price} Souls</light_purple>",
+                "",
+                "<green>Click to buy</green>"))) {
+            getConfig().set("menu.product-lore", null);
+        }
+        getConfig().set("config-version", 3);
+        saveConfig();
+        getLogger().info("Migrated LifestealSoulShop configuration to version 3.");
+    }
+
+    private void migrateLaunchProduct() {
         getConfig().set("product.material", null);
         getConfig().set("product.amount", null);
         if (getConfig().getLong("product.price", 100L) == 100L) {
@@ -99,12 +119,9 @@ public final class LifestealSoulShopPlugin extends JavaPlugin {
             getConfig().set("menu.product-lore", null);
         }
         if ("<green>Purchased Diamond Pickaxe for {price} Souls.</green>"
-                        .concat(" <gray>Balance: {balance}</gray>")
-                        .equals(getConfig().getString("messages.success"))) {
+                .concat(" <gray>Balance: {balance}</gray>")
+                .equals(getConfig().getString("messages.success"))) {
             getConfig().set("messages.success", null);
         }
-        getConfig().set("config-version", 2);
-        saveConfig();
-        getLogger().info("Migrated SoulShop launch product to Soul Pickaxe.");
     }
 }

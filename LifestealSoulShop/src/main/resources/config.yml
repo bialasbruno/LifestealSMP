@@ -1,4 +1,4 @@
-config-version: 2
+config-version: 3
 
 product:
   price: 2500
@@ -14,6 +14,7 @@ menu:
   product-lore:
     - "<gray>A netherite tool inhabited by restless souls.</gray>"
     - "<dark_purple>Their whispers guide every strike.</dark_purple>"
+    - "<aqua>Mines a 3x3 area.</aqua>"
     - ""
     - "<gray>Price:</gray> <light_purple>{price} Souls</light_purple>"
     - ""

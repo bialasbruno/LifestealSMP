@@ -28,6 +28,15 @@ Soul Pickaxe bazuje na `NETHERITE_PICKAXE` i zawsze otrzymuje:
 | Unbreaking | III |
 | Mending | I |
 
+Po rozbiciu bloku kilof niszczy również osiem sąsiednich bloków, tworząc obszar
+`3×3`. Płaszczyzna jest prostopadła do strony środkowego bloku, w którą patrzył
+gracz: można więc kopać ściany, podłogę i sufit. Mechanika obejmuje wyłącznie
+bloki przeznaczone do wydobywania kilofem.
+
+Każdy z ośmiu dodatkowych bloków jest rozbijany przez gracza osobno. Dzięki temu
+działają Fortune, Mending, zużycie kilofa, dropy i doświadczenie, a pluginy
+ochrony regionów mogą anulować rozbicie dowolnego bloku.
+
 Przedmiot ma nazwę i lore w stylu Souls, własny model
 `serverpack:soul_pickaxe` oraz trwały znacznik PDC `soul_pickaxe`. Dzięki temu
 inne pluginy mogą rozpoznać oryginalny przedmiot niezależnie od jego nazwy.

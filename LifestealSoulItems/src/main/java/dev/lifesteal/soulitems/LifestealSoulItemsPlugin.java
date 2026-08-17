@@ -2,6 +2,7 @@ package dev.lifesteal.soulitems;
 
 import dev.lifesteal.soulitems.api.LifestealSoulItemsApi;
 import dev.lifesteal.soulitems.item.SoulItemFactory;
+import dev.lifesteal.soulitems.mining.SoulPickaxeMiningListener;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.ServicePriority;
@@ -14,6 +15,8 @@ public final class LifestealSoulItemsPlugin extends JavaPlugin implements Lifest
     @Override
     public void onEnable() {
         itemFactory = new SoulItemFactory(new NamespacedKey(this, "soul_pickaxe"));
+        getServer().getPluginManager().registerEvents(
+                new SoulPickaxeMiningListener(this, itemFactory), this);
         getServer().getServicesManager().register(
                 LifestealSoulItemsApi.class, this, this, ServicePriority.Normal);
         getLogger().info("LifestealSoulItems v" + getPluginMeta().getVersion() + " enabled.");

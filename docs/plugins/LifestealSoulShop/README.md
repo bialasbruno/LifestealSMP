@@ -4,6 +4,9 @@
 walutę z `LifestealSouls`. Aktualna oferta zawiera jeden customowy produkt:
 `Soul Pickaxe` za domyślnie `2500 Souls`.
 
+Soul Pickaxe kopie obszar `3×3` zgodnie z płaszczyzną trafionej ściany i ma
+Efficiency V, Fortune III, Unbreaking III oraz Mending.
+
 Plugin odpowiada za prezentację oferty, sprawdzenie miejsca w ekwipunku,
 atomowe pobranie ceny i wydanie przedmiotu utworzonego przez `LifestealSoulItems`.
 Nie nalicza waluty i nie definiuje przedmiotów samodzielnie.

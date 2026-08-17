@@ -29,7 +29,8 @@ public final class SoulItemFactory {
             meta.displayName(plain("Soul Pickaxe", NamedTextColor.AQUA));
             meta.lore(List.of(
                     plain("A netherite tool inhabited by restless souls.", NamedTextColor.GRAY),
-                    plain("Their whispers guide every strike.", NamedTextColor.DARK_PURPLE)));
+                    plain("Their whispers guide every strike.", NamedTextColor.DARK_PURPLE),
+                    plain("Mines a 3x3 area.", NamedTextColor.AQUA)));
             meta.addEnchant(
                     Enchantment.EFFICIENCY, SoulPickaxeDefinition.EFFICIENCY_LEVEL, true);
             meta.addEnchant(Enchantment.FORTUNE, SoulPickaxeDefinition.FORTUNE_LEVEL, true);
