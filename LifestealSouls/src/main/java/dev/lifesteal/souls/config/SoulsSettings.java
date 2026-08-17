@@ -17,6 +17,7 @@ public record SoulsSettings(
         long killRewardAmount,
         long killCooldownMillis,
         boolean afkZoneEnabled,
+        boolean afkPvpDisabled,
         long afkRewardAmount,
         long afkRewardIntervalMillis,
         String afkWorldName,
@@ -31,6 +32,9 @@ public record SoulsSettings(
         String killRewardMessage,
         String afkCountdownMessage,
         String afkRewardMessage,
+        String afkTeleportedMessage,
+        String afkUnavailableMessage,
+        String afkPvpDisabledMessage,
         String noPermissionMessage,
         String playerOnlyMessage,
         String invalidCommandMessage) {
@@ -42,6 +46,9 @@ public record SoulsSettings(
         Objects.requireNonNull(afkWorldName, "afkWorldName");
         Objects.requireNonNull(afkCountdownMessage, "afkCountdownMessage");
         Objects.requireNonNull(afkRewardMessage, "afkRewardMessage");
+        Objects.requireNonNull(afkTeleportedMessage, "afkTeleportedMessage");
+        Objects.requireNonNull(afkUnavailableMessage, "afkUnavailableMessage");
+        Objects.requireNonNull(afkPvpDisabledMessage, "afkPvpDisabledMessage");
         Objects.requireNonNull(noPermissionMessage, "noPermissionMessage");
         Objects.requireNonNull(playerOnlyMessage, "playerOnlyMessage");
         Objects.requireNonNull(invalidCommandMessage, "invalidCommandMessage");
@@ -98,6 +105,7 @@ public record SoulsSettings(
                 killAmount,
                 TimeUnit.SECONDS.toMillis(killCooldownSeconds),
                 config.getBoolean("afk-zone.enabled", false),
+                config.getBoolean("afk-zone.disable-pvp", true),
                 afkAmount,
                 TimeUnit.SECONDS.toMillis(afkSeconds),
                 config.getString("afk-zone.world", "").trim(),
@@ -135,6 +143,15 @@ public record SoulsSettings(
                 config.getString(
                         "messages.afk-reward",
                         "<green>+{amount} Souls</green> <gray>for staying in the AFK zone.</gray>"),
+                config.getString(
+                        "messages.afk-teleported",
+                        "<aqua>AFK zone:</aqua> <white>first reward in {time}</white>"),
+                config.getString(
+                        "messages.afk-unavailable",
+                        "<red>The AFK zone is not configured or its world is unavailable.</red>"),
+                config.getString(
+                        "messages.afk-pvp-disabled",
+                        "<red>PvP is disabled in the AFK zone.</red>"),
                 config.getString(
                         "messages.no-permission",
                         "<red>You do not have permission to use this command.</red>"),

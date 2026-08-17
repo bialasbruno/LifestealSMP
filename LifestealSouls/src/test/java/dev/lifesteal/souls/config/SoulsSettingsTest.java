@@ -23,6 +23,7 @@ class SoulsSettingsTest {
         assertEquals(3L, settings.killRewardAmount());
         assertEquals(3_600_000L, settings.killCooldownMillis());
         assertFalse(settings.afkZoneEnabled());
+        assertTrue(settings.afkPvpDisabled());
         assertEquals(1L, settings.afkRewardAmount());
         assertEquals(120_000L, settings.afkRewardIntervalMillis());
         assertEquals("", settings.afkWorldName());
@@ -48,6 +49,7 @@ class SoulsSettingsTest {
     void afkCuboidCoordinatesAreNormalized() {
         YamlConfiguration config = new YamlConfiguration();
         config.set("afk-zone.world", "world");
+        config.set("afk-zone.disable-pvp", false);
         config.set("afk-zone.minimum.x", 20);
         config.set("afk-zone.minimum.y", 90);
         config.set("afk-zone.minimum.z", 40);
@@ -59,6 +61,7 @@ class SoulsSettingsTest {
                 config, Logger.getLogger("SoulsSettingsTest"));
 
         assertEquals("world", settings.afkWorldName());
+        assertFalse(settings.afkPvpDisabled());
         assertEquals(10, settings.afkMinimumX());
         assertEquals(70, settings.afkMinimumY());
         assertEquals(30, settings.afkMinimumZ());

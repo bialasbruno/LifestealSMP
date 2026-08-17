@@ -66,6 +66,17 @@ Po wejściu gracz widzi nad hotbarem interaktywny licznik, np. `02:00`, `01:59`,
 rozpoczyna następne odliczanie. Cykl trwa tak długo, jak gracz pozostaje w
 strefie.
 
+Komenda `/afk` teleportuje gracza dokładnie na geometryczny środek cuboidu,
+z zachowaniem kierunku, w którym patrzył. Jeżeli inny plugin zajmie nazwę
+`/afk`, dostępny jest również alias `/soulafk` oraz namespaced command
+`/lifestealsouls:afk`.
+
+PvP jest domyślnie wyłączone dla każdej walki, w której atakujący albo ofiara
+znajduje się w strefie. Ochrona obejmuje bezpośrednie uderzenia, pociski gracza
+(w tym strzały i trójzęby), oswojone moby oraz TNT odpalone przez gracza. Dzięki
+sprawdzaniu obu stron nie można również stać wewnątrz strefy i atakować gracza
+znajdującego się za jej granicą.
+
 Opuszczenie strefy, wyjście z serwera lub restart zeruje nieukończone
 odliczanie. Pobyt w strefie AFK nie nalicza jednocześnie aktywnego playtime.
 Powiadomienia o saldzie, zabójstwie lub wypłacie mają na action barze priorytet
@@ -93,6 +104,7 @@ przez konsolę, nie przez gracza.
 
 | Komenda | Opis |
 | --- | --- |
+| `/afk` | Teleportuje na środek skonfigurowanej strefy AFK. |
 | `/souls` | Pokazuje własne saldo nad hotbarem przez 2 sekundy. |
 | `/souls top` | Otwiera GUI z 10 najwyższymi saldami. |
 | `/soulsadmin balance <player\|uuid>` | Pokazuje saldo gracza. |
@@ -107,6 +119,7 @@ przez konsolę, nie przez gracza.
 
 | Permission | Domyślnie | Opis |
 | --- | --- | --- |
+| `lifestealsouls.afk` | każdy gracz | Pozwala teleportować się do strefy AFK. |
 | `lifestealsouls.balance` | każdy gracz | Pozwala używać `/souls`. |
 | `lifestealsouls.admin` | operator | Pozwala zarządzać saldami i historią. |
 
@@ -134,6 +147,7 @@ player-kill:
 
 afk-zone:
   enabled: false
+  disable-pvp: true
   reward-amount: 1
   reward-interval-seconds: 120
   world: ""

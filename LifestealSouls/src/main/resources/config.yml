@@ -17,6 +17,7 @@ player-kill:
 # continuously; leaving the zone resets the countdown.
 afk-zone:
   enabled: false
+  disable-pvp: true
   reward-amount: 1
   reward-interval-seconds: 120
   world: ""
@@ -36,6 +37,9 @@ messages:
   kill-reward: "<green>+{amount} Souls</green> <gray>for killing {victim}.</gray>"
   afk-countdown: "<aqua>In <white>{time}</white> you will receive <white>{amount}</white> Souls.</aqua>"
   afk-reward: "<green>+{amount} Souls</green> <gray>for staying in the AFK zone.</gray>"
+  afk-teleported: "<aqua>AFK zone:</aqua> <white>first reward in {time}</white>"
+  afk-unavailable: "<red>The AFK zone is not configured or its world is unavailable.</red>"
+  afk-pvp-disabled: "<red>PvP is disabled in the AFK zone.</red>"
   no-permission: "<red>You do not have permission to use this command.</red>"
   player-only: "<red>This command can only be used by a player.</red>"
   invalid-command: "<red>Invalid command. Use /soulsadmin help.</red>"

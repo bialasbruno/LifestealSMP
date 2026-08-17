@@ -8,6 +8,11 @@ softdepend:
   - LifestealScoreboard
 
 commands:
+  afk:
+    description: Teleports you to the center of the configured AFK zone.
+    usage: /afk
+    aliases: [soulafk]
+    permission: lifestealsouls.afk
   souls:
     description: Shows your Souls balance or opens the balance leaderboard GUI.
     usage: /souls [top]
@@ -18,6 +23,9 @@ commands:
     permission: lifestealsouls.admin
 
 permissions:
+  lifestealsouls.afk:
+    description: Allows teleporting to the configured AFK zone.
+    default: true
   lifestealsouls.balance:
     description: Allows checking your own Souls balance and opening the leaderboard GUI.
     default: true

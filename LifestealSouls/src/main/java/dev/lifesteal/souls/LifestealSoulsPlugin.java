@@ -2,6 +2,7 @@ package dev.lifesteal.souls;
 
 import dev.lifesteal.souls.api.LifestealSoulsApi;
 import dev.lifesteal.souls.afk.AfkZoneTracker;
+import dev.lifesteal.souls.command.AfkCommand;
 import dev.lifesteal.souls.command.SoulsAdminCommand;
 import dev.lifesteal.souls.command.SoulsCommand;
 import dev.lifesteal.souls.config.SoulsSettings;
@@ -11,6 +12,7 @@ import dev.lifesteal.souls.data.SoulRepository;
 import dev.lifesteal.souls.integration.ScoreboardCurrencyIntegration;
 import dev.lifesteal.souls.menu.SoulLeaderboardMenu;
 import dev.lifesteal.souls.listener.KillRewardListener;
+import dev.lifesteal.souls.listener.AfkPvpProtectionListener;
 import dev.lifesteal.souls.listener.PlayerActivityListener;
 import dev.lifesteal.souls.listener.PlayerLifecycleListener;
 import dev.lifesteal.souls.message.MessageService;
@@ -119,6 +121,13 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
 
     private void registerCommands(
             MessageService messages, SoulLeaderboardMenu leaderboardMenu) {
+        PluginCommand afk = getCommand("afk");
+        if (afk != null) {
+            afk.setExecutor(new AfkCommand(this, messages, this::settings));
+        } else {
+            getLogger().severe("Could not register /afk; check plugin.yml.");
+        }
+
         PluginCommand souls = getCommand("souls");
         if (souls != null) {
             souls.setExecutor(
@@ -141,6 +150,8 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
             MessageService messages, SoulLeaderboardMenu leaderboardMenu) {
         var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(leaderboardMenu, this);
+        pluginManager.registerEvents(
+                new AfkPvpProtectionListener(messages, this::settings), this);
         pluginManager.registerEvents(
                 new PlayerLifecycleListener(soulService, playtimeTracker), this);
         pluginManager.registerEvents(new PlayerActivityListener(playtimeTracker), this);

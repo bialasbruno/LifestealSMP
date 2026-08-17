@@ -145,7 +145,7 @@ public final class AfkZoneTracker {
         remainingSeconds.clear();
     }
 
-    static String formatTime(long totalSeconds) {
+    public static String formatTime(long totalSeconds) {
         long minutes = totalSeconds / 60L;
         long seconds = totalSeconds % 60L;
         return String.format("%02d:%02d", minutes, seconds);
