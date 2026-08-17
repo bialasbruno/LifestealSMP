@@ -8,6 +8,7 @@ import dev.lifesteal.souls.data.SQLiteSoulRepository;
 import dev.lifesteal.souls.data.SoulAccount;
 import dev.lifesteal.souls.data.SoulRepository;
 import dev.lifesteal.souls.integration.ScoreboardCurrencyIntegration;
+import dev.lifesteal.souls.menu.SoulLeaderboardMenu;
 import dev.lifesteal.souls.listener.KillRewardListener;
 import dev.lifesteal.souls.listener.PlayerActivityListener;
 import dev.lifesteal.souls.listener.PlayerLifecycleListener;
@@ -38,11 +39,12 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
 
         repository = new SQLiteSoulRepository(new File(getDataFolder(), "data.db"), getLogger());
         soulService = new SoulService(repository, settings);
-        MessageService messages = new MessageService(getLogger());
+        MessageService messages = new MessageService(this);
         playtimeTracker = new PlaytimeTracker(this, soulService, messages, settings);
 
-        registerCommands(messages);
-        registerListeners(messages);
+        SoulLeaderboardMenu leaderboardMenu = new SoulLeaderboardMenu(soulService);
+        registerCommands(messages, leaderboardMenu);
+        registerListeners(messages, leaderboardMenu);
         getServer().getServicesManager().register(
                 LifestealSoulsApi.class, this, this, ServicePriority.Normal);
 
@@ -105,10 +107,12 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
         warnAboutReservedAfkZone();
     }
 
-    private void registerCommands(MessageService messages) {
+    private void registerCommands(
+            MessageService messages, SoulLeaderboardMenu leaderboardMenu) {
         PluginCommand souls = getCommand("souls");
         if (souls != null) {
-            souls.setExecutor(new SoulsCommand(soulService, messages, this::settings));
+            souls.setExecutor(
+                    new SoulsCommand(soulService, messages, leaderboardMenu, this::settings));
         } else {
             getLogger().severe("Could not register /souls; check plugin.yml.");
         }
@@ -123,8 +127,10 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
         }
     }
 
-    private void registerListeners(MessageService messages) {
+    private void registerListeners(
+            MessageService messages, SoulLeaderboardMenu leaderboardMenu) {
         var pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(leaderboardMenu, this);
         pluginManager.registerEvents(
                 new PlayerLifecycleListener(soulService, playtimeTracker), this);
         pluginManager.registerEvents(new PlayerActivityListener(playtimeTracker), this);

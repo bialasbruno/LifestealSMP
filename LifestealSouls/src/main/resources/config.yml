@@ -21,6 +21,7 @@ afk-zone:
   reward-interval-seconds: 120
 
 messages:
+  # Balance and reward notifications are displayed above the hotbar for 2 seconds.
   balance: "<gradient:#7dd3fc:#c084fc><bold>Souls</bold></gradient> <gray>Balance:</gray> <white>{balance}</white>"
   playtime-reward: "<green>+{amount} Souls</green> <gray>for a full hour of active playtime.</gray>"
   kill-reward: "<green>+{amount} Souls</green> <gray>for killing {victim}.</gray>"

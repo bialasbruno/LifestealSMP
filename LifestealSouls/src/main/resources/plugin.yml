@@ -9,7 +9,7 @@ softdepend:
 
 commands:
   souls:
-    description: Shows your Souls balance or the balance leaderboard.
+    description: Shows your Souls balance or opens the balance leaderboard GUI.
     usage: /souls [top]
     permission: lifestealsouls.balance
   soulsadmin:
@@ -19,7 +19,7 @@ commands:
 
 permissions:
   lifestealsouls.balance:
-    description: Allows checking your own Souls balance and the leaderboard.
+    description: Allows checking your own Souls balance and opening the leaderboard GUI.
     default: true
   lifestealsouls.admin:
     description: Allows managing balances and viewing transaction history.

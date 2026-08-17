@@ -130,7 +130,7 @@ public final class PlaytimeTracker {
             session.pendingActiveMillis = 0L;
             session.persistedProgressMillis = result.activeProgressMillis();
             if (result.credited() > 0L && onlinePlayer != null && onlinePlayer.isOnline()) {
-                messages.send(
+                messages.sendActionBar(
                         onlinePlayer,
                         settings.playtimeRewardMessage(),
                         Map.of(

@@ -43,7 +43,7 @@ public final class KillRewardListener implements Listener {
         KillRewardResult result = soulService.rewardKill(
                 killer.getUniqueId(), killer.getName(), victim.getUniqueId());
         if (result.rewarded()) {
-            messages.send(
+            messages.sendActionBar(
                     killer,
                     settings.killRewardMessage(),
                     Map.of(

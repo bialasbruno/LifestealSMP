@@ -1,6 +1,7 @@
 package dev.lifesteal.souls.command;
 
 import dev.lifesteal.souls.config.SoulsSettings;
+import dev.lifesteal.souls.menu.SoulLeaderboardMenu;
 import dev.lifesteal.souls.message.MessageService;
 import dev.lifesteal.souls.service.SoulService;
 import org.bukkit.command.Command;
@@ -16,14 +17,17 @@ public final class SoulsCommand implements CommandExecutor {
 
     private final SoulService soulService;
     private final MessageService messages;
+    private final SoulLeaderboardMenu leaderboardMenu;
     private final Supplier<SoulsSettings> settingsSupplier;
 
     public SoulsCommand(
             SoulService soulService,
             MessageService messages,
+            SoulLeaderboardMenu leaderboardMenu,
             Supplier<SoulsSettings> settingsSupplier) {
         this.soulService = soulService;
         this.messages = messages;
+        this.leaderboardMenu = leaderboardMenu;
         this.settingsSupplier = settingsSupplier;
     }
 
@@ -35,15 +39,11 @@ public final class SoulsCommand implements CommandExecutor {
             @NotNull String[] args) {
         SoulsSettings settings = settingsSupplier.get();
         if (args.length == 1 && args[0].equalsIgnoreCase("top")) {
-            sender.sendMessage("Top Souls balances:");
-            int position = 1;
-            for (var account : soulService.top(10)) {
-                sender.sendMessage(position++ + ". " + account.lastKnownName()
-                        + " - " + account.balance() + " Souls");
+            if (!(sender instanceof Player player)) {
+                messages.send(sender, settings.playerOnlyMessage());
+                return true;
             }
-            if (position == 1) {
-                sender.sendMessage("No player has earned Souls yet.");
-            }
+            leaderboardMenu.open(player);
             return true;
         }
         if (args.length > 0) {
@@ -54,7 +54,7 @@ public final class SoulsCommand implements CommandExecutor {
             messages.send(sender, settings.playerOnlyMessage());
             return true;
         }
-        messages.send(
+        messages.sendActionBar(
                 player,
                 settings.balanceMessage(),
                 Map.of("balance", Long.toString(soulService.getSouls(player.getUniqueId()))));

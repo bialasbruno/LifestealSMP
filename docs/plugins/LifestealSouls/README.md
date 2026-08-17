@@ -28,6 +28,8 @@ Sterownik SQLite jest dołączony do produkcyjnego JAR-a.
 - Domyślny limit salda wynosi `1 000 000 000` Souls.
 - Każda zmiana salda jest zapisywana w historii wraz ze źródłem, wartością po
   operacji, czasem i opcjonalnym identyfikatorem.
+- Informacje o saldzie i zdobytych Souls pojawiają się przez `2` sekundy nad
+  hotbarem zamiast zajmować miejsce na chacie.
 
 ## Nagroda za aktywny playtime
 
@@ -83,8 +85,8 @@ przez konsolę, nie przez gracza.
 
 | Komenda | Opis |
 | --- | --- |
-| `/souls` | Pokazuje własne saldo. |
-| `/souls top` | Pokazuje 10 najwyższych sald. |
+| `/souls` | Pokazuje własne saldo nad hotbarem przez 2 sekundy. |
+| `/souls top` | Otwiera GUI z 10 najwyższymi saldami. |
 | `/soulsadmin balance <player\|uuid>` | Pokazuje saldo gracza. |
 | `/soulsadmin add <player\|uuid> <amount>` | Dodaje Souls administracyjnie. |
 | `/soulsadmin remove <player\|uuid> <amount>` | Usuwa Souls bez zejścia poniżej zera. |
@@ -129,7 +131,18 @@ afk-zone:
 ```
 
 Wiadomości obsługują MiniMessage oraz placeholdery `{balance}`, `{amount}` i
-`{victim}` zależnie od komunikatu.
+`{victim}` zależnie od komunikatu. Szablony `balance`, `playtime-reward` i
+`kill-reward` są wyświetlane jako action bar przez `40` ticków, czyli `2`
+sekundy.
+
+## GUI rankingu
+
+Komenda `/souls top` otwiera ekwipunek tylko do odczytu o rozmiarze trzech
+rzędów. Pierwsze trzy miejsca tworzą podium, a miejsca `4–10` znajdują się w
+drugim rzędzie. Każda pozycja używa głowy gracza i pokazuje jego aktualne saldo.
+
+Klikanie oraz przeciąganie przedmiotów w otwartym rankingu jest blokowane. Jeśli
+żaden gracz nie zdobył jeszcze Souls, GUI pokazuje informację o pustym rankingu.
 
 ## Dane i odporność na duplikację
 
