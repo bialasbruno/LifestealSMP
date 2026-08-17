@@ -1,0 +1,16 @@
+name: LifestealSpawn
+version: '${version}'
+main: dev.lifesteal.spawn.LifestealSpawnPlugin
+api-version: '26.2'
+description: Spawn-world safety mechanics for LifestealSMP.
+author: Bruno
+
+commands:
+  lifestealspawn:
+    description: Administrative commands for LifestealSpawn.
+    usage: /lifestealspawn reload
+
+permissions:
+  lifestealspawn.admin:
+    description: Allows reloading the LifestealSpawn configuration.
+    default: op

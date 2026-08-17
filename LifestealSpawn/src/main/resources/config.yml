@@ -1,0 +1,32 @@
+void-rescue:
+  enabled: true
+
+  # World names are case-insensitive. The default matches a Multiverse world
+  # named "spawn".
+  enabled-worlds:
+    - spawn
+
+  # Rescue starts this many blocks below the world's minimum build height.
+  trigger-offset-below-min-height: 5
+
+  destination:
+    world: spawn
+    use-world-spawn: true
+
+    # Used only when use-world-spawn is false.
+    x: 0.5
+    y: 100.0
+    z: 0.5
+    yaw: 0.0
+    pitch: 0.0
+
+messages:
+  rescued: "<aqua>You fell into the void and returned to spawn.</aqua>"
+  no-permission: "<red>You do not have permission to use this command.</red>"
+  usage: "<red>Usage: /lifestealspawn reload</red>"
+  reloaded: "<green>LifestealSpawn configuration reloaded.</green>"
+
+sound:
+  name: "minecraft:entity.enderman.teleport"
+  volume: 0.7
+  pitch: 1.2

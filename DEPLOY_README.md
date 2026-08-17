@@ -5,6 +5,7 @@ Ten projekt zawiera jednocześnie:
 - LifestealScoreboard (plugin Paper),
 - LifestealSouls (plugin Paper),
 - LifestealSoulShop (plugin Paper),
+- LifestealSpawn (plugin Paper),
 - `ServerPack/` (źródła resource packa),
 - `deploy.sh` (build + testy + deploy),
 - `update.sh` (opcjonalny `git pull` + deploy).
@@ -26,6 +27,7 @@ Bez argumentu wykonywany jest pełny deployment. Dostępne cele:
 ./deploy.sh scoreboard
 ./deploy.sh souls
 ./deploy.sh soulshop
+./deploy.sh spawn
 ```
 
 - `all` — wszystkie pluginy i ServerPack,
@@ -35,6 +37,7 @@ Bez argumentu wykonywany jest pełny deployment. Dostępne cele:
 - `souls` — wyłącznie LifestealSouls, bez przebudowy i publikacji ServerPacka.
 - `soulshop` — wyłącznie LifestealSoulShop, bez przebudowy i publikacji
   ServerPacka.
+- `spawn` — wyłącznie LifestealSpawn, bez przebudowy i publikacji ServerPacka.
 
 Nie uruchamiaj `sudo ./deploy.sh`.
 Skrypt sam poprosi o hasło sudo.
@@ -69,6 +72,7 @@ cd ~/LifestealCore
 ./update.sh scoreboard
 ./update.sh souls
 ./update.sh soulshop
+./update.sh spawn
 ```
 
 `update.sh` zrobi:
@@ -96,8 +100,9 @@ Obecnie skonfigurowane są:
 - build Scoreboard JAR: `LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar`
 - build Souls JAR: `LifestealSouls/build/libs/LifestealSouls-0.1.0.jar`
 - build SoulShop JAR: `LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar`
+- build Spawn JAR: `LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar`
 - docelowe JAR-y Paper: `LifestealCore.jar`, `LifestealScoreboard.jar`,
-  `LifestealSouls.jar` i `LifestealSoulShop.jar`
+  `LifestealSouls.jar`, `LifestealSoulShop.jar` i `LifestealSpawn.jar`
 
 ## Backupi
 
