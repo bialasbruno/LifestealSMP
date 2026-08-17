@@ -19,6 +19,24 @@ test -f ServerPack/assets/serverpack/textures/item/broken_heart.png
 test -f ServerPack/assets/serverpack/textures/item/heart.png
 test -f ServerPack/assets/serverpack/sounds/items/heart_consume.ogg
 
+# Every Paper plugin descriptor must have a dedicated, complete README.
+while IFS= read -r descriptor; do
+  plugin_name="$(awk -F ': *' '$1 == "name" { print $2; exit }' "$descriptor" | tr -d '\r')"
+  if [[ -z "$plugin_name" ]]; then
+    echo "ERROR: cannot read plugin name from $descriptor" >&2
+    exit 1
+  fi
+
+  plugin_readme="docs/plugins/$plugin_name/README.md"
+  if [[ ! -f "$plugin_readme" ]]; then
+    echo "ERROR: $descriptor requires $plugin_readme" >&2
+    exit 1
+  fi
+done < <(
+  find . \( -path './.git' -o -path './build' -o -path './.gradle' \) -prune -o \
+    -type f \( -name 'plugin.yml' -o -name 'paper-plugin.yml' \) -print
+)
+
 if find . \( -path './.git' -o -path './build' -o -path './.gradle' \) -prune -o \
     -type f \( -name '*.jar' -o -name '*.zip' -o -name '*.db' \) -print \
     | grep -v '^./gradle/wrapper/gradle-wrapper.jar$' \

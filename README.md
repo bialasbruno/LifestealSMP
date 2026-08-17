@@ -7,6 +7,15 @@ wdrażania projektu na VPS-ie z Pterodactylem.
 Projekt jest aktywnie rozwijany. Obecny zakres to stabilne `v0.1` bez ekonomii,
 klanów, revive, bounty, GUI ani dodatkowych systemów rozgrywki.
 
+## Pluginy
+
+Każdy plugin ma własny README z pełnym opisem mechaniki, konfiguracji, komend,
+uprawnień, danych, instalacji i budowania.
+
+| Plugin | Wersja | Opis | Dokumentacja |
+| --- | --- | --- | --- |
+| `LifestealCore` | `0.1.0` | Serca graczy, śmierci PvP, customowe przedmioty, crafting i SQLite. | [README pluginu](docs/plugins/LifestealCore/README.md) |
+
 ## Wymagania
 
 - Paper `26.2`, build `112`
@@ -110,6 +119,7 @@ LifestealSMP/
 ├── src/                 # kod pluginu i testy
 ├── gradle/              # Gradle Wrapper
 ├── ServerPack/          # źródła resource packa
+├── docs/plugins/        # osobny README dla każdego pluginu
 ├── build.gradle
 ├── settings.gradle
 ├── build-vps.sh
