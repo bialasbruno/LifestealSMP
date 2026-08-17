@@ -29,7 +29,7 @@ live server state.
 ## Installation
 
 1. Build the repository with `./gradlew clean build` or `./build-vps.sh`.
-2. Copy `build/libs/LifestealCore-0.2.1.jar` to the server `plugins/` directory.
+2. Copy `LifestealCore/build/libs/LifestealCore-0.2.1.jar` to the server `plugins/` directory.
 3. Copy `LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar` to the same directory.
 4. Start or fully restart Paper.
 5. Edit `plugins/LifestealScoreboard/config.yml` if needed.

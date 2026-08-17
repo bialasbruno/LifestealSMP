@@ -63,9 +63,9 @@ for plugin_jar in "$CORE_PLUGIN_BUILD_JAR" "$SCOREBOARD_PLUGIN_BUILD_JAR"; do
   fi
 done
 
-# Give the normal user ownership of build artifacts produced by root/Docker.
+# Give the normal user ownership of plugin artifacts produced by root/Docker.
 sudo chown -R "$(id -u):$(id -g)" \
-  "$ROOT/build" "$ROOT/LifestealScoreboard/build"
+  "$ROOT/LifestealCore/build" "$ROOT/LifestealScoreboard/build"
 
 echo
 echo "3/7 Budowanie ServerPack.zip..."

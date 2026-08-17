@@ -16,7 +16,7 @@ czasowe eliminacje i sezonowe odrodzenia, tworzy przedmioty `Broken Heart`,
 | Klasa główna | `dev.lifesteal.core.LifestealCorePlugin` |
 | Baza danych | SQLite |
 | Plik danych | `plugins/LifestealCore/data.db` |
-| Finalny JAR | `build/libs/LifestealCore-0.2.1.jar` |
+| Finalny JAR | `LifestealCore/build/libs/LifestealCore-0.2.1.jar` |
 
 Plugin nie wymaga zewnętrznego serwera bazy danych. Sterownik SQLite znajduje
 się wewnątrz finalnego JAR-a. Paper API jest dostarczane przez serwer i nie jest
@@ -266,7 +266,7 @@ wpisy resource packa w `server.properties`.
 
 1. Zbuduj projekt poleceniem `./gradlew clean build` na Javie 25 albo użyj
    `./build-vps.sh` na hoście z Dockerem.
-2. Skopiuj `build/libs/LifestealCore-0.2.1.jar` do katalogu `plugins/` serwera
+2. Skopiuj `LifestealCore/build/libs/LifestealCore-0.2.1.jar` do katalogu `plugins/` serwera
    Paper jako `LifestealCore.jar`.
 3. Uruchom serwer, aby wygenerować `config.yml` i `data.db`.
 4. Skonfiguruj oraz opublikuj ServerPack.

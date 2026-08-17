@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     // LifestealCore and Paper are supplied by the server at runtime.
-    compileOnly project(':')
+    compileOnly project(':LifestealCore')
     compileOnly 'io.papermc.paper:paper-api:26.2.build.112-stable'
 
     // Optional runtime integration. The API is never bundled into this plugin.
@@ -33,7 +33,7 @@ dependencies {
 
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation project(':')
+    testImplementation project(':LifestealCore')
     testImplementation 'io.papermc.paper:paper-api:26.2.build.112-stable'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

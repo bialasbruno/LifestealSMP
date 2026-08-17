@@ -89,7 +89,7 @@ Na VPS-ie z Dockerem:
 Obie ścieżki uruchamiają testy JUnit obu pluginów. Finalne JAR-y powstają jako:
 
 ```text
-build/libs/LifestealCore-0.2.1.jar
+LifestealCore/build/libs/LifestealCore-0.2.1.jar
 LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
 ```
 
@@ -129,12 +129,12 @@ tego Docker, Pterodactyl lub katalog publikowany przez Nginx.
 
 ```text
 LifestealSMP/
-├── src/                 # kod i testy LifestealCore
-├── LifestealScoreboard/ # osobny subprojekt scoreboardu
+├── LifestealCore/       # plugin Core, konfiguracja Gradle i testy
+├── LifestealScoreboard/ # plugin Scoreboard, konfiguracja Gradle i testy
 ├── gradle/              # Gradle Wrapper
 ├── ServerPack/          # źródła resource packa
 ├── docs/plugins/        # osobny README dla każdego pluginu
-├── build.gradle
+├── build.gradle         # wspólny build wszystkich modułów
 ├── settings.gradle
 ├── build-vps.sh
 ├── deploy.sh

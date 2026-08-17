@@ -1,2 +1,4 @@
-rootProject.name = 'LifestealCore'
+rootProject.name = 'LifestealSMP'
+
+include('LifestealCore')
 include('LifestealScoreboard')

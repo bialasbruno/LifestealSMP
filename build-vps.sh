@@ -15,7 +15,7 @@ docker run --rm \
   gradle:jdk25-noble \
   gradle --no-daemon clean build
 
-CORE_JAR="build/libs/LifestealCore-0.2.1.jar"
+CORE_JAR="LifestealCore/build/libs/LifestealCore-0.2.1.jar"
 SCOREBOARD_JAR="LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar"
 
 for jar in "$CORE_JAR" "$SCOREBOARD_JAR"; do

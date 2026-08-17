@@ -62,7 +62,7 @@ deploy.env
 Obecnie skonfigurowane są:
 - Pterodactyl volume: `89c0f685-a4cd-4c68-b2cc-dc1338f04837`
 - pack URL: `http://159.195.42.157/resourcepacks/ServerPack.zip`
-- build Core JAR: `LifestealCore-0.2.1.jar`
+- build Core JAR: `LifestealCore/build/libs/LifestealCore-0.2.1.jar`
 - build Scoreboard JAR: `LifestealScoreboard-0.1.0.jar`
 - docelowe JAR-y Paper: `LifestealCore.jar` i `LifestealScoreboard.jar`
 

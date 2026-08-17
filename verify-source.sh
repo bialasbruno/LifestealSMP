@@ -1,25 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if grep -R "PrepareItemCraftingEvent" -n src; then
+if grep -R "PrepareItemCraftingEvent" -n LifestealCore/src; then
   echo "ERROR: old/nonexistent PrepareItemCraftingEvent still present" >&2
   exit 1
 fi
-if grep -n "relocate 'org.sqlite'" build.gradle; then
+if grep -n "relocate 'org.sqlite'" LifestealCore/build.gradle; then
   echo "ERROR: sqlite relocation still present" >&2
   exit 1
 fi
-grep -q "junit-platform-launcher" build.gradle
-grep -q "paper-api:26.2.build.112-stable" build.gradle
+grep -q "junit-platform-launcher" LifestealCore/build.gradle
+grep -q "paper-api:26.2.build.112-stable" LifestealCore/build.gradle
+grep -q "include('LifestealCore')" settings.gradle
 grep -q "include('LifestealScoreboard')" settings.gradle
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
 grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml
-grep -q "implements LifestealCoreApi" src/main/java/dev/lifesteal/core/LifestealCorePlugin.java
-grep -q 'setItemModel(BROKEN_HEART_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
-grep -q 'setItemModel(HEART_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
-grep -q 'setItemModel(REVIVE_TOTEM_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
-grep -q '"serverpack:heart_consume"' src/main/java/dev/lifesteal/core/listener/HeartUseListener.java
+grep -q "implements LifestealCoreApi" LifestealCore/src/main/java/dev/lifesteal/core/LifestealCorePlugin.java
+grep -q 'setItemModel(BROKEN_HEART_MODEL)' LifestealCore/src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
+grep -q 'setItemModel(HEART_MODEL)' LifestealCore/src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
+grep -q 'setItemModel(REVIVE_TOTEM_MODEL)' LifestealCore/src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
+grep -q '"serverpack:heart_consume"' LifestealCore/src/main/java/dev/lifesteal/core/listener/HeartUseListener.java
 
 test -f ServerPack/assets/serverpack/textures/item/broken_heart.png
 test -f ServerPack/assets/serverpack/textures/item/heart.png

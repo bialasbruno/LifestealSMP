@@ -12,7 +12,7 @@ Pierwsze uruchomienie pobiera oficjalny obraz `gradle:jdk25-noble` oraz zależno
 Po udanym buildzie finalne pluginy znajdują się tutaj:
 
 ```text
-build/libs/LifestealCore-0.2.1.jar
+LifestealCore/build/libs/LifestealCore-0.2.1.jar
 LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
 ```
 
