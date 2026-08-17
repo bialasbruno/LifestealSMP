@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 
 /** Accumulates active online time and persists it in coarse, crash-bounded batches. */
@@ -23,6 +24,7 @@ public final class PlaytimeTracker {
     private final Plugin plugin;
     private final SoulService soulService;
     private final MessageService messages;
+    private final Predicate<Player> excludedFromActivePlaytime;
     private final Map<UUID, Session> sessions = new HashMap<>();
     private SoulsSettings settings;
     private BukkitTask task;
@@ -33,11 +35,13 @@ public final class PlaytimeTracker {
             Plugin plugin,
             SoulService soulService,
             MessageService messages,
-            SoulsSettings settings) {
+            SoulsSettings settings,
+            Predicate<Player> excludedFromActivePlaytime) {
         this.plugin = plugin;
         this.soulService = soulService;
         this.messages = messages;
         this.settings = settings;
+        this.excludedFromActivePlaytime = excludedFromActivePlaytime;
     }
 
     public void start() {
@@ -95,8 +99,12 @@ public final class PlaytimeTracker {
         SoulsSettings current = settings;
         if (current.playtimeEnabled() && elapsedMillis > 0L) {
             long idleTimeoutNanos = TimeUnit.MILLISECONDS.toNanos(current.idleTimeoutMillis());
-            for (Session session : sessions.values()) {
-                if (now - session.lastActivityNanos <= idleTimeoutNanos) {
+            for (Map.Entry<UUID, Session> entry : sessions.entrySet()) {
+                Session session = entry.getValue();
+                Player player = plugin.getServer().getPlayer(entry.getKey());
+                if (player != null
+                        && !excludedFromActivePlaytime.test(player)
+                        && now - session.lastActivityNanos <= idleTimeoutNanos) {
                     session.pendingActiveMillis = Math.addExact(
                             session.pendingActiveMillis, elapsedMillis);
                 }

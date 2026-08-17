@@ -2,6 +2,7 @@ package dev.lifesteal.souls.data;
 
 public enum SoulTransactionType {
     PLAYTIME,
+    AFK_ZONE,
     PLAYER_KILL,
     WEBSHOP_PURCHASE,
     ADMIN_ADD,

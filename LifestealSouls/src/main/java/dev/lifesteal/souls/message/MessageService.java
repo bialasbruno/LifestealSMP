@@ -20,6 +20,7 @@ public final class MessageService {
     private final Plugin plugin;
     private final Logger logger;
     private final Map<UUID, BukkitTask> actionBarClearTasks = new HashMap<>();
+    private final Map<UUID, Long> actionBarBlockedUntilNanos = new HashMap<>();
 
     public MessageService(Plugin plugin) {
         this.plugin = plugin;
@@ -42,17 +43,36 @@ public final class MessageService {
             previousTask.cancel();
         }
 
+        actionBarBlockedUntilNanos.put(
+                playerId, System.nanoTime() + ACTION_BAR_DURATION_TICKS * 50_000_000L);
         recipient.sendActionBar(render(template, replacements));
         BukkitTask clearTask = plugin.getServer().getScheduler().runTaskLater(
                 plugin,
                 () -> {
                     actionBarClearTasks.remove(playerId);
+                    actionBarBlockedUntilNanos.remove(playerId);
                     if (recipient.isOnline()) {
                         recipient.sendActionBar(Component.empty());
                     }
                 },
                 ACTION_BAR_DURATION_TICKS);
         actionBarClearTasks.put(playerId, clearTask);
+    }
+
+    public void sendPersistentActionBar(
+            Player recipient, String template, Map<String, String> replacements) {
+        Long blockedUntil = actionBarBlockedUntilNanos.get(recipient.getUniqueId());
+        if (blockedUntil != null && System.nanoTime() < blockedUntil) {
+            return;
+        }
+        recipient.sendActionBar(render(template, replacements));
+    }
+
+    public void clearPersistentActionBar(Player recipient) {
+        Long blockedUntil = actionBarBlockedUntilNanos.get(recipient.getUniqueId());
+        if (blockedUntil == null || System.nanoTime() >= blockedUntil) {
+            recipient.sendActionBar(Component.empty());
+        }
     }
 
     private Component render(String template, Map<String, String> replacements) {

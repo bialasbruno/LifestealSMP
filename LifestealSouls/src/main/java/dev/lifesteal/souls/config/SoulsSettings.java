@@ -19,9 +19,18 @@ public record SoulsSettings(
         boolean afkZoneEnabled,
         long afkRewardAmount,
         long afkRewardIntervalMillis,
+        String afkWorldName,
+        int afkMinimumX,
+        int afkMinimumY,
+        int afkMinimumZ,
+        int afkMaximumX,
+        int afkMaximumY,
+        int afkMaximumZ,
         String balanceMessage,
         String playtimeRewardMessage,
         String killRewardMessage,
+        String afkCountdownMessage,
+        String afkRewardMessage,
         String noPermissionMessage,
         String playerOnlyMessage,
         String invalidCommandMessage) {
@@ -30,6 +39,9 @@ public record SoulsSettings(
         Objects.requireNonNull(balanceMessage, "balanceMessage");
         Objects.requireNonNull(playtimeRewardMessage, "playtimeRewardMessage");
         Objects.requireNonNull(killRewardMessage, "killRewardMessage");
+        Objects.requireNonNull(afkWorldName, "afkWorldName");
+        Objects.requireNonNull(afkCountdownMessage, "afkCountdownMessage");
+        Objects.requireNonNull(afkRewardMessage, "afkRewardMessage");
         Objects.requireNonNull(noPermissionMessage, "noPermissionMessage");
         Objects.requireNonNull(playerOnlyMessage, "playerOnlyMessage");
         Objects.requireNonNull(invalidCommandMessage, "invalidCommandMessage");
@@ -88,6 +100,25 @@ public record SoulsSettings(
                 config.getBoolean("afk-zone.enabled", false),
                 afkAmount,
                 TimeUnit.SECONDS.toMillis(afkSeconds),
+                config.getString("afk-zone.world", "").trim(),
+                Math.min(
+                        config.getInt("afk-zone.minimum.x", 0),
+                        config.getInt("afk-zone.maximum.x", 0)),
+                Math.min(
+                        config.getInt("afk-zone.minimum.y", 0),
+                        config.getInt("afk-zone.maximum.y", 0)),
+                Math.min(
+                        config.getInt("afk-zone.minimum.z", 0),
+                        config.getInt("afk-zone.maximum.z", 0)),
+                Math.max(
+                        config.getInt("afk-zone.minimum.x", 0),
+                        config.getInt("afk-zone.maximum.x", 0)),
+                Math.max(
+                        config.getInt("afk-zone.minimum.y", 0),
+                        config.getInt("afk-zone.maximum.y", 0)),
+                Math.max(
+                        config.getInt("afk-zone.minimum.z", 0),
+                        config.getInt("afk-zone.maximum.z", 0)),
                 config.getString(
                         "messages.balance",
                         "<aqua>Souls:</aqua> <white>{balance}</white>"),
@@ -97,6 +128,13 @@ public record SoulsSettings(
                 config.getString(
                         "messages.kill-reward",
                         "<green>+{amount} Souls</green> for killing {victim}."),
+                config.getString(
+                        "messages.afk-countdown",
+                        "<aqua>In <white>{time}</white> you will receive"
+                                + " <white>{amount}</white> Souls.</aqua>"),
+                config.getString(
+                        "messages.afk-reward",
+                        "<green>+{amount} Souls</green> <gray>for staying in the AFK zone.</gray>"),
                 config.getString(
                         "messages.no-permission",
                         "<red>You do not have permission to use this command.</red>"),

@@ -1,6 +1,7 @@
 package dev.lifesteal.souls;
 
 import dev.lifesteal.souls.api.LifestealSoulsApi;
+import dev.lifesteal.souls.afk.AfkZoneTracker;
 import dev.lifesteal.souls.command.SoulsAdminCommand;
 import dev.lifesteal.souls.command.SoulsCommand;
 import dev.lifesteal.souls.config.SoulsSettings;
@@ -28,6 +29,7 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
     private SoulRepository repository;
     private SoulService soulService;
     private PlaytimeTracker playtimeTracker;
+    private AfkZoneTracker afkZoneTracker;
     private ScoreboardCurrencyIntegration scoreboardIntegration;
     private SoulsSettings settings;
 
@@ -35,12 +37,14 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
     public void onEnable() {
         saveDefaultConfig();
         settings = SoulsSettings.load(getConfig(), getLogger());
-        warnAboutReservedAfkZone();
+        warnAboutAfkZoneConfiguration();
 
         repository = new SQLiteSoulRepository(new File(getDataFolder(), "data.db"), getLogger());
         soulService = new SoulService(repository, settings);
         MessageService messages = new MessageService(this);
-        playtimeTracker = new PlaytimeTracker(this, soulService, messages, settings);
+        afkZoneTracker = new AfkZoneTracker(this, soulService, messages, settings);
+        playtimeTracker = new PlaytimeTracker(
+                this, soulService, messages, settings, afkZoneTracker::isInside);
 
         SoulLeaderboardMenu leaderboardMenu = new SoulLeaderboardMenu(soulService);
         registerCommands(messages, leaderboardMenu);
@@ -57,12 +61,17 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
             playtimeTracker.join(player, account);
         }
         playtimeTracker.start();
+        afkZoneTracker.start();
 
         getLogger().info("LifestealSouls v" + getPluginMeta().getVersion() + " enabled.");
     }
 
     @Override
     public void onDisable() {
+        if (afkZoneTracker != null) {
+            afkZoneTracker.stop();
+            afkZoneTracker = null;
+        }
         if (scoreboardIntegration != null) {
             scoreboardIntegration.stop();
             scoreboardIntegration = null;
@@ -104,7 +113,8 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
         settings = SoulsSettings.load(getConfig(), getLogger());
         soulService.updateSettings(settings);
         playtimeTracker.updateSettings(settings);
-        warnAboutReservedAfkZone();
+        afkZoneTracker.updateSettings(settings);
+        warnAboutAfkZoneConfiguration();
     }
 
     private void registerCommands(
@@ -138,11 +148,11 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
                 new KillRewardListener(soulService, messages, this::settings), this);
     }
 
-    private void warnAboutReservedAfkZone() {
-        if (settings.afkZoneEnabled()) {
+    private void warnAboutAfkZoneConfiguration() {
+        if (settings.afkZoneEnabled() && settings.afkWorldName().isBlank()) {
             getLogger().warning(
-                    "afk-zone.enabled is true, but AFK zone rewards are reserved for a later release."
-                            + " No AFK rewards will be granted.");
+                    "afk-zone.enabled is true, but afk-zone.world is empty."
+                            + " No AFK rewards will be granted until the cuboid is configured.");
         }
     }
 

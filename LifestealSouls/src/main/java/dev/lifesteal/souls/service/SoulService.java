@@ -93,6 +93,26 @@ public final class SoulService {
         return result;
     }
 
+    public synchronized SoulMutation rewardAfk(UUID playerId, String playerName) {
+        SoulsSettings current = settings;
+        long balance = getSouls(playerId);
+        long credited = Math.min(
+                current.afkRewardAmount(), current.maximumBalance() - balance);
+        if (credited <= 0L) {
+            return new SoulMutation(balance, 0L);
+        }
+        SoulMutation result = repository.add(
+                playerId,
+                playerName,
+                credited,
+                SoulTransactionType.AFK_ZONE,
+                "afk-zone",
+                Instant.now(),
+                current.maximumBalance());
+        updateCachedBalance(playerId, result.balance());
+        return result;
+    }
+
     public synchronized SoulMutation addAdmin(
             UUID playerId, String playerName, long amount, String reference) {
         SoulMutation result = repository.add(

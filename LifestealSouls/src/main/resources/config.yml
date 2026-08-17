@@ -13,18 +13,29 @@ player-kill:
   reward-amount: 3
   same-victim-cooldown-seconds: 3600
 
-# Reserved for the dedicated AFK region planned for a later release.
-# Enabling this flag does not grant rewards until a zone provider is implemented.
+# Inclusive cuboid of the dedicated AFK zone. Players must stay inside
+# continuously; leaving the zone resets the countdown.
 afk-zone:
   enabled: false
   reward-amount: 1
   reward-interval-seconds: 120
+  world: ""
+  minimum:
+    x: 0
+    y: 0
+    z: 0
+  maximum:
+    x: 0
+    y: 0
+    z: 0
 
 messages:
   # Balance and reward notifications are displayed above the hotbar for 2 seconds.
   balance: "<gradient:#7dd3fc:#c084fc><bold>Souls</bold></gradient> <gray>Balance:</gray> <white>{balance}</white>"
   playtime-reward: "<green>+{amount} Souls</green> <gray>for a full hour of active playtime.</gray>"
   kill-reward: "<green>+{amount} Souls</green> <gray>for killing {victim}.</gray>"
+  afk-countdown: "<aqua>In <white>{time}</white> you will receive <white>{amount}</white> Souls.</aqua>"
+  afk-reward: "<green>+{amount} Souls</green> <gray>for staying in the AFK zone.</gray>"
   no-permission: "<red>You do not have permission to use this command.</red>"
   player-only: "<red>This command can only be used by a player.</red>"
   invalid-command: "<red>Invalid command. Use /soulsadmin help.</red>"

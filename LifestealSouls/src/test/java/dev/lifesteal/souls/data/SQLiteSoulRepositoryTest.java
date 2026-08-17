@@ -193,4 +193,24 @@ class SQLiteSoulRepositoryTest {
         assertEquals(List.of(secondPlayer, firstPlayer),
                 leaderboard.stream().map(SoulAccount::playerId).toList());
     }
+
+    @Test
+    void afkRewardIsRecordedWithItsOwnTransactionType() {
+        UUID playerId = UUID.randomUUID();
+        Instant now = Instant.parse("2026-08-17T12:00:00Z");
+
+        SoulMutation reward = repository.add(
+                playerId,
+                "Player",
+                1L,
+                SoulTransactionType.AFK_ZONE,
+                "afk-zone",
+                now,
+                1_000_000L);
+        List<SoulTransaction> history = repository.history(playerId, 10);
+
+        assertEquals(1L, reward.amount());
+        assertEquals(1L, reward.balance());
+        assertEquals(SoulTransactionType.AFK_ZONE, history.getFirst().type());
+    }
 }

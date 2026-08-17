@@ -25,6 +25,7 @@ class SoulsSettingsTest {
         assertFalse(settings.afkZoneEnabled());
         assertEquals(1L, settings.afkRewardAmount());
         assertEquals(120_000L, settings.afkRewardIntervalMillis());
+        assertEquals("", settings.afkWorldName());
     }
 
     @Test
@@ -41,5 +42,28 @@ class SoulsSettingsTest {
         assertEquals(50L, settings.playtimeRewardAmount());
         assertEquals(3L, settings.killRewardAmount());
         assertEquals(60_000L, settings.flushIntervalMillis());
+    }
+
+    @Test
+    void afkCuboidCoordinatesAreNormalized() {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("afk-zone.world", "world");
+        config.set("afk-zone.minimum.x", 20);
+        config.set("afk-zone.minimum.y", 90);
+        config.set("afk-zone.minimum.z", 40);
+        config.set("afk-zone.maximum.x", 10);
+        config.set("afk-zone.maximum.y", 70);
+        config.set("afk-zone.maximum.z", 30);
+
+        SoulsSettings settings = SoulsSettings.load(
+                config, Logger.getLogger("SoulsSettingsTest"));
+
+        assertEquals("world", settings.afkWorldName());
+        assertEquals(10, settings.afkMinimumX());
+        assertEquals(70, settings.afkMinimumY());
+        assertEquals(30, settings.afkMinimumZ());
+        assertEquals(20, settings.afkMaximumX());
+        assertEquals(90, settings.afkMaximumY());
+        assertEquals(40, settings.afkMaximumZ());
     }
 }

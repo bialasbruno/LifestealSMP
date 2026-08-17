@@ -58,12 +58,20 @@ niszczenie i stawianie bloków, klikanie w ekwipunku oraz komendy.
 
 ## Strefa AFK
 
-Docelowa stawka to `1 Soul` co `2` minuty w dedykowanej strefie AFK. W wersji
-`0.1.0` integracja regionu nie jest jeszcze zaimplementowana, dlatego nagrody
-AFK są wyłączone. Ustawienie `afk-zone.enabled: true` wyświetli ostrzeżenie i
-nie rozpocznie naliczania.
+Stawka wynosi domyślnie `1 Soul` co `2` minuty ciągłego pobytu w dedykowanej
+strefie AFK. Strefa jest cuboidem obejmującym obie graniczne pozycje bloków.
 
-Zwykłe stanie bezczynnie poza przyszłą strefą nie nalicza aktywnego playtime po
+Po wejściu gracz widzi nad hotbarem interaktywny licznik, np. `02:00`, `01:59`,
+`01:58`. Po dojściu do zera plugin wypłaca nagrodę, pokazuje komunikat i od razu
+rozpoczyna następne odliczanie. Cykl trwa tak długo, jak gracz pozostaje w
+strefie.
+
+Opuszczenie strefy, wyjście z serwera lub restart zeruje nieukończone
+odliczanie. Pobyt w strefie AFK nie nalicza jednocześnie aktywnego playtime.
+Powiadomienia o saldzie, zabójstwie lub wypłacie mają na action barze priorytet
+przez `2` sekundy, a następnie licznik wraca automatycznie.
+
+Zwykłe stanie bezczynnie poza strefą nie nalicza aktywnego playtime po
 upływie `idle-timeout-seconds`.
 
 ## Zakupy internetowe
@@ -128,12 +136,26 @@ afk-zone:
   enabled: false
   reward-amount: 1
   reward-interval-seconds: 120
+  world: ""
+  minimum:
+    x: 0
+    y: 0
+    z: 0
+  maximum:
+    x: 0
+    y: 0
+    z: 0
 ```
 
+Aby uruchomić strefę, wpisz nazwę świata, ustaw współrzędne dwóch przeciwległych
+narożników, zmień `enabled` na `true` i wykonaj `/soulsadmin reload`. Kolejność
+narożników nie ma znaczenia — plugin sam normalizuje wartości minimalne i
+maksymalne. Pusta wartość `world` bezpiecznie blokuje naliczanie nagród.
+
 Wiadomości obsługują MiniMessage oraz placeholdery `{balance}`, `{amount}` i
-`{victim}` zależnie od komunikatu. Szablony `balance`, `playtime-reward` i
-`kill-reward` są wyświetlane jako action bar przez `40` ticków, czyli `2`
-sekundy.
+`{victim}` zależnie od komunikatu. Licznik `afk-countdown` obsługuje dodatkowo
+`{time}`. Szablony `balance`, `playtime-reward`, `kill-reward` i `afk-reward`
+są wyświetlane jako action bar przez `40` ticków, czyli `2` sekundy.
 
 ## GUI rankingu
 
@@ -150,6 +172,7 @@ Baza zawiera:
 
 - konta i postęp aktywnego playtime,
 - pełną historię zmian salda,
+- nagrody odebrane w strefie AFK,
 - cooldowny par zabójca–ofiara,
 - wykorzystane identyfikatory zakupów internetowych.
 
