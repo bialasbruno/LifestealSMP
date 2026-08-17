@@ -1,0 +1,29 @@
+name: LifestealScoreboard
+version: '${version}'
+main: dev.lifesteal.scoreboard.LifestealScoreboardPlugin
+api-version: '26.2'
+description: Lightweight, configurable, flicker-free sidebar presentation for LifestealSMP.
+author: Bruno
+depend:
+  - LifestealCore
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  lifestealscoreboard:
+    description: Administrative command for LifestealScoreboard.
+    usage: /lifestealscoreboard reload
+    permission: lifestealscoreboard.admin
+  scoreboard:
+    description: Toggles your sidebar scoreboard for the current session.
+    usage: /scoreboard
+    aliases: [lsboard]
+    permission: lifestealscoreboard.toggle
+
+permissions:
+  lifestealscoreboard.admin:
+    description: Allows reloading LifestealScoreboard configuration.
+    default: op
+  lifestealscoreboard.toggle:
+    description: Allows toggling the personal sidebar scoreboard.
+    default: true

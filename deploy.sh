@@ -50,19 +50,22 @@ if [[ ! -f "$SERVERPACK_SOURCE/pack.mcmeta" ]]; then
 fi
 
 echo
-echo "2/7 Build pluginu + testy..."
+echo "2/7 Build pluginow + testy..."
 # build-vps.sh uses Docker. The user is intentionally not in the docker group,
 # so we run only this build step through sudo.
 sudo ./build-vps.sh
 
-if [[ ! -f "$PLUGIN_BUILD_JAR" ]]; then
-  echo "ERROR: Build zakonczyl sie bez oczekiwanego JAR-a:"
-  echo "  $PLUGIN_BUILD_JAR"
-  exit 1
-fi
+for plugin_jar in "$CORE_PLUGIN_BUILD_JAR" "$SCOREBOARD_PLUGIN_BUILD_JAR"; do
+  if [[ ! -f "$plugin_jar" ]]; then
+    echo "ERROR: Build zakonczyl sie bez oczekiwanego JAR-a:"
+    echo "  $plugin_jar"
+    exit 1
+  fi
+done
 
 # Give the normal user ownership of build artifacts produced by root/Docker.
-sudo chown -R "$(id -u):$(id -g)" "$ROOT/build"
+sudo chown -R "$(id -u):$(id -g)" \
+  "$ROOT/build" "$ROOT/LifestealScoreboard/build"
 
 echo
 echo "3/7 Budowanie ServerPack.zip..."
@@ -112,7 +115,8 @@ while IFS= read -r deployed_plugin; do
   sudo cp -a "$deployed_plugin" "$BACKUP_DIR/plugins/"
 done < <(
   sudo find "$PLUGIN_DIR" -maxdepth 1 -type f \
-    \( -name 'LifestealCore.jar' -o -name 'LifestealCore-*.jar' \) -print
+    \( -name 'LifestealCore.jar' -o -name 'LifestealCore-*.jar' \
+       -o -name 'LifestealScoreboard.jar' -o -name 'LifestealScoreboard-*.jar' \) -print
 )
 if ! sudo find "$BACKUP_DIR/plugins" -mindepth 1 -print -quit | grep -q .; then
   sudo rmdir "$BACKUP_DIR/plugins"
@@ -127,18 +131,23 @@ fi
 sudo chown -R "$(id -u):$(id -g)" "$BACKUP_DIR"
 
 echo
-echo "5/7 Deploy pluginu i resource packa..."
+echo "5/7 Deploy pluginow i resource packa..."
 
 # Atomic JAR replacement. This is safer even if the Minecraft process is still
 # running because the old open file remains available until restart.
 sudo install -o pterodactyl -g pterodactyl -m 0644 \
-  "$PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${PLUGIN_TARGET_NAME}.new"
-sudo mv -f "$PLUGIN_DIR/.${PLUGIN_TARGET_NAME}.new" \
-  "$PLUGIN_DIR/$PLUGIN_TARGET_NAME"
+  "$CORE_PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${CORE_PLUGIN_TARGET_NAME}.new"
+sudo install -o pterodactyl -g pterodactyl -m 0644 \
+  "$SCOREBOARD_PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${SCOREBOARD_PLUGIN_TARGET_NAME}.new"
+sudo mv -f "$PLUGIN_DIR/.${CORE_PLUGIN_TARGET_NAME}.new" \
+  "$PLUGIN_DIR/$CORE_PLUGIN_TARGET_NAME"
+sudo mv -f "$PLUGIN_DIR/.${SCOREBOARD_PLUGIN_TARGET_NAME}.new" \
+  "$PLUGIN_DIR/$SCOREBOARD_PLUGIN_TARGET_NAME"
 
-# v0.1 used versioned target names. The stable LifestealCore.jar is now in place,
-# so remove only those legacy copies to prevent Paper loading the same plugin twice.
+# Stable target names are now in place, so remove only versioned legacy copies to
+# prevent Paper loading the same plugin more than once after a version upgrade.
 sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealCore-*.jar' -delete
+sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealScoreboard-*.jar' -delete
 
 WEB_DIR="$(dirname "$WEB_PACK")"
 sudo mkdir -p "$WEB_DIR"
@@ -225,7 +234,8 @@ echo
 echo "======================================"
 echo " DEPLOY SUCCESSFUL"
 echo "======================================"
-echo "Plugin:       $PLUGIN_DIR/$PLUGIN_TARGET_NAME"
+echo "Core plugin:  $PLUGIN_DIR/$CORE_PLUGIN_TARGET_NAME"
+echo "Scoreboard:   $PLUGIN_DIR/$SCOREBOARD_PLUGIN_TARGET_NAME"
 echo "ServerPack:   $WEB_PACK"
 echo "Pack URL:     $PACK_URL"
 echo "Pack SHA-1:   $PACK_SHA1"

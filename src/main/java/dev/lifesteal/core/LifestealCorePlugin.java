@@ -1,5 +1,6 @@
 package dev.lifesteal.core;
 
+import dev.lifesteal.core.api.LifestealCoreApi;
 import dev.lifesteal.core.command.HeartsCommand;
 import dev.lifesteal.core.command.LifestealAdminCommand;
 import dev.lifesteal.core.command.ReviveCommand;
@@ -22,13 +23,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.UUID;
 
-public final class LifestealCorePlugin extends JavaPlugin {
+public final class LifestealCorePlugin extends JavaPlugin implements LifestealCoreApi {
 
     private PlayerHeartRepository repository;
     private HeartService heartService;
     private EliminationService eliminationService;
     private HeartRecipeFactory recipeFactory;
+
+    @Override
+    public int getHearts(UUID playerId) {
+        if (heartService == null) {
+            throw new IllegalStateException("LifestealCore is not enabled");
+        }
+        return heartService.getHearts(playerId);
+    }
 
     @Override
     public void onEnable() {

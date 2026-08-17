@@ -1,0 +1,21 @@
+enabled: true
+
+update:
+  # Values from 10 to 1200 ticks are accepted. Invalid values fall back to 20.
+  interval-ticks: 20
+
+scoreboard:
+  title: "<gradient:#ff3b3b:#ff8c42><bold>LIFESTEAL SMP</bold></gradient>"
+
+  # Minecraft sidebars support up to 15 lines. Blank and duplicate lines are supported.
+  lines:
+    - ""
+    - "<red>❤</red> Hearts: <white>%lifesteal_hearts%</white>"
+    - "<green>$</green> Money: <white>%lifesteal_money%</white>"
+    - "<aqua>✦</aqua> Souls: <white>%lifesteal_souls%</white>"
+    - ""
+    - "<yellow>⚔</yellow> Kills: <white>%lifesteal_kills%</white>"
+    - "<gray>☠</gray> Deaths: <white>%lifesteal_deaths%</white>"
+    - ""
+    - "<green>Online:</green> <white>%server_online%/%server_max%</white>"
+    - "<gray>play.lifesteal.pl</gray>"

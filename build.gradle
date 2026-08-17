@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'dev.lifesteal'
-version = '0.2.0'
+version = '0.2.1'
 
 java {
     toolchain {
@@ -57,7 +57,7 @@ shadowJar {
 }
 
 // Keep the unshaded artifact separate. The production plugin is always the
-// classifier-less ShadowJar at build/libs/LifestealCore-0.2.0.jar.
+// classifier-less ShadowJar at build/libs/LifestealCore-0.2.1.jar.
 jar {
     archiveClassifier.set('plain')
 }
@@ -65,6 +65,11 @@ jar {
 // Make the plain `build` task produce the shaded (runnable) jar.
 tasks.build {
     dependsOn tasks.shadowJar
+    dependsOn ':LifestealScoreboard:build'
+}
+
+tasks.clean {
+    dependsOn ':LifestealScoreboard:clean'
 }
 
 test {

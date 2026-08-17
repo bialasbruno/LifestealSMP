@@ -10,13 +10,13 @@ czasowe eliminacje i sezonowe odrodzenia, tworzy przedmioty `Broken Heart`,
 | Pole | Wartość |
 | --- | --- |
 | Nazwa pluginu | `LifestealCore` |
-| Wersja | `0.2.0` |
+| Wersja | `0.2.1` |
 | Platforma | Paper `26.2`, build `112` |
 | Java | `25` |
 | Klasa główna | `dev.lifesteal.core.LifestealCorePlugin` |
 | Baza danych | SQLite |
 | Plik danych | `plugins/LifestealCore/data.db` |
-| Finalny JAR | `build/libs/LifestealCore-0.2.0.jar` |
+| Finalny JAR | `build/libs/LifestealCore-0.2.1.jar` |
 
 Plugin nie wymaga zewnętrznego serwera bazy danych. Sterownik SQLite znajduje
 się wewnątrz finalnego JAR-a. Paper API jest dostarczane przez serwer i nie jest
@@ -137,7 +137,7 @@ walidacji.
 | `/lifesteal giverevivetotem <player>` | `lifesteal.admin` | admin/console | Daje jeden `Revive Totem` do administracji lub testów. |
 | `/revive <player>` | `lifesteal.revive` | gracz z totemem | Przywraca aktywnie wyeliminowanego gracza z konfigurowaną liczbą serc. |
 
-W wersji `0.2.0` wszystkie komendy administracyjne wymagają, aby wskazany gracz
+W wersji `0.2.1` wszystkie komendy administracyjne wymagają, aby wskazany gracz
 był online. Komenda `/hearts` jest przeznaczona wyłącznie dla gracza. Komenda
 `/lifesteal` podpowiada subkomendy oraz nazwy graczy online. `/revive` podpowiada
 nazwy graczy z aktywną eliminacją.
@@ -266,7 +266,7 @@ wpisy resource packa w `server.properties`.
 
 1. Zbuduj projekt poleceniem `./gradlew clean build` na Javie 25 albo użyj
    `./build-vps.sh` na hoście z Dockerem.
-2. Skopiuj `build/libs/LifestealCore-0.2.0.jar` do katalogu `plugins/` serwera
+2. Skopiuj `build/libs/LifestealCore-0.2.1.jar` do katalogu `plugins/` serwera
    Paper jako `LifestealCore.jar`.
 3. Uruchom serwer, aby wygenerować `config.yml` i `data.db`.
 4. Skonfiguruj oraz opublikuj ServerPack.
@@ -291,8 +291,8 @@ Na VPS-ie:
 
 Pełny build kompiluje kod, uruchamia testy JUnit i tworzy dwa artefakty:
 
-- `LifestealCore-0.2.0.jar` — finalny JAR z dołączonym SQLite;
-- `LifestealCore-0.2.0-plain.jar` — JAR bez zależności, nieprzeznaczony do
+- `LifestealCore-0.2.1.jar` — finalny JAR z dołączonym SQLite;
+- `LifestealCore-0.2.1-plain.jar` — JAR bez zależności, nieprzeznaczony do
   instalacji na serwerze.
 
 Dodatkową kontrolę struktury źródeł można uruchomić przez:
@@ -306,6 +306,7 @@ Dodatkową kontrolę struktury źródeł można uruchomić przez:
 | Pakiet | Odpowiedzialność |
 | --- | --- |
 | `dev.lifesteal.core` | Cykl życia pluginu i rejestracja komponentów. |
+| `dev.lifesteal.core.api` | Publiczny, tylko do odczytu kontrakt serc dla innych pluginów. |
 | `dev.lifesteal.core.command` | Komendy gracza i administratora. |
 | `dev.lifesteal.core.config` | Walidowany, niemutowalny widok konfiguracji. |
 | `dev.lifesteal.core.data` | Repozytorium danych graczy i implementacja SQLite. |
@@ -313,7 +314,14 @@ Dodatkową kontrolę struktury źródeł można uruchomić przez:
 | `dev.lifesteal.core.heart` | Zasady serc, przedmioty, receptura i serwis domenowy. |
 | `dev.lifesteal.core.listener` | Obsługa zdarzeń Paper. |
 
-## Zakres wersji 0.2.0
+## Publiczne API
+
+`LifestealCorePlugin` implementuje `LifestealCoreApi`. Metoda
+`getHearts(UUID)` zwraca aktualny limit zdrowia gracza w sercach, a nie w raw HP.
+API korzysta z tej samej pamięci podręcznej co mechanika gameplayowa i nie wykonuje
+osobnych zapytań do SQLite. `LifestealScoreboard` używa wyłącznie tego kontraktu.
+
+## Zakres wersji 0.2.1
 
 Plugin zawiera czasową eliminację przy jednym sercu oraz wcześniejszy powrót
 przez rzadki Revive Totem. Celowo nie zawiera jeszcze ekonomii, klanów, bounty,

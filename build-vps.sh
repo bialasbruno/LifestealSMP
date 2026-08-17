@@ -8,20 +8,23 @@ fi
 
 ./verify-source.sh
 
-echo "Building LifestealCore with the official Gradle JDK 25 image..."
+echo "Building LifestealCore and LifestealScoreboard with the official Gradle JDK 25 image..."
 docker run --rm \
   -v "$PWD":/workspace \
   -w /workspace \
   gradle:jdk25-noble \
   gradle --no-daemon clean build
 
-JAR="build/libs/LifestealCore-0.2.0.jar"
-if [[ ! -f "$JAR" ]]; then
-  echo "Build finished, but expected jar was not found at $JAR" >&2
-  echo "Contents of build/libs:" >&2
-  ls -la build/libs >&2 || true
-  exit 2
-fi
+CORE_JAR="build/libs/LifestealCore-0.2.1.jar"
+SCOREBOARD_JAR="LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar"
+
+for jar in "$CORE_JAR" "$SCOREBOARD_JAR"; do
+  if [[ ! -f "$jar" ]]; then
+    echo "Build finished, but expected jar was not found at $jar" >&2
+    exit 2
+  fi
+done
 
 echo
-echo "SUCCESS: $JAR"
+echo "SUCCESS: $CORE_JAR"
+echo "SUCCESS: $SCOREBOARD_JAR"

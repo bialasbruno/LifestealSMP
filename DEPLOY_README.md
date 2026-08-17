@@ -2,13 +2,14 @@
 
 Ten projekt zawiera jednocześnie:
 - LifestealCore (plugin Paper),
+- LifestealScoreboard (plugin Paper),
 - `ServerPack/` (źródła resource packa),
 - `deploy.sh` (build + testy + deploy),
 - `update.sh` (opcjonalny `git pull` + deploy).
 
 ## Normalna aktualizacja
 
-Po zmianie kodu pluginu lub plików w `ServerPack/`:
+Po zmianie kodu pluginów lub plików w `ServerPack/`:
 
 ```bash
 cd ~/LifestealCore
@@ -23,7 +24,7 @@ Skrypt automatycznie:
 2. uruchamia testy,
 3. tworzy `build/ServerPack.zip`,
 4. robi backup poprzedniego deploymentu,
-5. atomowo podmienia plugin JAR w Pterodactylu,
+5. atomowo podmienia oba pluginy JAR w Pterodactylu,
 6. publikuje ServerPack przez Nginx,
 7. liczy SHA-1,
 8. aktualizuje `server.properties`,
@@ -61,8 +62,9 @@ deploy.env
 Obecnie skonfigurowane są:
 - Pterodactyl volume: `89c0f685-a4cd-4c68-b2cc-dc1338f04837`
 - pack URL: `http://159.195.42.157/resourcepacks/ServerPack.zip`
-- build JAR: `LifestealCore-0.2.0.jar`
-- docelowy JAR Paper: `LifestealCore.jar`
+- build Core JAR: `LifestealCore-0.2.1.jar`
+- build Scoreboard JAR: `LifestealScoreboard-0.1.0.jar`
+- docelowe JAR-y Paper: `LifestealCore.jar` i `LifestealScoreboard.jar`
 
 ## Backupi
 
@@ -72,4 +74,4 @@ Każdy deploy zapisuje poprzednią wersję w:
 ~/.lifesteal-deploy-backups/
 ```
 
-Dzięki temu poprzedni JAR, `server.properties` i ServerPack można łatwo odzyskać.
+Dzięki temu poprzednie JAR-y, `server.properties` i ServerPack można łatwo odzyskać.

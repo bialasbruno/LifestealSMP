@@ -11,6 +11,11 @@ if grep -n "relocate 'org.sqlite'" build.gradle; then
 fi
 grep -q "junit-platform-launcher" build.gradle
 grep -q "paper-api:26.2.build.112-stable" build.gradle
+grep -q "include('LifestealScoreboard')" settings.gradle
+grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
+grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
+grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml
+grep -q "implements LifestealCoreApi" src/main/java/dev/lifesteal/core/LifestealCorePlugin.java
 grep -q 'setItemModel(BROKEN_HEART_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
 grep -q 'setItemModel(HEART_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
 grep -q 'setItemModel(REVIVE_TOTEM_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
@@ -35,11 +40,11 @@ while IFS= read -r descriptor; do
     exit 1
   fi
 done < <(
-  find . \( -path './.git' -o -path './build' -o -path './.gradle' \) -prune -o \
+  find . -type d \( -name '.git' -o -name 'build' -o -name '.gradle' \) -prune -o \
     -type f \( -name 'plugin.yml' -o -name 'paper-plugin.yml' \) -print
 )
 
-if find . \( -path './.git' -o -path './build' -o -path './.gradle' \) -prune -o \
+if find . -type d \( -name '.git' -o -name 'build' -o -name '.gradle' \) -prune -o \
     -type f \( -name '*.jar' -o -name '*.zip' -o -name '*.db' \) -print \
     | grep -v '^./gradle/wrapper/gradle-wrapper.jar$' \
     | grep -q .; then

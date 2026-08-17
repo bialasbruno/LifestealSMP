@@ -1,8 +1,8 @@
 # LifestealSMP
 
 Główne repozytorium projektu serwera Minecraft Lifesteal SMP. Zawiera plugin
-`LifestealCore`, źródła ServerPacka, testy oraz skrypty służące do budowania i
-wdrażania projektu na VPS-ie z Pterodactylem.
+`LifestealCore`, `LifestealScoreboard`, źródła ServerPacka, testy oraz skrypty
+służące do budowania i wdrażania projektu na VPS-ie z Pterodactylem.
 
 Projekt jest aktywnie rozwijany. Obecny zakres `v0.2` obejmuje rdzeń Lifesteal,
 czasowe eliminacje oraz rzadki, sezonowy system revive. Ekonomia, klany, bounty
@@ -15,7 +15,8 @@ uprawnień, danych, instalacji i budowania.
 
 | Plugin | Wersja | Opis | Dokumentacja |
 | --- | --- | --- | --- |
-| `LifestealCore` | `0.2.0` | Serca, śmierci PvP, eliminacje, Revive Totem, crafting i SQLite. | [README pluginu](docs/plugins/LifestealCore/README.md) |
+| `LifestealCore` | `0.2.1` | Serca, śmierci PvP, eliminacje, Revive Totem, crafting, SQLite i publiczne API serc. | [README pluginu](docs/plugins/LifestealCore/README.md) |
+| `LifestealScoreboard` | `0.1.0` | Flicker-free sidebar, placeholdery, statystyki oraz integracja z Core i PlaceholderAPI. | [README pluginu](docs/plugins/LifestealScoreboard/README.md) |
 
 ## Wymagania
 
@@ -85,10 +86,11 @@ Na VPS-ie z Dockerem:
 ./build-vps.sh
 ```
 
-Obie ścieżki uruchamiają testy JUnit. Finalny, zacieniony plugin powstaje jako:
+Obie ścieżki uruchamiają testy JUnit obu pluginów. Finalne JAR-y powstają jako:
 
 ```text
-build/libs/LifestealCore-0.2.0.jar
+build/libs/LifestealCore-0.2.1.jar
+LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
 ```
 
 Pakiet `org.sqlite` celowo nie jest relokowany. Relokacja psuje powiązanie z
@@ -127,7 +129,8 @@ tego Docker, Pterodactyl lub katalog publikowany przez Nginx.
 
 ```text
 LifestealSMP/
-├── src/                 # kod pluginu i testy
+├── src/                 # kod i testy LifestealCore
+├── LifestealScoreboard/ # osobny subprojekt scoreboardu
 ├── gradle/              # Gradle Wrapper
 ├── ServerPack/          # źródła resource packa
 ├── docs/plugins/        # osobny README dla każdego pluginu
