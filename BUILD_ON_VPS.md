@@ -25,7 +25,8 @@ produkcyjnego Shadow JAR-a.
 
 Analogicznie SoulShop korzysta z API Souls i SoulItems, więc jego pojedynczy
 build może skompilować klasy obu modułów jako zależności, ale nie uruchamia ich
-testów ani pełnych buildów.
+testów ani pełnych buildów. LifestealSpawn korzysta z konfiguracji strefy AFK w
+Souls, więc jego pojedynczy build również może skompilować klasy Souls.
 
 Pierwsze uruchomienie pobiera oficjalny obraz `gradle:jdk25-noble` oraz zależności Maven.
 

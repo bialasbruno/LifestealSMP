@@ -28,6 +28,7 @@ public final class VoidRescueListener implements Listener {
     private final Plugin plugin;
     private final MessageService messages;
     private final Supplier<SpawnSettings> settingsSupplier;
+    private final AfkDestinationResolver afkDestinationResolver;
     private final Set<UUID> rescuingPlayers = new HashSet<>();
     private long lastDestinationWarningNanos;
 
@@ -38,6 +39,7 @@ public final class VoidRescueListener implements Listener {
         this.plugin = plugin;
         this.messages = messages;
         this.settingsSupplier = settingsSupplier;
+        this.afkDestinationResolver = new AfkDestinationResolver(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -46,9 +48,14 @@ public final class VoidRescueListener implements Listener {
         Location destination = event.getTo();
         World world = destination.getWorld();
         SpawnSettings settings = settingsSupplier.get();
+        Location afkDestination = resolveAfkDestination(player, settings, destination);
+        if (afkDestination != null) {
+            rescue(player, afkDestination, settings.afkRescuedMessage(), settings);
+            return;
+        }
         if (VoidRescueRules.shouldRescue(
                 settings, world.getName(), world.getMinHeight(), destination.getY())) {
-            rescue(player, settings);
+            rescueToSpawn(player, settings);
         }
     }
 
@@ -60,23 +67,35 @@ public final class VoidRescueListener implements Listener {
         }
 
         SpawnSettings settings = settingsSupplier.get();
+        Location afkDestination = resolveAfkDestination(player, settings, player.getLocation());
+        if (afkDestination != null
+                && rescue(player, afkDestination, settings.afkRescuedMessage(), settings)) {
+            event.setCancelled(true);
+            return;
+        }
         if (settings.voidRescueEnabled()
                 && settings.isEnabledInWorld(player.getWorld().getName())
-                && rescue(player, settings)) {
+                && rescueToSpawn(player, settings)) {
             event.setCancelled(true);
         }
     }
 
-    private boolean rescue(Player player, SpawnSettings settings) {
+    private boolean rescueToSpawn(Player player, SpawnSettings settings) {
+        Location destination = resolveDestination(settings);
+        if (destination == null) {
+            return false;
+        }
+        return rescue(player, destination, settings.rescuedMessage(), settings);
+    }
+
+    private boolean rescue(
+            Player player,
+            Location destination,
+            String message,
+            SpawnSettings settings) {
         UUID playerId = player.getUniqueId();
         if (!rescuingPlayers.add(playerId)) {
             return true;
-        }
-
-        Location destination = resolveDestination(settings);
-        if (destination == null) {
-            rescuingPlayers.remove(playerId);
-            return false;
         }
 
         destination.getChunk().load();
@@ -88,11 +107,35 @@ public final class VoidRescueListener implements Listener {
 
         player.setVelocity(new Vector(0D, 0D, 0D));
         player.setFallDistance(0F);
-        messages.sendActionBar(player, settings.rescuedMessage());
+        messages.sendActionBar(player, message);
         playSound(player, settings);
         plugin.getServer().getScheduler().runTask(
                 plugin, () -> rescuingPlayers.remove(playerId));
         return true;
+    }
+
+    private Location resolveAfkDestination(
+            Player player, SpawnSettings settings, Location currentLocation) {
+        if (!settings.afkRescueEnabled()
+                || currentLocation.getY() >= settings.afkRescueTriggerY()) {
+            return null;
+        }
+
+        Location destination = afkDestinationResolver.resolve(player.getYaw());
+        if (destination == null
+                || !VoidRescueRules.shouldRescueAfk(
+                        settings,
+                        currentLocation.getWorld().getName(),
+                        destination.getWorld().getName(),
+                        currentLocation.getY())) {
+            return null;
+        }
+        if (destination.getY() < settings.afkRescueTriggerY()) {
+            warnDestination("The /afk destination is below the AFK rescue threshold;"
+                    + " teleport cancelled to avoid a loop.");
+            return null;
+        }
+        return destination;
     }
 
     private Location resolveDestination(SpawnSettings settings) {

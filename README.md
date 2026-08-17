@@ -89,8 +89,9 @@ Build w Dockerze na VPS:
 
 Brak argumentu oznacza `all`. Tryb `scoreboard` może skompilować klasy Core,
 ponieważ Scoreboard korzysta z jego API, ale nie uruchamia pełnego buildu ani
-testów Core. Tak samo tryb `soulshop` może skompilować klasy Souls i SoulItems
-jako zależności, ale nie uruchamia testów tych modułów.
+testów Core. Tak samo tryb `soulshop` może skompilować klasy Souls i SoulItems,
+a tryb `spawn` klasy Souls jako zależności, ale nie uruchamia testów tych
+modułów.
 
 Finalne JAR-y powstają w katalogach modułów:
 

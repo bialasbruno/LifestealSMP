@@ -14,4 +14,14 @@ public final class VoidRescueRules {
         double triggerY = minimumHeight - settings.triggerOffsetBelowMinHeight();
         return playerY <= triggerY;
     }
+
+    public static boolean shouldRescueAfk(
+            SpawnSettings settings,
+            String playerWorldName,
+            String afkWorldName,
+            double playerY) {
+        return settings.afkRescueEnabled()
+                && playerY < settings.afkRescueTriggerY()
+                && playerWorldName.equalsIgnoreCase(afkWorldName);
+    }
 }

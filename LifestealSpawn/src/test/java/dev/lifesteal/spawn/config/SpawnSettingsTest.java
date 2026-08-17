@@ -23,6 +23,8 @@ class SpawnSettingsTest {
         assertEquals(5, settings.triggerOffsetBelowMinHeight());
         assertEquals("spawn", settings.destinationWorldName());
         assertTrue(settings.useWorldSpawn());
+        assertTrue(settings.afkRescueEnabled());
+        assertEquals(3D, settings.afkRescueTriggerY());
     }
 
     @Test
@@ -45,6 +47,7 @@ class SpawnSettingsTest {
         config.set("void-rescue.trigger-offset-below-min-height", -1);
         config.set("void-rescue.destination.world", "   ");
         config.set("void-rescue.destination.y", Double.NaN);
+        config.set("afk-rescue.trigger-y", 3_000D);
         config.set("sound.pitch", 3D);
 
         SpawnSettings settings = SpawnSettings.load(config, LOGGER);
@@ -53,6 +56,7 @@ class SpawnSettingsTest {
         assertEquals(5, settings.triggerOffsetBelowMinHeight());
         assertEquals("spawn", settings.destinationWorldName());
         assertEquals(100D, settings.destinationY());
+        assertEquals(3D, settings.afkRescueTriggerY());
         assertEquals(1.2F, settings.soundPitch());
     }
 }

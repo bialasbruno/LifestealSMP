@@ -20,7 +20,10 @@ public record SpawnSettings(
         double destinationZ,
         float destinationYaw,
         float destinationPitch,
+        boolean afkRescueEnabled,
+        double afkRescueTriggerY,
         String rescuedMessage,
+        String afkRescuedMessage,
         String noPermissionMessage,
         String usageMessage,
         String reloadedMessage,
@@ -32,6 +35,7 @@ public record SpawnSettings(
         enabledWorldNames = Set.copyOf(enabledWorldNames);
         Objects.requireNonNull(destinationWorldName, "destinationWorldName");
         Objects.requireNonNull(rescuedMessage, "rescuedMessage");
+        Objects.requireNonNull(afkRescuedMessage, "afkRescuedMessage");
         Objects.requireNonNull(noPermissionMessage, "noPermissionMessage");
         Objects.requireNonNull(usageMessage, "usageMessage");
         Objects.requireNonNull(reloadedMessage, "reloadedMessage");
@@ -60,9 +64,14 @@ public record SpawnSettings(
                         config, logger, "void-rescue.destination.yaw", -360D, 360D, 0D),
                 (float) readDouble(
                         config, logger, "void-rescue.destination.pitch", -90D, 90D, 0D),
+                config.getBoolean("afk-rescue.enabled", true),
+                readDouble(config, logger, "afk-rescue.trigger-y", -2_048D, 2_048D, 3D),
                 config.getString(
                         "messages.rescued",
                         "<aqua>You fell into the void and returned to spawn.</aqua>"),
+                config.getString(
+                        "messages.afk-rescued",
+                        "<aqua>You fell from the AFK zone and returned to /afk.</aqua>"),
                 config.getString(
                         "messages.no-permission",
                         "<red>You do not have permission to use this command.</red>"),

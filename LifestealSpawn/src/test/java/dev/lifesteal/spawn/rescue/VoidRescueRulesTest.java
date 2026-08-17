@@ -37,4 +37,22 @@ class VoidRescueRulesTest {
 
         assertFalse(VoidRescueRules.shouldRescue(settings, "spawn", -64, -100D));
     }
+
+    @Test
+    void afkRescueTriggersOnlyBelowYThreeInTheConfiguredAfkWorld() {
+        SpawnSettings settings = SpawnSettings.load(new YamlConfiguration(), LOGGER);
+
+        assertFalse(VoidRescueRules.shouldRescueAfk(settings, "afk", "afk", 3D));
+        assertTrue(VoidRescueRules.shouldRescueAfk(settings, "AFK", "afk", 2.999D));
+        assertFalse(VoidRescueRules.shouldRescueAfk(settings, "world", "afk", -10D));
+    }
+
+    @Test
+    void disabledAfkRescueNeverTriggers() {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("afk-rescue.enabled", false);
+        SpawnSettings settings = SpawnSettings.load(config, LOGGER);
+
+        assertFalse(VoidRescueRules.shouldRescueAfk(settings, "afk", "afk", -10D));
+    }
 }

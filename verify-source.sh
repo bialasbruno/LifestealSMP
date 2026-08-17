@@ -35,6 +35,8 @@ grep -q "LifestealSoulsApi" LifestealSoulShop/src/main/java/dev/lifesteal/soulsh
 grep -q "paper-api:26.2.build.112-stable" LifestealSpawn/build.gradle
 grep -q "junit-platform-launcher" LifestealSpawn/build.gradle
 grep -q "DamageCause.VOID" LifestealSpawn/src/main/java/dev/lifesteal/spawn/rescue/VoidRescueListener.java
+grep -q "afkRescueTriggerY" LifestealSpawn/src/main/java/dev/lifesteal/spawn/rescue/VoidRescueListener.java
+grep -q "LifestealSouls" LifestealSpawn/src/main/resources/plugin.yml
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
 grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml

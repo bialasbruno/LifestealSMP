@@ -20,8 +20,16 @@ void-rescue:
     yaw: 0.0
     pitch: 0.0
 
+afk-rescue:
+  enabled: true
+
+  # In the world configured by LifestealSouls /afk, rescue starts below this Y.
+  # The destination is always the current center used by the /afk command.
+  trigger-y: 3.0
+
 messages:
   rescued: "<aqua>You fell into the void and returned to spawn.</aqua>"
+  afk-rescued: "<aqua>You fell from the AFK zone and returned to /afk.</aqua>"
   no-permission: "<red>You do not have permission to use this command.</red>"
   usage: "<red>Usage: /lifestealspawn reload</red>"
   reloaded: "<green>LifestealSpawn configuration reloaded.</green>"

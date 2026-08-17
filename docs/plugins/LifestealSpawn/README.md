@@ -4,6 +4,9 @@
 światem spawn. Pierwsza wersja ratuje gracza spadającego do voida i teleportuje
 go z powrotem na spawn.
 
+Plugin chroni również świat skonfigurowany dla `/afk`. Gdy gracz spadnie w nim
+poniżej `Y=3`, zostaje przeniesiony z powrotem do aktualnego środka strefy AFK.
+
 Mechanika jest osobnym pluginem, ponieważ nie należy do systemu serc, waluty,
 sklepu ani scoreboardu.
 
@@ -15,6 +18,7 @@ sklepu ani scoreboardu.
 | Java | `25` |
 | Wersja pluginu | `0.1.0` |
 | Multiverse-Core | obsługiwany, ale niewymagany jako zależność |
+| Wymagana zależność | LifestealSouls `0.1.0` |
 | Finalny JAR | `LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar` |
 
 Plugin korzysta ze światów już załadowanych przez Paper. Dzięki temu świat
@@ -40,6 +44,26 @@ LifestealSpawn nie anuluje obrażenia od voida. Plugin nie wykona również
 teleportacji, jeżeli świat docelowy nie jest załadowany albo jego spawn znajduje
 się poniżej progu ratunkowego. Zapobiega to nieskończonej pętli teleportów, a
 problem jest zapisywany w logu najwyżej raz na 30 sekund.
+
+## Ratowanie w świecie AFK
+
+LifestealSpawn korzysta z tej samej konfiguracji `afk-zone` i tej samej metody
+wyznaczania środka co komenda `/afk`. Nie trzeba wpisywać świata ani koordynatów
+po raz drugi. Po zmianie granic strefy przez `/soulsadmin reload` kolejne
+teleportacje ratunkowe automatycznie użyją nowego środka.
+
+Ratunek uruchamia się dopiero poniżej progu, więc przy domyślnym `trigger-y: 3.0`
+pozycja dokładnie `Y=3` jest bezpieczna, a `Y=2.999` uruchamia teleport. Prędkość
+i fall distance są zerowane, a gracz zachowuje swój kierunek patrzenia.
+
+```yaml
+afk-rescue:
+  enabled: true
+  trigger-y: 3.0
+```
+
+Jeżeli strefa AFK jest wyłączona, jej świat nie jest załadowany albo środek
+znajduje się poniżej progu ratunkowego, teleport nie zostanie wykonany.
 
 ## Konfiguracja Multiverse
 
@@ -91,7 +115,7 @@ Na VPS-ie:
 ./update.sh spawn
 ```
 
-Po wdrożeniu `LifestealSpawn.jar` wymagany jest pełny restart serwera. Jeżeli
-świat Multiverse nie nazywa się `spawn`, po pierwszym uruchomieniu zmień
-`plugins/LifestealSpawn/config.yml`, wykonaj `/lifestealspawn reload` i dopiero
-wtedy przetestuj upadek do voida.
+Po wdrożeniu `LifestealSpawn.jar` razem z `LifestealSouls.jar` wymagany jest
+pełny restart serwera. Jeżeli świat Multiverse nie nazywa się `spawn`, po
+pierwszym uruchomieniu zmień `plugins/LifestealSpawn/config.yml`, wykonaj
+`/lifestealspawn reload` i dopiero wtedy przetestuj upadek do voida.

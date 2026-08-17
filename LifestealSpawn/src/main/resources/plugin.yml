@@ -4,6 +4,8 @@ main: dev.lifesteal.spawn.LifestealSpawnPlugin
 api-version: '26.2'
 description: Spawn-world safety mechanics for LifestealSMP.
 author: Bruno
+depend:
+  - LifestealSouls
 
 commands:
   lifestealspawn:
