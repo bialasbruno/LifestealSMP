@@ -14,6 +14,7 @@ import dev.lifesteal.souls.integration.ScoreboardCurrencyIntegration;
 import dev.lifesteal.souls.menu.SoulLeaderboardMenu;
 import dev.lifesteal.souls.listener.KillRewardListener;
 import dev.lifesteal.souls.listener.AfkPvpProtectionListener;
+import dev.lifesteal.souls.listener.AfkPortalRepelListener;
 import dev.lifesteal.souls.listener.PlayerActivityListener;
 import dev.lifesteal.souls.listener.PlayerLifecycleListener;
 import dev.lifesteal.souls.message.MessageService;
@@ -159,6 +160,8 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
         pluginManager.registerEvents(leaderboardMenu, this);
         pluginManager.registerEvents(
                 new AfkPvpProtectionListener(messages, this::settings), this);
+        pluginManager.registerEvents(
+                new AfkPortalRepelListener(messages, this::settings), this);
         pluginManager.registerEvents(
                 new PlayerLifecycleListener(soulService, playtimeTracker), this);
         pluginManager.registerEvents(new PlayerActivityListener(playtimeTracker), this);

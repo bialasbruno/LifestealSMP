@@ -79,6 +79,12 @@ znajduje się w strefie. Ochrona obejmuje bezpośrednie uderzenia, pociski gracz
 sprawdzaniu obu stron nie można również stać wewnątrz strefy i atakować gracza
 znajdującego się za jej granicą.
 
+Portal Netheru znajdujący się w strefie AFK nie może przenieść gracza do innego
+świata. Po wejściu plugin rozpoznaje płaszczyznę portalu, odpycha gracza na
+stronę, z której przyszedł, lekko podrzuca go do góry i pokazuje komunikat nad
+hotbarem. Zabezpieczenie anuluje również sam event teleportacji, więc działa
+także wtedy, gdy gracz próbuje stale iść w stronę portalu.
+
 Opuszczenie strefy, wyjście z serwera lub restart zeruje nieukończone
 odliczanie. Pobyt w strefie AFK nie nalicza jednocześnie aktywnego playtime.
 Powiadomienia o saldzie, zabójstwie lub wypłacie mają na action barze priorytet
@@ -150,6 +156,10 @@ player-kill:
 afk-zone:
   enabled: false
   disable-pvp: true
+  nether-portal-repel:
+    enabled: true
+    horizontal-strength: 1.15
+    vertical-strength: 0.35
   reward-amount: 1
   reward-interval-seconds: 120
   world: ""
@@ -181,6 +191,10 @@ wylicza środek cuboidu. Ustaw `use-custom-location: true`, aby `x`, `y`, `z`,
 powinien znajdować się wewnątrz cuboidu, jeśli gracz ma od razu otrzymywać
 nagrody AFK i ochronę PvP. `LifestealSpawn` używa dokładnie tego samego punktu,
 gdy ratuje gracza po spadnięciu poniżej progu.
+
+`nether-portal-repel.horizontal-strength` określa siłę odepchnięcia od portalu,
+a `vertical-strength` lekkie wybicie do góry. Ustawienie `enabled: false`
+przywraca normalne działanie portali w strefie.
 
 Wiadomości obsługują MiniMessage oraz placeholdery `{balance}`, `{amount}` i
 `{victim}` zależnie od komunikatu. Licznik `afk-countdown` obsługuje dodatkowo

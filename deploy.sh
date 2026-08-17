@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 usage() {
-  echo "Usage: $0 [all|core|scoreboard|souls|soulitems|soulshop|spawn]"
+  echo "Usage: $0 [all|core|scoreboard|souls|soulitems|soulshop|spawn|homes]"
 }
 
 if [[ "$#" -gt 1 ]]; then
@@ -17,6 +17,7 @@ DEPLOY_SOULS=false
 DEPLOY_SOULITEMS=false
 DEPLOY_SOULSHOP=false
 DEPLOY_SPAWN=false
+DEPLOY_HOMES=false
 DEPLOY_PACK=false
 
 case "$TARGET" in
@@ -27,6 +28,7 @@ case "$TARGET" in
     DEPLOY_SOULITEMS=true
     DEPLOY_SOULSHOP=true
     DEPLOY_SPAWN=true
+    DEPLOY_HOMES=true
     DEPLOY_PACK=true
     ;;
   core)
@@ -48,6 +50,9 @@ case "$TARGET" in
     ;;
   spawn)
     DEPLOY_SPAWN=true
+    ;;
+  homes)
+    DEPLOY_HOMES=true
     ;;
   -h|--help)
     usage
@@ -139,6 +144,9 @@ fi
 if [[ "$DEPLOY_SPAWN" == true ]]; then
   EXPECTED_PLUGIN_JARS+=("$SPAWN_PLUGIN_BUILD_JAR")
 fi
+if [[ "$DEPLOY_HOMES" == true ]]; then
+  EXPECTED_PLUGIN_JARS+=("$HOMES_PLUGIN_BUILD_JAR")
+fi
 
 for plugin_jar in "${EXPECTED_PLUGIN_JARS[@]}"; do
   if [[ ! -f "$plugin_jar" ]]; then
@@ -157,7 +165,8 @@ for build_dir in \
   "$ROOT/LifestealSouls/build" \
   "$ROOT/LifestealSoulItems/build" \
   "$ROOT/LifestealSoulShop/build" \
-  "$ROOT/LifestealSpawn/build"; do
+  "$ROOT/LifestealSpawn/build" \
+  "$ROOT/LifestealHomes/build"; do
   if [[ -d "$build_dir" ]]; then
     BUILD_DIRS+=("$build_dir")
   fi
@@ -262,6 +271,14 @@ if [[ "$DEPLOY_SPAWN" == true ]]; then
       \( -name 'LifestealSpawn.jar' -o -name 'LifestealSpawn-*.jar' \) -print
   )
 fi
+if [[ "$DEPLOY_HOMES" == true ]]; then
+  while IFS= read -r deployed_plugin; do
+    sudo cp -a "$deployed_plugin" "$BACKUP_DIR/plugins/"
+  done < <(
+    sudo find "$PLUGIN_DIR" -maxdepth 1 -type f \
+      \( -name 'LifestealHomes.jar' -o -name 'LifestealHomes-*.jar' \) -print
+  )
+fi
 if ! sudo find "$BACKUP_DIR/plugins" -mindepth 1 -print -quit | grep -q .; then
   sudo rmdir "$BACKUP_DIR/plugins"
 fi
@@ -317,6 +334,12 @@ if [[ "$DEPLOY_SPAWN" == true ]]; then
   sudo mv -f "$PLUGIN_DIR/.${SPAWN_PLUGIN_TARGET_NAME}.new" \
     "$PLUGIN_DIR/$SPAWN_PLUGIN_TARGET_NAME"
 fi
+if [[ "$DEPLOY_HOMES" == true ]]; then
+  sudo install -o pterodactyl -g pterodactyl -m 0644 \
+    "$HOMES_PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${HOMES_PLUGIN_TARGET_NAME}.new"
+  sudo mv -f "$PLUGIN_DIR/.${HOMES_PLUGIN_TARGET_NAME}.new" \
+    "$PLUGIN_DIR/$HOMES_PLUGIN_TARGET_NAME"
+fi
 
 # Stable target names are now in place, so remove only versioned legacy copies to
 # prevent Paper loading the same plugin more than once after a version upgrade.
@@ -337,6 +360,9 @@ if [[ "$DEPLOY_SOULSHOP" == true ]]; then
 fi
 if [[ "$DEPLOY_SPAWN" == true ]]; then
   sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealSpawn-*.jar' -delete
+fi
+if [[ "$DEPLOY_HOMES" == true ]]; then
+  sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealHomes-*.jar' -delete
 fi
 
 if [[ "$DEPLOY_PACK" == true ]]; then
@@ -420,6 +446,10 @@ if [[ "$DEPLOY_SPAWN" == true ]] && ! sudo test -s "$PLUGIN_DIR/$SPAWN_PLUGIN_TA
   echo "ERROR: Brak wdrozonego pluginu Spawn." >&2
   exit 1
 fi
+if [[ "$DEPLOY_HOMES" == true ]] && ! sudo test -s "$PLUGIN_DIR/$HOMES_PLUGIN_TARGET_NAME"; then
+  echo "ERROR: Brak wdrozonego pluginu Homes." >&2
+  exit 1
+fi
 
 if [[ "$DEPLOY_PACK" == true ]]; then
   DEPLOYED_SHA1="$(sudo sha1sum "$WEB_PACK" | awk '{print $1}')"
@@ -475,6 +505,9 @@ if [[ "$DEPLOY_SOULSHOP" == true ]]; then
 fi
 if [[ "$DEPLOY_SPAWN" == true ]]; then
   echo "Spawn:        $PLUGIN_DIR/$SPAWN_PLUGIN_TARGET_NAME"
+fi
+if [[ "$DEPLOY_HOMES" == true ]]; then
+  echo "Homes:        $PLUGIN_DIR/$HOMES_PLUGIN_TARGET_NAME"
 fi
 if [[ "$DEPLOY_PACK" == true ]]; then
   echo "ServerPack:   $WEB_PACK"

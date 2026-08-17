@@ -1,0 +1,86 @@
+# Home limits are controlled by LuckPerms-compatible permission nodes:
+#   lifestealhomes.limit.3
+#   lifestealhomes.limit.5
+#   lifestealhomes.limit.10
+#   lifestealhomes.limit.unlimited
+# If a player has several limit permissions, the highest one wins.
+limits:
+  default: 1
+  maximum-permission-limit: 100
+
+homes:
+  # Allowed characters: letters, digits, underscore and dash.
+  maximum-name-length: 16
+
+teleport:
+  delay-seconds: 3
+  cancel-on-move: true
+  cancel-on-damage: true
+  movement-tolerance: 0.2
+
+menu:
+  title: "<gradient:#7dd3fc:#c084fc><bold>Your homes</bold></gradient>"
+  filler-material: "GRAY_STAINED_GLASS_PANE"
+  home-material: "ENDER_PEARL"
+  available-material: "LIME_STAINED_GLASS_PANE"
+  locked-material: "RED_STAINED_GLASS_PANE"
+
+  profile:
+    name: "<aqua><bold>{player}</bold></aqua>"
+    lore:
+      - "<gray>Homes:</gray> <white>{used}/{limit}</white>"
+      - ""
+      - "<dark_gray>More slots are unlocked by ranks.</dark_gray>"
+
+  home:
+    name: "<aqua><bold>{home}</bold></aqua>"
+    lore:
+      - "<gray>World:</gray> <white>{world}</white>"
+      - "<gray>Location:</gray> <white>{x}, {y}, {z}</white>"
+      - ""
+      - "<yellow>Left click</yellow> <gray>to teleport</gray>"
+      - "<red>Shift + right click</red> <gray>to delete</gray>"
+
+  available:
+    name: "<green>Available home slot</green>"
+    lore:
+      - "<gray>Use</gray> <white>/sethome [name]</white>"
+
+  locked:
+    name: "<red>Locked home slot</red>"
+    lore:
+      - "<gray>Unlock it with a higher rank.</gray>"
+
+  previous-page: "<yellow>Previous page</yellow>"
+  next-page: "<yellow>Next page</yellow>"
+  close: "<red>Close</red>"
+
+  confirm:
+    title: "<red><bold>Delete {home}?</bold></red>"
+    accept: "<red><bold>Delete home</bold></red>"
+    accept-lore:
+      - "<gray>This cannot be undone.</gray>"
+    cancel: "<green>Keep home</green>"
+
+messages:
+  player-only: "<red>This command can only be used by a player.</red>"
+  no-permission: "<red>You do not have permission to do that.</red>"
+  sethome-usage: "<red>Usage: /sethome <name></red>"
+  delhome-usage: "<red>Usage: /delhome <name></red>"
+  home-usage: "<red>Usage: /home [name]</red>"
+  homes-usage: "<red>Usage: /homes</red>"
+  admin-usage: "<red>Usage: /lifestealhomes reload</red>"
+  invalid-name: "<red>The name may contain only letters, digits, _ and - (maximum {maximum} characters).</red>"
+  limit-reached: "<red>You have reached your limit of {limit} homes.</red>"
+  home-created: "<green>Home <white>{home}</white> has been created.</green>"
+  home-updated: "<green>Home <white>{home}</white> has been moved here.</green>"
+  home-deleted: "<green>Home <white>{home}</white> has been deleted.</green>"
+  home-not-found: "<red>Home <white>{home}</white> does not exist.</red>"
+  world-unavailable: "<red>World <white>{world}</white> is not loaded.</red>"
+  teleport-countdown: "<gradient:#7dd3fc:#c084fc>Teleporting to {home} in <bold>{seconds}s</bold>...</gradient>"
+  teleport-cancelled-move: "<red>Teleport cancelled because you moved.</red>"
+  teleport-cancelled-damage: "<red>Teleport cancelled because you took damage.</red>"
+  teleport-failed: "<red>Teleport failed. Try again.</red>"
+  teleported: "<green>Teleported to <white>{home}</white>.</green>"
+  reloaded: "<green>LifestealHomes configuration reloaded.</green>"
+  reload-failed: "<red>Configuration is invalid. Check the server console.</red>"

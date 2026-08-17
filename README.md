@@ -17,6 +17,7 @@ LifestealSMP/
 ├── LifestealSoulItems/  # moduł Gradle customowych przedmiotów Souls
 ├── LifestealSoulShop/   # moduł Gradle sklepu za Souls
 ├── LifestealSpawn/      # moduł Gradle bezpieczeństwa świata spawn
+├── LifestealHomes/      # moduł Gradle domów graczy i GUI
 ├── ServerPack/          # źródła resource packa
 ├── docs/plugins/        # dokumentacja poszczególnych pluginów
 ├── gradle/              # Gradle Wrapper
@@ -44,6 +45,7 @@ poleceniem.
 | `LifestealSoulItems` | `0.1.0` | [README pluginu](docs/plugins/LifestealSoulItems/README.md) |
 | `LifestealSoulShop` | `0.1.0` | [README pluginu](docs/plugins/LifestealSoulShop/README.md) |
 | `LifestealSpawn` | `0.1.0` | [README pluginu](docs/plugins/LifestealSpawn/README.md) |
+| `LifestealHomes` | `0.1.0` | [README pluginu](docs/plugins/LifestealHomes/README.md) |
 
 ## Wymagania
 
@@ -72,6 +74,7 @@ Build pojedynczego modułu lokalnie:
 ./gradlew :LifestealSoulItems:clean :LifestealSoulItems:build
 ./gradlew :LifestealSoulShop:clean :LifestealSoulShop:build
 ./gradlew :LifestealSpawn:clean :LifestealSpawn:build
+./gradlew :LifestealHomes:clean :LifestealHomes:build
 ```
 
 Build w Dockerze na VPS:
@@ -85,6 +88,7 @@ Build w Dockerze na VPS:
 ./build-vps.sh soulitems
 ./build-vps.sh soulshop
 ./build-vps.sh spawn
+./build-vps.sh homes
 ```
 
 Brak argumentu oznacza `all`. Tryb `scoreboard` może skompilować klasy Core,
@@ -102,6 +106,7 @@ LifestealSouls/build/libs/LifestealSouls-0.1.0.jar
 LifestealSoulItems/build/libs/LifestealSoulItems-0.1.0.jar
 LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar
 LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar
+LifestealHomes/build/libs/LifestealHomes-0.1.0.jar
 ```
 
 Wygenerowane JAR-y, ZIP-y, bazy danych oraz katalogi `build/` nie są
@@ -113,7 +118,7 @@ Najczęstsza operacja na VPS:
 
 ```bash
 cd ~/LifestealCore
-./update.sh [all|core|scoreboard|souls|soulitems|soulshop|spawn]
+./update.sh [all|core|scoreboard|souls|soulitems|soulshop|spawn|homes]
 ```
 
 `update.sh` wykonuje `git pull --ff-only`, a następnie przekazuje wybrany cel do
@@ -128,6 +133,7 @@ cd ~/LifestealCore
 | `soulitems` | LifestealSoulItems | LifestealSoulItems | tak |
 | `soulshop` | LifestealSoulShop | LifestealSoulShop | nie |
 | `spawn` | LifestealSpawn | LifestealSpawn | nie |
+| `homes` | LifestealHomes | LifestealHomes | nie |
 
 `deploy.sh` wykonuje backup wybranych plików, atomowo podmienia JAR-y w katalogu
 Pterodactyla i sprawdza rezultat. Dla celów korzystających z ServerPacka tworzy
@@ -147,7 +153,7 @@ instrukcja buildu VPS w [BUILD_ON_VPS.md](BUILD_ON_VPS.md).
 tworzone podczas deploymentu Core, SoulItems lub pełnego deploymentu i trafia
 do `build/ServerPack.zip`.
 
-Zmiana wyłącznie Scoreboardu, Souls, SoulShopu lub Spawnu nie przebudowuje ani
+Zmiana wyłącznie Scoreboardu, Souls, SoulShopu, Spawnu lub Homes nie przebudowuje ani
 nie publikuje ServerPacka. Cel SoulItems publikuje paczkę, ponieważ zawiera ona
 tekstury i modele customowych przedmiotów.
 

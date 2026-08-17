@@ -13,6 +13,10 @@ if grep -n "relocate 'org.sqlite'" LifestealSouls/build.gradle; then
   echo "ERROR: sqlite relocation still present in LifestealSouls" >&2
   exit 1
 fi
+if grep -n "relocate 'org.sqlite'" LifestealHomes/build.gradle; then
+  echo "ERROR: sqlite relocation still present in LifestealHomes" >&2
+  exit 1
+fi
 grep -q "junit-platform-launcher" LifestealCore/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealCore/build.gradle
 grep -q "include('LifestealCore')" settings.gradle
@@ -21,10 +25,12 @@ grep -q "include('LifestealSouls')" settings.gradle
 grep -q "include('LifestealSoulItems')" settings.gradle
 grep -q "include('LifestealSoulShop')" settings.gradle
 grep -q "include('LifestealSpawn')" settings.gradle
+grep -q "include('LifestealHomes')" settings.gradle
 grep -q "junit-platform-launcher" LifestealSouls/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealSouls/build.gradle
 grep -q "implements LifestealSoulsApi" LifestealSouls/src/main/java/dev/lifesteal/souls/LifestealSoulsPlugin.java
 grep -q "afkUseCustomTeleportLocation" LifestealSouls/src/main/java/dev/lifesteal/souls/afk/AfkZone.java
+grep -q "TeleportCause.NETHER_PORTAL" LifestealSouls/src/main/java/dev/lifesteal/souls/listener/AfkPortalRepelListener.java
 grep -q "paper-api:26.2.build.112-stable" LifestealSoulItems/build.gradle
 grep -q "junit-platform-launcher" LifestealSoulItems/build.gradle
 grep -q "implements LifestealSoulItemsApi" LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/LifestealSoulItemsPlugin.java
@@ -40,6 +46,10 @@ grep -q "junit-platform-launcher" LifestealSpawn/build.gradle
 grep -q "DamageCause.VOID" LifestealSpawn/src/main/java/dev/lifesteal/spawn/rescue/VoidRescueListener.java
 grep -q "afkRescueTriggerY" LifestealSpawn/src/main/java/dev/lifesteal/spawn/rescue/VoidRescueListener.java
 grep -q "LifestealSouls" LifestealSpawn/src/main/resources/plugin.yml
+grep -q "paper-api:26.2.build.112-stable" LifestealHomes/build.gradle
+grep -q "junit-platform-launcher" LifestealHomes/build.gradle
+grep -q "lifestealhomes.limit.unlimited" LifestealHomes/src/main/resources/plugin.yml
+grep -q "SQLiteHomeRepository" LifestealHomes/src/main/java/dev/lifesteal/homes/LifestealHomesPlugin.java
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
 grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml

@@ -18,6 +18,9 @@ public record SoulsSettings(
         long killCooldownMillis,
         boolean afkZoneEnabled,
         boolean afkPvpDisabled,
+        boolean afkPortalRepelEnabled,
+        double afkPortalHorizontalStrength,
+        double afkPortalVerticalStrength,
         long afkRewardAmount,
         long afkRewardIntervalMillis,
         String afkWorldName,
@@ -41,6 +44,7 @@ public record SoulsSettings(
         String afkTeleportedMessage,
         String afkUnavailableMessage,
         String afkPvpDisabledMessage,
+        String afkPortalRepelMessage,
         String noPermissionMessage,
         String playerOnlyMessage,
         String invalidCommandMessage) {
@@ -55,6 +59,7 @@ public record SoulsSettings(
         Objects.requireNonNull(afkTeleportedMessage, "afkTeleportedMessage");
         Objects.requireNonNull(afkUnavailableMessage, "afkUnavailableMessage");
         Objects.requireNonNull(afkPvpDisabledMessage, "afkPvpDisabledMessage");
+        Objects.requireNonNull(afkPortalRepelMessage, "afkPortalRepelMessage");
         Objects.requireNonNull(noPermissionMessage, "noPermissionMessage");
         Objects.requireNonNull(playerOnlyMessage, "playerOnlyMessage");
         Objects.requireNonNull(invalidCommandMessage, "invalidCommandMessage");
@@ -112,6 +117,21 @@ public record SoulsSettings(
                 TimeUnit.SECONDS.toMillis(killCooldownSeconds),
                 config.getBoolean("afk-zone.enabled", false),
                 config.getBoolean("afk-zone.disable-pvp", true),
+                config.getBoolean("afk-zone.nether-portal-repel.enabled", true),
+                readDouble(
+                        config,
+                        logger,
+                        "afk-zone.nether-portal-repel.horizontal-strength",
+                        0.1D,
+                        5.0D,
+                        1.15D),
+                readDouble(
+                        config,
+                        logger,
+                        "afk-zone.nether-portal-repel.vertical-strength",
+                        0.0D,
+                        2.0D,
+                        0.35D),
                 afkAmount,
                 TimeUnit.SECONDS.toMillis(afkSeconds),
                 config.getString("afk-zone.world", "").trim(),
@@ -179,6 +199,9 @@ public record SoulsSettings(
                 config.getString(
                         "messages.afk-pvp-disabled",
                         "<red>PvP is disabled in the AFK zone.</red>"),
+                config.getString(
+                        "messages.afk-portal-repel",
+                        "<red>The Nether portal is disabled in the AFK zone.</red>"),
                 config.getString(
                         "messages.no-permission",
                         "<red>You do not have permission to use this command.</red>"),

@@ -24,6 +24,9 @@ class SoulsSettingsTest {
         assertEquals(3_600_000L, settings.killCooldownMillis());
         assertFalse(settings.afkZoneEnabled());
         assertTrue(settings.afkPvpDisabled());
+        assertTrue(settings.afkPortalRepelEnabled());
+        assertEquals(1.15D, settings.afkPortalHorizontalStrength());
+        assertEquals(0.35D, settings.afkPortalVerticalStrength());
         assertEquals(1L, settings.afkRewardAmount());
         assertEquals(120_000L, settings.afkRewardIntervalMillis());
         assertEquals("", settings.afkWorldName());
@@ -90,5 +93,20 @@ class SoulsSettingsTest {
         assertEquals(-8.5D, settings.afkTeleportZ());
         assertEquals(90F, settings.afkTeleportYaw());
         assertEquals(-10F, settings.afkTeleportPitch());
+    }
+
+    @Test
+    void customPortalRepelStrengthIsLoaded() {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("afk-zone.nether-portal-repel.enabled", false);
+        config.set("afk-zone.nether-portal-repel.horizontal-strength", 1.8D);
+        config.set("afk-zone.nether-portal-repel.vertical-strength", 0.6D);
+
+        SoulsSettings settings = SoulsSettings.load(
+                config, Logger.getLogger("SoulsSettingsTest"));
+
+        assertFalse(settings.afkPortalRepelEnabled());
+        assertEquals(1.8D, settings.afkPortalHorizontalStrength());
+        assertEquals(0.6D, settings.afkPortalVerticalStrength());
     }
 }

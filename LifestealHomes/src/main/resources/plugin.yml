@@ -1,0 +1,45 @@
+name: LifestealHomes
+version: '${version}'
+main: dev.lifesteal.homes.LifestealHomesPlugin
+api-version: '26.2'
+description: GUI-based homes with rank limits for LifestealSMP.
+author: Bruno
+
+commands:
+  home:
+    description: Teleport to a home or open the homes menu.
+    usage: /home [name]
+    permission: lifestealhomes.use
+  homes:
+    description: Open the homes menu.
+    usage: /homes
+    permission: lifestealhomes.use
+  sethome:
+    description: Create or update a home.
+    usage: /sethome <name>
+    permission: lifestealhomes.sethome
+  delhome:
+    description: Delete a home.
+    usage: /delhome <name>
+    permission: lifestealhomes.delete
+  lifestealhomes:
+    description: Administrative commands for LifestealHomes.
+    usage: /lifestealhomes reload
+    permission: lifestealhomes.admin
+
+permissions:
+  lifestealhomes.use:
+    description: Allows using homes and the homes GUI.
+    default: true
+  lifestealhomes.sethome:
+    description: Allows creating and updating homes.
+    default: true
+  lifestealhomes.delete:
+    description: Allows deleting homes.
+    default: true
+  lifestealhomes.admin:
+    description: Allows reloading the LifestealHomes configuration.
+    default: op
+  lifestealhomes.limit.unlimited:
+    description: Allows an unlimited number of homes.
+    default: op

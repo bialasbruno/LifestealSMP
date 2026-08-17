@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: $0 [all|core|scoreboard|souls|soulitems|soulshop|spawn]"
+  echo "Usage: $0 [all|core|scoreboard|souls|soulitems|soulshop|spawn|homes]"
 }
 
 if [[ "$#" -gt 1 ]]; then
@@ -12,7 +12,7 @@ fi
 
 TARGET="${1:-all}"
 case "$TARGET" in
-  all|core|scoreboard|souls|soulitems|soulshop|spawn) ;;
+  all|core|scoreboard|souls|soulitems|soulshop|spawn|homes) ;;
   -h|--help)
     usage
     exit 0
@@ -41,6 +41,7 @@ case "$TARGET" in
       "LifestealSoulItems/build/libs/LifestealSoulItems-0.1.0.jar"
       "LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar"
       "LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar"
+      "LifestealHomes/build/libs/LifestealHomes-0.1.0.jar"
     )
     ;;
   core)
@@ -66,6 +67,10 @@ case "$TARGET" in
   spawn)
     GRADLE_TASKS=(:LifestealSpawn:clean :LifestealSpawn:build)
     EXPECTED_JARS=("LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar")
+    ;;
+  homes)
+    GRADLE_TASKS=(:LifestealHomes:clean :LifestealHomes:build)
+    EXPECTED_JARS=("LifestealHomes/build/libs/LifestealHomes-0.1.0.jar")
     ;;
 esac
 

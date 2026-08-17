@@ -18,6 +18,12 @@ player-kill:
 afk-zone:
   enabled: false
   disable-pvp: true
+  # Prevents Nether travel from the AFK arena. Entering a portal pushes the
+  # player back to the side they approached from and slightly upward.
+  nether-portal-repel:
+    enabled: true
+    horizontal-strength: 1.15
+    vertical-strength: 0.35
   reward-amount: 1
   reward-interval-seconds: 120
   world: ""
@@ -49,6 +55,7 @@ messages:
   afk-teleported: "<aqua>AFK zone:</aqua> <white>first reward in {time}</white>"
   afk-unavailable: "<red>The AFK zone is not configured or its world is unavailable.</red>"
   afk-pvp-disabled: "<red>PvP is disabled in the AFK zone.</red>"
+  afk-portal-repel: "<red>The Nether portal is disabled in the AFK zone.</red>"
   no-permission: "<red>You do not have permission to use this command.</red>"
   player-only: "<red>This command can only be used by a player.</red>"
   invalid-command: "<red>Invalid command. Use /soulsadmin help.</red>"
