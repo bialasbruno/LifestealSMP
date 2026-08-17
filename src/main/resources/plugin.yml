@@ -12,8 +12,12 @@ commands:
     permission: lifesteal.hearts
   lifesteal:
     description: Administrative commands for LifestealCore.
-    usage: /lifesteal <sethearts|givebrokenheart|giveheart> ...
+    usage: /lifesteal <sethearts|givebrokenheart|giveheart|giverevivetotem> ...
     permission: lifesteal.admin
+  revive:
+    description: Revives a temporarily eliminated player with a held Revive Totem.
+    usage: /revive <player>
+    permission: lifesteal.revive
 
 permissions:
   lifesteal.hearts:
@@ -22,3 +26,6 @@ permissions:
   lifesteal.admin:
     description: Allows administrative control over hearts and heart items.
     default: op
+  lifesteal.revive:
+    description: Allows using a Revive Totem to revive an eliminated player.
+    default: true

@@ -13,10 +13,12 @@ grep -q "junit-platform-launcher" build.gradle
 grep -q "paper-api:26.2.build.112-stable" build.gradle
 grep -q 'setItemModel(BROKEN_HEART_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
 grep -q 'setItemModel(HEART_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
+grep -q 'setItemModel(REVIVE_TOTEM_MODEL)' src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
 grep -q '"serverpack:heart_consume"' src/main/java/dev/lifesteal/core/listener/HeartUseListener.java
 
 test -f ServerPack/assets/serverpack/textures/item/broken_heart.png
 test -f ServerPack/assets/serverpack/textures/item/heart.png
+test -f ServerPack/assets/serverpack/textures/item/revive_totem.png
 test -f ServerPack/assets/serverpack/sounds/items/heart_consume.ogg
 
 # Every Paper plugin descriptor must have a dedicated, complete README.

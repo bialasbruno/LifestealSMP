@@ -12,7 +12,7 @@ Pierwsze uruchomienie pobiera oficjalny obraz `gradle:jdk25-noble` oraz zależno
 Po udanym buildzie finalny plugin znajduje się tutaj:
 
 ```text
-build/libs/LifestealCore-0.1.0.jar
+build/libs/LifestealCore-0.2.0.jar
 ```
 
 Do pełnego deploymentu pluginu i ServerPacka użyj `./deploy.sh` zgodnie z

@@ -23,11 +23,14 @@ public final class HeartItemFactory {
     /** Resource-pack item models from the serverpack namespace. */
     private static final NamespacedKey BROKEN_HEART_MODEL = new NamespacedKey("serverpack", "broken_heart");
     private static final NamespacedKey HEART_MODEL = new NamespacedKey("serverpack", "heart");
+    private static final NamespacedKey REVIVE_TOTEM_MODEL = new NamespacedKey("serverpack", "revive_totem");
 
     private final HeartKeys keys;
+    private final int reviveReturnHearts;
 
-    public HeartItemFactory(HeartKeys keys) {
+    public HeartItemFactory(HeartKeys keys, int reviveReturnHearts) {
         this.keys = keys;
+        this.reviveReturnHearts = reviveReturnHearts;
     }
 
     public Material brokenHeartBaseMaterial() {
@@ -36,6 +39,10 @@ public final class HeartItemFactory {
 
     public Material heartBaseMaterial() {
         return HeartConstants.HEART_MATERIAL;
+    }
+
+    public Material reviveTotemBaseMaterial() {
+        return HeartConstants.REVIVE_TOTEM_MATERIAL;
     }
 
     public ItemStack createBrokenHeart(int amount) {
@@ -68,12 +75,34 @@ public final class HeartItemFactory {
         return item;
     }
 
+    public ItemStack createReviveTotem(int amount) {
+        ItemStack item = new ItemStack(HeartConstants.REVIVE_TOTEM_MATERIAL, amount);
+        item.editMeta(meta -> {
+            meta.displayName(plain("Revive Totem", NamedTextColor.GOLD));
+            meta.lore(List.of(
+                    plain("A once-per-season relic taken from a warrior", NamedTextColor.GRAY),
+                    plain("who fell while holding the maximum hearts.", NamedTextColor.GRAY),
+                    plain("Hold it and use /revive <player>.", NamedTextColor.GREEN),
+                    plain("The revived player returns with " + reviveReturnHearts + " hearts.",
+                            NamedTextColor.DARK_GREEN)
+            ));
+            meta.getPersistentDataContainer().set(keys.reviveTotem, PersistentDataType.BYTE, (byte) 1);
+            meta.setItemModel(REVIVE_TOTEM_MODEL);
+            meta.setEnchantmentGlintOverride(true);
+        });
+        return item;
+    }
+
     public boolean isBrokenHeart(ItemStack item) {
         return hasMarker(item, HeartConstants.BROKEN_HEART_MATERIAL, keys.brokenHeart);
     }
 
     public boolean isHeart(ItemStack item) {
         return hasMarker(item, HeartConstants.HEART_MATERIAL, keys.heart);
+    }
+
+    public boolean isReviveTotem(ItemStack item) {
+        return hasMarker(item, HeartConstants.REVIVE_TOTEM_MATERIAL, keys.reviveTotem);
     }
 
     private boolean hasMarker(ItemStack item, Material expectedMaterial, NamespacedKey key) {

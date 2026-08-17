@@ -4,8 +4,9 @@ Główne repozytorium projektu serwera Minecraft Lifesteal SMP. Zawiera plugin
 `LifestealCore`, źródła ServerPacka, testy oraz skrypty służące do budowania i
 wdrażania projektu na VPS-ie z Pterodactylem.
 
-Projekt jest aktywnie rozwijany. Obecny zakres to stabilne `v0.1` bez ekonomii,
-klanów, revive, bounty, GUI ani dodatkowych systemów rozgrywki.
+Projekt jest aktywnie rozwijany. Obecny zakres `v0.2` obejmuje rdzeń Lifesteal,
+czasowe eliminacje oraz rzadki, sezonowy system revive. Ekonomia, klany, bounty
+i GUI pozostają poza bieżącym zakresem.
 
 ## Pluginy
 
@@ -14,7 +15,7 @@ uprawnień, danych, instalacji i budowania.
 
 | Plugin | Wersja | Opis | Dokumentacja |
 | --- | --- | --- | --- |
-| `LifestealCore` | `0.1.0` | Serca graczy, śmierci PvP, customowe przedmioty, crafting i SQLite. | [README pluginu](docs/plugins/LifestealCore/README.md) |
+| `LifestealCore` | `0.2.0` | Serca, śmierci PvP, eliminacje, Revive Totem, crafting i SQLite. | [README pluginu](docs/plugins/LifestealCore/README.md) |
 
 ## Wymagania
 
@@ -33,7 +34,14 @@ mieć lokalnie zainstalowanej Javy ani Gradle.
 - Minimum to `1` serce, maksimum to `20` serc.
 - Śmierć PvP odejmuje ofierze jedno maksymalne serce.
 - Jeśli ofiara miała więcej niż jedno serce, wypada prawdziwy `Broken Heart`.
-- Przy jednym sercu stan pozostaje bez zmian i nic nie wypada.
+- Śmierć PvP przy jednym sercu powoduje eliminację i ban na `24` godziny.
+- Po naturalnym wygaśnięciu bana gracz wraca z `3` sercami.
+- Gracz zabity przy maksymalnej liczbie serc może upuścić jeden `Revive Totem`
+  na sezon.
+- `/revive <player>` zużywa trzymany totem, natychmiast odbanowuje cel i ustawia
+  mu `10` serc.
+- Customowy Revive Totem nie działa jak zwykły Totem of Undying i nie może ominąć
+  eliminacji właściciela.
 - Śmierci inne niż PvP nie zmieniają liczby serc.
 - Serce gracza jest zapisywane po UUID w `plugins/LifestealCore/data.db`.
 
@@ -57,9 +65,11 @@ przedmiot nie jest zużywany i customowy dźwięk nie jest odtwarzany.
 | `/lifesteal sethearts <player> <amount>` | `lifesteal.admin` | Ustawia serca gracza online. |
 | `/lifesteal givebrokenheart <player> [amount]` | `lifesteal.admin` | Daje Broken Heart. |
 | `/lifesteal giveheart <player> [amount]` | `lifesteal.admin` | Daje gotowy Heart. |
+| `/lifesteal giverevivetotem <player>` | `lifesteal.admin` | Daje jeden Revive Totem do testów lub administracji. |
+| `/revive <player>` | `lifesteal.revive` | Zużywa trzymany Revive Totem i przywraca wyeliminowanego gracza. |
 
-`lifesteal.hearts` jest domyślnie dostępne dla graczy, a `lifesteal.admin` dla
-operatorów.
+`lifesteal.hearts` i `lifesteal.revive` są domyślnie dostępne dla graczy, a
+`lifesteal.admin` dla operatorów.
 
 ## Build i testy
 
@@ -78,7 +88,7 @@ Na VPS-ie z Dockerem:
 Obie ścieżki uruchamiają testy JUnit. Finalny, zacieniony plugin powstaje jako:
 
 ```text
-build/libs/LifestealCore-0.1.0.jar
+build/libs/LifestealCore-0.2.0.jar
 ```
 
 Pakiet `org.sqlite` celowo nie jest relokowany. Relokacja psuje powiązanie z
@@ -90,6 +100,7 @@ Katalog `ServerPack/` zawiera źródła, a nie wygenerowany ZIP. Zapewnia modele
 
 - `serverpack:broken_heart`
 - `serverpack:heart`
+- `serverpack:revive_totem`
 
 oraz dźwięk:
 

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * {@code /lifesteal <sethearts|givebrokenheart|giveheart> ...} - administrative and testing
  * commands, all gated behind {@code lifesteal.admin}.
  *
- * <p><b>Known limitation (v0.1):</b> all three subcommands require the target player to be
+ * <p><b>Known limitation (v0.2):</b> all item/heart subcommands require the target player to be
  * online, since {@link HeartService} applies changes directly to a live {@link Player}'s
  * attribute. Offline targets are rejected with a clear error message rather than silently
  * failing. A future version could write directly to the repository for offline players and
@@ -31,7 +31,8 @@ import java.util.stream.Collectors;
  */
 public final class LifestealAdminCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUBCOMMANDS = List.of("sethearts", "givebrokenheart", "giveheart");
+    private static final List<String> SUBCOMMANDS = List.of(
+            "sethearts", "givebrokenheart", "giveheart", "giverevivetotem");
     private static final int MAX_GIVE_AMOUNT = 64;
 
     private final HeartService heartService;
@@ -59,6 +60,7 @@ public final class LifestealAdminCommand implements CommandExecutor, TabComplete
             case "sethearts" -> handleSetHearts(sender, args);
             case "givebrokenheart" -> handleGive(sender, args, itemFactory::createBrokenHeart, "Broken Heart");
             case "giveheart" -> handleGive(sender, args, itemFactory::createHeart, "Heart");
+            case "giverevivetotem" -> handleGiveReviveTotem(sender, args);
             default -> {
                 sender.sendMessage(Component.text("Unknown subcommand: " + args[0], NamedTextColor.RED));
                 sender.sendMessage(usageMessage());
@@ -127,6 +129,25 @@ public final class LifestealAdminCommand implements CommandExecutor, TabComplete
         return true;
     }
 
+    private boolean handleGiveReviveTotem(CommandSender sender, String[] args) {
+        if (args.length != 2) {
+            sender.sendMessage(Component.text(
+                    "Usage: /lifesteal giverevivetotem <player>", NamedTextColor.RED));
+            return true;
+        }
+
+        Player target = Bukkit.getPlayerExact(args[1]);
+        if (target == null) {
+            sender.sendMessage(offlineMessage(args[1]));
+            return true;
+        }
+
+        target.getInventory().addItem(itemFactory.createReviveTotem(1));
+        sender.sendMessage(Component.text(
+                "Gave 1x Revive Totem to " + target.getName() + ".", NamedTextColor.GREEN));
+        return true;
+    }
+
     private Integer parseInt(CommandSender sender, String raw) {
         try {
             return Integer.parseInt(raw);
@@ -141,7 +162,9 @@ public final class LifestealAdminCommand implements CommandExecutor, TabComplete
     }
 
     private Component usageMessage() {
-        return Component.text("Usage: /lifesteal <sethearts|givebrokenheart|giveheart> ...", NamedTextColor.RED);
+        return Component.text(
+                "Usage: /lifesteal <sethearts|givebrokenheart|giveheart|giverevivetotem> ...",
+                NamedTextColor.RED);
     }
 
     @Override

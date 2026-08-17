@@ -15,7 +15,7 @@ docker run --rm \
   gradle:jdk25-noble \
   gradle --no-daemon clean build
 
-JAR="build/libs/LifestealCore-0.1.0.jar"
+JAR="build/libs/LifestealCore-0.2.0.jar"
 if [[ ! -f "$JAR" ]]; then
   echo "Build finished, but expected jar was not found at $JAR" >&2
   echo "Contents of build/libs:" >&2

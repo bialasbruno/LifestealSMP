@@ -21,6 +21,9 @@ public final class HeartConstants {
     /** Base vanilla material used for the full Heart custom item. */
     public static final Material HEART_MATERIAL = Material.NETHER_STAR;
 
+    /** Base vanilla material used for the rare seasonal Revive Totem. */
+    public static final Material REVIVE_TOTEM_MATERIAL = Material.TOTEM_OF_UNDYING;
+
     public static final int BROKEN_HEARTS_PER_HEART_RECIPE = 2;
     public static final int DIAMONDS_PER_HEART_RECIPE = 7;
 }

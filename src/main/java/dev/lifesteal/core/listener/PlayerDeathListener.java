@@ -1,7 +1,11 @@
 package dev.lifesteal.core.listener;
 
+import dev.lifesteal.core.elimination.EliminationService;
 import dev.lifesteal.core.heart.HeartItemFactory;
 import dev.lifesteal.core.heart.HeartService;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -21,11 +25,17 @@ public final class PlayerDeathListener implements Listener {
 
     private final HeartService heartService;
     private final HeartItemFactory itemFactory;
+    private final EliminationService eliminationService;
     private final boolean dropBrokenHeartOnPvpDeath;
 
-    public PlayerDeathListener(HeartService heartService, HeartItemFactory itemFactory, boolean dropBrokenHeartOnPvpDeath) {
+    public PlayerDeathListener(
+            HeartService heartService,
+            HeartItemFactory itemFactory,
+            EliminationService eliminationService,
+            boolean dropBrokenHeartOnPvpDeath) {
         this.heartService = heartService;
         this.itemFactory = itemFactory;
+        this.eliminationService = eliminationService;
         this.dropBrokenHeartOnPvpDeath = dropBrokenHeartOnPvpDeath;
     }
 
@@ -49,6 +59,20 @@ public final class PlayerDeathListener implements Listener {
             World world = victim.getWorld();
             Location location = victim.getLocation();
             world.dropItemNaturally(location, itemFactory.createBrokenHeart(1));
+        }
+
+        if (result.reviveTotemEligible()
+                && eliminationService.claimSeasonalReviveTotem(victim, killer)) {
+            victim.getWorld().dropItemNaturally(
+                    victim.getLocation(), itemFactory.createReviveTotem(1));
+            Bukkit.broadcast(Component.text(
+                    killer.getName() + " claimed " + victim.getName()
+                            + "'s one Revive Totem for this season!",
+                    NamedTextColor.GOLD));
+        }
+
+        if (result.shouldEliminate()) {
+            eliminationService.eliminateAfterDeath(victim);
         }
     }
 }

@@ -1,5 +1,6 @@
 package dev.lifesteal.core.listener;
 
+import dev.lifesteal.core.elimination.EliminationService;
 import dev.lifesteal.core.heart.HeartService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,15 +19,21 @@ public final class PlayerJoinListener implements Listener {
 
     private final Plugin plugin;
     private final HeartService heartService;
+    private final EliminationService eliminationService;
 
-    public PlayerJoinListener(Plugin plugin, HeartService heartService) {
+    public PlayerJoinListener(
+            Plugin plugin, HeartService heartService, EliminationService eliminationService) {
         this.plugin = plugin;
         this.heartService = heartService;
+        this.eliminationService = eliminationService;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        if (!eliminationService.preparePlayerJoin(player)) {
+            return;
+        }
         heartService.loadPlayer(player.getUniqueId(), player.getName());
     }
 

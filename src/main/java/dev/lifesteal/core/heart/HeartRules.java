@@ -52,6 +52,16 @@ public final class HeartRules {
         return heartsBeforeDeath > minimumHearts;
     }
 
+    /** Whether a one-heart PvP death should temporarily eliminate the victim. */
+    public static boolean shouldEliminateOnPvpDeath(int heartsBeforeDeath, int minimumHearts) {
+        return heartsBeforeDeath <= minimumHearts;
+    }
+
+    /** Whether the victim is strong enough to be eligible for their seasonal Revive Totem drop. */
+    public static boolean isReviveTotemDropEligible(int heartsBeforeDeath, int maximumHearts) {
+        return heartsBeforeDeath >= maximumHearts;
+    }
+
     /**
      * Whether a player currently below the maximum can consume a Heart item.
      */

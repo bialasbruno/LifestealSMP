@@ -106,8 +106,16 @@ STAMP="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$HOME/.lifesteal-deploy-backups/$STAMP"
 mkdir -p "$BACKUP_DIR"
 
-if sudo test -f "$SERVER_VOL/plugins/$PLUGIN_TARGET_NAME"; then
-  sudo cp -a "$SERVER_VOL/plugins/$PLUGIN_TARGET_NAME" "$BACKUP_DIR/plugin.jar"
+PLUGIN_DIR="$SERVER_VOL/plugins"
+sudo mkdir -p "$BACKUP_DIR/plugins"
+while IFS= read -r deployed_plugin; do
+  sudo cp -a "$deployed_plugin" "$BACKUP_DIR/plugins/"
+done < <(
+  sudo find "$PLUGIN_DIR" -maxdepth 1 -type f \
+    \( -name 'LifestealCore.jar' -o -name 'LifestealCore-*.jar' \) -print
+)
+if ! sudo find "$BACKUP_DIR/plugins" -mindepth 1 -print -quit | grep -q .; then
+  sudo rmdir "$BACKUP_DIR/plugins"
 fi
 
 sudo cp -a "$SERVER_VOL/server.properties" "$BACKUP_DIR/server.properties"
@@ -123,11 +131,14 @@ echo "5/7 Deploy pluginu i resource packa..."
 
 # Atomic JAR replacement. This is safer even if the Minecraft process is still
 # running because the old open file remains available until restart.
-PLUGIN_DIR="$SERVER_VOL/plugins"
 sudo install -o pterodactyl -g pterodactyl -m 0644 \
   "$PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${PLUGIN_TARGET_NAME}.new"
 sudo mv -f "$PLUGIN_DIR/.${PLUGIN_TARGET_NAME}.new" \
   "$PLUGIN_DIR/$PLUGIN_TARGET_NAME"
+
+# v0.1 used versioned target names. The stable LifestealCore.jar is now in place,
+# so remove only those legacy copies to prevent Paper loading the same plugin twice.
+sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealCore-*.jar' -delete
 
 WEB_DIR="$(dirname "$WEB_PACK")"
 sudo mkdir -p "$WEB_DIR"

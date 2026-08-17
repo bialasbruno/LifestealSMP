@@ -14,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -90,6 +92,29 @@ public final class HeartService {
         persistAsync(player.getUniqueId(), player.getName(), clamped);
     }
 
+    /**
+     * Restores an offline eliminated player after all previously queued heart mutations.
+     * Waiting for this ordered database operation prevents a death save from overwriting a
+     * near-immediate Revive Totem restore.
+     */
+    public void restoreEliminatedPlayer(UUID uuid, String lastKnownName, int hearts) {
+        int clamped = HeartRules.clamp(
+                hearts, config.minimumHearts(), config.maximumHearts());
+        Future<?> future = databaseExecutor.submit(
+                () -> repository.restoreEliminatedPlayer(uuid, lastKnownName, clamped));
+        try {
+            future.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrupted while restoring eliminated player " + uuid, exception);
+        } catch (ExecutionException exception) {
+            throw new IllegalStateException("Failed to restore eliminated player " + uuid, exception.getCause());
+        } catch (java.util.concurrent.TimeoutException exception) {
+            future.cancel(true);
+            throw new IllegalStateException("Timed out while restoring eliminated player " + uuid, exception);
+        }
+    }
+
     /** Applies a PvP death to the victim's heart count. */
     public PvpDeathResult applyPvpDeath(Player victim) {
         int before = getHearts(victim.getUniqueId());
@@ -97,12 +122,16 @@ public final class HeartService {
 
         int after = HeartRules.applyPvpDeath(before, minimum);
         boolean shouldDrop = HeartRules.shouldDropBrokenHeart(before, minimum);
+        boolean shouldEliminate = HeartRules.shouldEliminateOnPvpDeath(before, minimum);
+        boolean reviveTotemEligible = HeartRules.isReviveTotemDropEligible(
+                before, config.maximumHearts());
 
         heartsCache.put(victim.getUniqueId(), after);
         applyMaxHealth(victim, after);
         persistAsync(victim.getUniqueId(), victim.getName(), after);
 
-        return new PvpDeathResult(before, after, shouldDrop);
+        return new PvpDeathResult(
+                before, after, shouldDrop, shouldEliminate, reviveTotemEligible);
     }
 
     /** Attempts to consume a Heart item for the given player. */
@@ -180,7 +209,12 @@ public final class HeartService {
         }
     }
 
-    public record PvpDeathResult(int heartsBefore, int heartsAfter, boolean shouldDropBrokenHeart) {
+    public record PvpDeathResult(
+            int heartsBefore,
+            int heartsAfter,
+            boolean shouldDropBrokenHeart,
+            boolean shouldEliminate,
+            boolean reviveTotemEligible) {
     }
 
     public record HeartConsumptionResult(int heartsBefore, int heartsAfter, boolean consumed) {

@@ -6,5 +6,18 @@ hearts:
 broken-heart:
   drop-on-pvp-death: true
 
+season:
+  # Change this value when a new season starts. Each player can drop one
+  # Revive Totem for every unique season id.
+  id: "1"
+
+elimination:
+  ban-duration-hours: 24
+  return-hearts: 3
+  ban-reason: "You were eliminated with one heart. You can return in {hours} hours with {return_hearts} hearts or be revived."
+
+revive:
+  return-hearts: 10
+
 messages:
   maximum-hearts: "You already have the maximum number of hearts."

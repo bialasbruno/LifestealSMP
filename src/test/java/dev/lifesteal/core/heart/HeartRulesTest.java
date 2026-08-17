@@ -27,6 +27,7 @@ class HeartRulesTest {
     void oneHeartPvpDeathStaysAtOneAndDoesNotDrop() {
         assertEquals(1, HeartRules.applyPvpDeath(1, MIN));
         assertFalse(HeartRules.shouldDropBrokenHeart(1, MIN));
+        assertTrue(HeartRules.shouldEliminateOnPvpDeath(1, MIN));
     }
 
     @Test
@@ -53,5 +54,16 @@ class HeartRulesTest {
         assertEquals(MIN, HeartRules.clamp(-5, MIN, MAX));
         assertEquals(MAX, HeartRules.clamp(999, MIN, MAX));
         assertEquals(14, HeartRules.clamp(14, MIN, MAX));
+    }
+
+    @Test
+    void onlyMaximumHeartVictimIsEligibleForReviveTotem() {
+        assertFalse(HeartRules.isReviveTotemDropEligible(19, MAX));
+        assertTrue(HeartRules.isReviveTotemDropEligible(20, MAX));
+    }
+
+    @Test
+    void victimAboveMinimumIsNotEliminated() {
+        assertFalse(HeartRules.shouldEliminateOnPvpDeath(2, MIN));
     }
 }

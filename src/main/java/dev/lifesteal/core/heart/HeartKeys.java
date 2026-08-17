@@ -14,9 +14,11 @@ public final class HeartKeys {
 
     public final NamespacedKey brokenHeart;
     public final NamespacedKey heart;
+    public final NamespacedKey reviveTotem;
 
     public HeartKeys(Plugin plugin) {
         this.brokenHeart = new NamespacedKey(plugin, "broken_heart");
         this.heart = new NamespacedKey(plugin, "heart");
+        this.reviveTotem = new NamespacedKey(plugin, "revive_totem");
     }
 }
