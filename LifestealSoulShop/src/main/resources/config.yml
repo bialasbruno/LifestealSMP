@@ -1,0 +1,39 @@
+product:
+  material: DIAMOND_PICKAXE
+  amount: 1
+  price: 100
+
+menu:
+  title: "<gradient:#38bdf8:#c084fc><bold>Soul Shop</bold></gradient>"
+  filler-material: GRAY_STAINED_GLASS_PANE
+  balance-name: "<aqua><bold>Your Souls</bold></aqua>"
+  balance-lore:
+    - ""
+    - "<gray>Balance:</gray> <white>{balance}</white>"
+  product-name: "<aqua><bold>Diamond Pickaxe</bold></aqua>"
+  product-lore:
+    - ""
+    - "<gray>Price:</gray> <light_purple>{price} Souls</light_purple>"
+    - ""
+    - "<green>Click to buy</green>"
+  close-name: "<red><bold>Close</bold></red>"
+
+messages:
+  success: "<green>Purchased Diamond Pickaxe for {price} Souls.</green> <gray>Balance: {balance}</gray>"
+  insufficient-souls: "<red>You need {price} Souls.</red> <gray>Balance: {balance}</gray>"
+  inventory-full: "<red>Your inventory is full.</red>"
+  purchase-error: "<red>The purchase could not be completed. Try again.</red>"
+  no-permission: "<red>You do not have permission to use this command.</red>"
+  player-only: "<red>This command can only be used by a player.</red>"
+  usage: "<red>Usage: /soulshop [reload]</red>"
+  reloaded: "<green>LifestealSoulShop configuration reloaded.</green>"
+
+sounds:
+  success:
+    name: "minecraft:entity.experience_orb.pickup"
+    volume: 0.8
+    pitch: 1.2
+  failure:
+    name: "minecraft:entity.villager.no"
+    volume: 0.7
+    pitch: 1.0

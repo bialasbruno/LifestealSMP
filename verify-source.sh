@@ -18,9 +18,13 @@ grep -q "paper-api:26.2.build.112-stable" LifestealCore/build.gradle
 grep -q "include('LifestealCore')" settings.gradle
 grep -q "include('LifestealScoreboard')" settings.gradle
 grep -q "include('LifestealSouls')" settings.gradle
+grep -q "include('LifestealSoulShop')" settings.gradle
 grep -q "junit-platform-launcher" LifestealSouls/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealSouls/build.gradle
 grep -q "implements LifestealSoulsApi" LifestealSouls/src/main/java/dev/lifesteal/souls/LifestealSoulsPlugin.java
+grep -q "paper-api:26.2.build.112-stable" LifestealSoulShop/build.gradle
+grep -q "junit-platform-launcher" LifestealSoulShop/build.gradle
+grep -q "LifestealSoulsApi" LifestealSoulShop/src/main/java/dev/lifesteal/soulshop/LifestealSoulShopPlugin.java
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
 grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml

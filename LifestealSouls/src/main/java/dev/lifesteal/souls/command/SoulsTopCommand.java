@@ -1,28 +1,28 @@
 package dev.lifesteal.souls.command;
 
 import dev.lifesteal.souls.config.SoulsSettings;
+import dev.lifesteal.souls.menu.SoulLeaderboardMenu;
 import dev.lifesteal.souls.message.MessageService;
-import dev.lifesteal.souls.service.SoulService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
-public final class SoulsCommand implements CommandExecutor {
+/** Opens the read-only Souls leaderboard. */
+public final class SoulsTopCommand implements CommandExecutor {
 
-    private final SoulService soulService;
+    private final SoulLeaderboardMenu leaderboardMenu;
     private final MessageService messages;
     private final Supplier<SoulsSettings> settingsSupplier;
 
-    public SoulsCommand(
-            SoulService soulService,
+    public SoulsTopCommand(
+            SoulLeaderboardMenu leaderboardMenu,
             MessageService messages,
             Supplier<SoulsSettings> settingsSupplier) {
-        this.soulService = soulService;
+        this.leaderboardMenu = leaderboardMenu;
         this.messages = messages;
         this.settingsSupplier = settingsSupplier;
     }
@@ -34,18 +34,15 @@ public final class SoulsCommand implements CommandExecutor {
             @NotNull String label,
             @NotNull String[] args) {
         SoulsSettings settings = settingsSupplier.get();
-        if (args.length > 0) {
-            sender.sendMessage("Usage: /souls");
-            return true;
-        }
         if (!(sender instanceof Player player)) {
             messages.send(sender, settings.playerOnlyMessage());
             return true;
         }
-        messages.sendActionBar(
-                player,
-                settings.balanceMessage(),
-                Map.of("balance", Long.toString(soulService.getSouls(player.getUniqueId()))));
+        if (args.length > 0) {
+            sender.sendMessage("Usage: /soulstop");
+            return true;
+        }
+        leaderboardMenu.open(player);
         return true;
     }
 }

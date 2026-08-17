@@ -4,6 +4,7 @@ Ten projekt zawiera jednocześnie:
 - LifestealCore (plugin Paper),
 - LifestealScoreboard (plugin Paper),
 - LifestealSouls (plugin Paper),
+- LifestealSoulShop (plugin Paper),
 - `ServerPack/` (źródła resource packa),
 - `deploy.sh` (build + testy + deploy),
 - `update.sh` (opcjonalny `git pull` + deploy).
@@ -24,6 +25,7 @@ Bez argumentu wykonywany jest pełny deployment. Dostępne cele:
 ./deploy.sh core
 ./deploy.sh scoreboard
 ./deploy.sh souls
+./deploy.sh soulshop
 ```
 
 - `all` — wszystkie pluginy i ServerPack,
@@ -31,6 +33,8 @@ Bez argumentu wykonywany jest pełny deployment. Dostępne cele:
 - `scoreboard` — wyłącznie LifestealScoreboard, bez przebudowy i publikacji
   ServerPacka,
 - `souls` — wyłącznie LifestealSouls, bez przebudowy i publikacji ServerPacka.
+- `soulshop` — wyłącznie LifestealSoulShop, bez przebudowy i publikacji
+  ServerPacka.
 
 Nie uruchamiaj `sudo ./deploy.sh`.
 Skrypt sam poprosi o hasło sudo.
@@ -64,6 +68,7 @@ cd ~/LifestealCore
 ./update.sh core
 ./update.sh scoreboard
 ./update.sh souls
+./update.sh soulshop
 ```
 
 `update.sh` zrobi:
@@ -90,8 +95,9 @@ Obecnie skonfigurowane są:
 - build Core JAR: `LifestealCore/build/libs/LifestealCore-0.2.1.jar`
 - build Scoreboard JAR: `LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar`
 - build Souls JAR: `LifestealSouls/build/libs/LifestealSouls-0.1.0.jar`
-- docelowe JAR-y Paper: `LifestealCore.jar`, `LifestealScoreboard.jar` i
-  `LifestealSouls.jar`
+- build SoulShop JAR: `LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar`
+- docelowe JAR-y Paper: `LifestealCore.jar`, `LifestealScoreboard.jar`,
+  `LifestealSouls.jar` i `LifestealSoulShop.jar`
 
 ## Backupi
 

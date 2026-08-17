@@ -4,8 +4,9 @@
 walutą `Souls`. Waluty nie można przelewać ani przekazywać innym graczom.
 
 Plugin odpowiada wyłącznie za saldo, sposoby zarabiania, trwałość danych,
-historię transakcji i publiczne API. Sklep z customowymi przedmiotami powinien
-powstać jako osobny moduł, np. `LifestealSoulItems`, korzystający z API Souls.
+historię transakcji i publiczne API. Osobny `LifestealSoulShop` korzysta z tego
+API do obsługi zakupów. Przyszłe customowe przedmioty powstaną w module
+`LifestealSoulItems`.
 
 ## Wymagania
 
@@ -106,7 +107,7 @@ przez konsolę, nie przez gracza.
 | --- | --- |
 | `/afk` | Teleportuje na środek skonfigurowanej strefy AFK. |
 | `/souls` | Pokazuje własne saldo nad hotbarem przez 2 sekundy. |
-| `/souls top` | Otwiera GUI z 10 najwyższymi saldami. |
+| `/soulstop` | Otwiera GUI z 10 najwyższymi saldami. |
 | `/soulsadmin balance <player\|uuid>` | Pokazuje saldo gracza. |
 | `/soulsadmin add <player\|uuid> <amount>` | Dodaje Souls administracyjnie. |
 | `/soulsadmin remove <player\|uuid> <amount>` | Usuwa Souls bez zejścia poniżej zera. |
@@ -173,7 +174,7 @@ są wyświetlane jako action bar przez `40` ticków, czyli `2` sekundy.
 
 ## GUI rankingu
 
-Komenda `/souls top` otwiera ekwipunek tylko do odczytu o rozmiarze trzech
+Komenda `/soulstop` otwiera ekwipunek tylko do odczytu o rozmiarze trzech
 rzędów. Pierwsze trzy miejsca tworzą podium, a miejsca `4–10` znajdują się w
 drugim rzędzie. Każda pozycja używa głowy gracza i pokazuje jego aktualne saldo.
 
@@ -205,7 +206,7 @@ provider waluty przez Bukkit Services. Istniejący placeholder:
 zaczyna wtedy pokazywać saldo z `LifestealSouls`. Integracja jest opcjonalna;
 brak Scoreboardu nie blokuje działania waluty.
 
-## API dla LifestealSoulItems
+## API dla LifestealSoulShop i LifestealSoulItems
 
 Plugin rejestruje w Bukkit Services interfejs:
 
@@ -219,9 +220,9 @@ Udostępnia on:
 - `trySpend(UUID, amount, reason)` — atomowy zakup bez możliwości ujemnego
   salda.
 
-Przyszły `LifestealSoulItems` powinien mieć twardą zależność od
-`LifestealSouls`, odczytywać API z Bukkit Services i wydawać przedmiot dopiero
-po udanym `trySpend`.
+`LifestealSoulShop` ma twardą zależność od `LifestealSouls`, odczytuje API z
+Bukkit Services i wydaje przedmiot dopiero po udanym `trySpend`. Przyszły
+`LifestealSoulItems` może korzystać z tej samej integracji.
 
 ## Build i instalacja
 

@@ -14,6 +14,7 @@ LifestealSMP/
 ├── LifestealCore/       # moduł Gradle pluginu Core
 ├── LifestealScoreboard/ # moduł Gradle pluginu Scoreboard
 ├── LifestealSouls/      # moduł Gradle waluty Souls
+├── LifestealSoulShop/   # moduł Gradle sklepu za Souls
 ├── ServerPack/          # źródła resource packa
 ├── docs/plugins/        # dokumentacja poszczególnych pluginów
 ├── gradle/              # Gradle Wrapper
@@ -38,6 +39,7 @@ poleceniem.
 | `LifestealCore` | `0.2.1` | [README pluginu](docs/plugins/LifestealCore/README.md) |
 | `LifestealScoreboard` | `0.1.0` | [README pluginu](docs/plugins/LifestealScoreboard/README.md) |
 | `LifestealSouls` | `0.1.0` | [README pluginu](docs/plugins/LifestealSouls/README.md) |
+| `LifestealSoulShop` | `0.1.0` | [README pluginu](docs/plugins/LifestealSoulShop/README.md) |
 
 ## Wymagania
 
@@ -63,6 +65,7 @@ Build pojedynczego modułu lokalnie:
 ./gradlew :LifestealCore:clean :LifestealCore:build
 ./gradlew :LifestealScoreboard:clean :LifestealScoreboard:build
 ./gradlew :LifestealSouls:clean :LifestealSouls:build
+./gradlew :LifestealSoulShop:clean :LifestealSoulShop:build
 ```
 
 Build w Dockerze na VPS:
@@ -73,11 +76,13 @@ Build w Dockerze na VPS:
 ./build-vps.sh core
 ./build-vps.sh scoreboard
 ./build-vps.sh souls
+./build-vps.sh soulshop
 ```
 
 Brak argumentu oznacza `all`. Tryb `scoreboard` może skompilować klasy Core,
 ponieważ Scoreboard korzysta z jego API, ale nie uruchamia pełnego buildu ani
-testów Core.
+testów Core. Tak samo tryb `soulshop` może skompilować klasy Souls jako
+zależność, ale nie uruchamia testów modułu Souls.
 
 Finalne JAR-y powstają w katalogach modułów:
 
@@ -85,6 +90,7 @@ Finalne JAR-y powstają w katalogach modułów:
 LifestealCore/build/libs/LifestealCore-0.2.1.jar
 LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
 LifestealSouls/build/libs/LifestealSouls-0.1.0.jar
+LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar
 ```
 
 Wygenerowane JAR-y, ZIP-y, bazy danych oraz katalogi `build/` nie są
@@ -96,7 +102,7 @@ Najczęstsza operacja na VPS:
 
 ```bash
 cd ~/LifestealCore
-./update.sh [all|core|scoreboard|souls]
+./update.sh [all|core|scoreboard|souls|soulshop]
 ```
 
 `update.sh` wykonuje `git pull --ff-only`, a następnie przekazuje wybrany cel do
@@ -108,6 +114,7 @@ cd ~/LifestealCore
 | `core` | LifestealCore | LifestealCore | tak |
 | `scoreboard` | LifestealScoreboard | LifestealScoreboard | nie |
 | `souls` | LifestealSouls | LifestealSouls | nie |
+| `soulshop` | LifestealSoulShop | LifestealSoulShop | nie |
 
 `deploy.sh` wykonuje backup wybranych plików, atomowo podmienia JAR-y w katalogu
 Pterodactyla i sprawdza rezultat. Dla celów korzystających z ServerPacka tworzy
@@ -127,8 +134,8 @@ instrukcja buildu VPS w [BUILD_ON_VPS.md](BUILD_ON_VPS.md).
 tworzone podczas deploymentu Core lub pełnego deploymentu i trafia do
 `build/ServerPack.zip`.
 
-Zmiana wyłącznie Scoreboardu lub Souls nie przebudowuje ani nie publikuje
-ServerPacka.
+Zmiana wyłącznie Scoreboardu, Souls lub SoulShopu nie przebudowuje ani nie
+publikuje ServerPacka.
 
 ## Dodawanie kolejnego pluginu
 

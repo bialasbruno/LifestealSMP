@@ -5,6 +5,7 @@ import dev.lifesteal.souls.afk.AfkZoneTracker;
 import dev.lifesteal.souls.command.AfkCommand;
 import dev.lifesteal.souls.command.SoulsAdminCommand;
 import dev.lifesteal.souls.command.SoulsCommand;
+import dev.lifesteal.souls.command.SoulsTopCommand;
 import dev.lifesteal.souls.config.SoulsSettings;
 import dev.lifesteal.souls.data.SQLiteSoulRepository;
 import dev.lifesteal.souls.data.SoulAccount;
@@ -130,10 +131,16 @@ public final class LifestealSoulsPlugin extends JavaPlugin implements LifestealS
 
         PluginCommand souls = getCommand("souls");
         if (souls != null) {
-            souls.setExecutor(
-                    new SoulsCommand(soulService, messages, leaderboardMenu, this::settings));
+            souls.setExecutor(new SoulsCommand(soulService, messages, this::settings));
         } else {
             getLogger().severe("Could not register /souls; check plugin.yml.");
+        }
+
+        PluginCommand soulsTop = getCommand("soulstop");
+        if (soulsTop != null) {
+            soulsTop.setExecutor(new SoulsTopCommand(leaderboardMenu, messages, this::settings));
+        } else {
+            getLogger().severe("Could not register /soulstop; check plugin.yml.");
         }
 
         SoulsAdminCommand adminExecutor = new SoulsAdminCommand(this, soulService, messages);

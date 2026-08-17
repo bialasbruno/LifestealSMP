@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 usage() {
-  echo "Usage: $0 [all|core|scoreboard|souls]"
+  echo "Usage: $0 [all|core|scoreboard|souls|soulshop]"
 }
 
 if [[ "$#" -gt 1 ]]; then
@@ -12,7 +12,7 @@ fi
 
 TARGET="${1:-all}"
 case "$TARGET" in
-  all|core|scoreboard|souls) ;;
+  all|core|scoreboard|souls|soulshop) ;;
   -h|--help)
     usage
     exit 0

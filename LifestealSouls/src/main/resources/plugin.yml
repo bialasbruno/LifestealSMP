@@ -14,8 +14,12 @@ commands:
     aliases: [soulafk]
     permission: lifestealsouls.afk
   souls:
-    description: Shows your Souls balance or opens the balance leaderboard GUI.
-    usage: /souls [top]
+    description: Shows your Souls balance.
+    usage: /souls
+    permission: lifestealsouls.balance
+  soulstop:
+    description: Opens the Souls balance leaderboard GUI.
+    usage: /soulstop
     permission: lifestealsouls.balance
   soulsadmin:
     description: Administrative commands for LifestealSouls.

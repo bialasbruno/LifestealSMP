@@ -1,0 +1,21 @@
+name: LifestealSoulShop
+version: '${version}'
+main: dev.lifesteal.soulshop.LifestealSoulShopPlugin
+api-version: '26.2'
+description: Simple GUI shop using the player-bound Souls currency.
+author: Bruno
+depend:
+  - LifestealSouls
+
+commands:
+  soulshop:
+    description: Opens the Souls shop or reloads its configuration.
+    usage: /soulshop [reload]
+
+permissions:
+  lifestealsoulshop.use:
+    description: Allows opening and using the Souls shop.
+    default: true
+  lifestealsoulshop.admin:
+    description: Allows reloading the Souls shop configuration.
+    default: op
