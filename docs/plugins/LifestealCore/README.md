@@ -52,9 +52,17 @@ do tego limitu.
 
 ## Przedmioty
 
+`Broken Heart`, `Heart` i `Revive Totem` są własnymi przedmiotami pluginu.
+Mają unikalne modele z ServerPacka, nazwy, lore oraz chronione znaczniki PDC.
+Minecraft wymaga jednak przypisania każdemu itemowi istniejącego materiału, dlatego
+plugin używa vanilla materiałów wyłącznie jako niewidocznych technicznych nośników.
+Zwykły `Ghast Tear`, `Nether Star` ani `Totem of Undying` nie jest traktowany jak
+customowy przedmiot LifestealCore.
+
 ### Broken Heart
 
-- bazowy materiał: `GHAST_TEAR`;
+- własny przedmiot pluginu, wyświetlany jako customowe pęknięte serce;
+- techniczny materiał nośny: `GHAST_TEAR`;
 - model ServerPacka: `serverpack:broken_heart`;
 - posiada własną nazwę, lore i efekt połysku;
 - jest oznaczony kluczem PDC `lifestealcore:broken_heart`;
@@ -62,7 +70,8 @@ do tego limitu.
 
 ### Heart
 
-- bazowy materiał: `NETHER_STAR`;
+- własny przedmiot pluginu, wyświetlany jako customowe pełne serce;
+- techniczny materiał nośny: `NETHER_STAR`;
 - model ServerPacka: `serverpack:heart`;
 - posiada własną nazwę, lore i efekt połysku;
 - jest oznaczony kluczem PDC `lifestealcore:heart`;
@@ -71,7 +80,8 @@ do tego limitu.
 
 ### Revive Totem
 
-- bazowy materiał: `TOTEM_OF_UNDYING`;
+- własny przedmiot pluginu z dedykowaną grafiką;
+- techniczny materiał nośny: `TOTEM_OF_UNDYING`;
 - model ServerPacka: `serverpack:revive_totem`;
 - jest oznaczony kluczem PDC `lifestealcore:revive_totem`;
 - wypada dodatkowo przy pierwszej w sezonie śmierci PvP danego gracza, jeśli
