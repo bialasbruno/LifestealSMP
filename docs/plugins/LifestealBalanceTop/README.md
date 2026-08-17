@@ -85,8 +85,12 @@ zmianie w konfiguracji.
 
 - Paper `26.2`,
 - Java `25`,
-- VaultUnlocked,
+- VaultUnlocked (na liście pluginów i w zależnościach widoczny jako `Vault`),
 - aktywny provider ekonomii, obecnie EssentialsX Economy.
+
+VaultUnlocked zachowuje nazwę pluginu `Vault` dla kompatybilności ze starszymi
+integracjami. Dlatego `plugin.yml` poprawnie wymaga `Vault`, mimo że używany
+plik JAR pochodzi z projektu VaultUnlocked.
 
 Gdy VaultUnlocked działa, ale nie ma aktywnego providera ekonomii, plugin nie
 wyświetla nieprawdziwych zer. Zamyka GUI i pokazuje komunikat o niedostępnej

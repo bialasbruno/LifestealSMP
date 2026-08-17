@@ -57,6 +57,7 @@ grep -q "junit-platform-launcher" LifestealSell/build.gradle
 grep -q 'SHOP_COMMAND_NAMESPACE' LifestealSell/src/main/java/dev/lifesteal/sell/command/SellCommand.java
 grep -q "paper-api:26.2.build.112-stable" LifestealBalanceTop/build.gradle
 grep -q "VaultUnlockedAPI:2.16" LifestealBalanceTop/build.gradle
+grep -q -- "- Vault" LifestealBalanceTop/src/main/resources/plugin.yml
 grep -q "MAX_ENTRIES = 100" LifestealBalanceTop/src/main/java/dev/lifesteal/balancetop/service/BalanceLeaderboardService.java
 grep -q "PlayerCommandPreprocessEvent" LifestealBalanceTop/src/main/java/dev/lifesteal/balancetop/command/BalanceTopCommandInterceptor.java
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle

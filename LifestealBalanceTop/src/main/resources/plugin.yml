@@ -5,7 +5,8 @@ api-version: '26.2'
 description: Paginated GUI leaderboard for the server economy.
 author: Bruno
 depend:
-  - VaultUnlocked
+  # VaultUnlocked keeps the original plugin name for drop-in compatibility.
+  - Vault
 softdepend:
   - Essentials
 
