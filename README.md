@@ -1,147 +1,142 @@
 # LifestealSMP
 
-Główne repozytorium projektu serwera Minecraft Lifesteal SMP. Zawiera plugin
-`LifestealCore`, `LifestealScoreboard`, źródła ServerPacka, testy oraz skrypty
-służące do budowania i wdrażania projektu na VPS-ie z Pterodactylem.
+Monorepo projektu serwera Minecraft Lifesteal SMP. Repozytorium zarządza
+niezależnymi pluginami Paper, ich wspólnym buildem i testami, ServerPackiem oraz
+automatycznym wdrażaniem na VPS z Pterodactylem.
 
-Projekt jest aktywnie rozwijany. Obecny zakres `v0.2` obejmuje rdzeń Lifesteal,
-czasowe eliminacje oraz rzadki, sezonowy system revive. Ekonomia, klany, bounty
-i GUI pozostają poza bieżącym zakresem.
+Główny README opisuje pracę z całym repozytorium. Mechaniki, konfiguracja,
+komendy i uprawnienia są dokumentowane osobno dla każdego pluginu.
 
-## Pluginy
+## Struktura repozytorium
 
-Każdy plugin ma własny README z pełnym opisem mechaniki, konfiguracji, komend,
-uprawnień, danych, instalacji i budowania.
+```text
+LifestealSMP/
+├── LifestealCore/       # moduł Gradle pluginu Core
+├── LifestealScoreboard/ # moduł Gradle pluginu Scoreboard
+├── ServerPack/          # źródła resource packa
+├── docs/plugins/        # dokumentacja poszczególnych pluginów
+├── gradle/              # Gradle Wrapper
+├── build.gradle         # wspólny build modułów
+├── settings.gradle      # lista modułów Gradle
+├── build-vps.sh         # build i testy w Dockerze
+├── deploy.sh            # backup oraz deployment
+├── update.sh            # git pull i uruchomienie deploymentu
+├── deploy.env           # niesekretna konfiguracja VPS
+├── BUILD_ON_VPS.md
+└── DEPLOY_README.md
+```
 
-| Plugin | Wersja | Opis | Dokumentacja |
-| --- | --- | --- | --- |
-| `LifestealCore` | `0.2.1` | Serca, śmierci PvP, eliminacje, Revive Totem, crafting, SQLite i publiczne API serc. | [README pluginu](docs/plugins/LifestealCore/README.md) |
-| `LifestealScoreboard` | `0.1.0` | Flicker-free sidebar, placeholdery, statystyki oraz integracja z Core i PlaceholderAPI. | [README pluginu](docs/plugins/LifestealScoreboard/README.md) |
+Każdy plugin jest osobnym modułem z własnym `build.gradle`, katalogiem `src/`,
+testami i wersją. Główny projekt Gradle pozwala zbudować wszystkie moduły jednym
+poleceniem.
+
+## Dokumentacja modułów
+
+| Moduł | Wersja | Dokumentacja |
+| --- | --- | --- |
+| `LifestealCore` | `0.2.1` | [README pluginu](docs/plugins/LifestealCore/README.md) |
+| `LifestealScoreboard` | `0.1.0` | [README pluginu](docs/plugins/LifestealScoreboard/README.md) |
 
 ## Wymagania
 
 - Paper `26.2`, build `112`
 - Java `25`
-- Gradle `9.7.0`
-- SQLite (sterownik jest dołączany do finalnego JAR-a)
-- VPS: Ubuntu `24.04`, Docker, Pterodactyl + Wings
+- Gradle `9.7.0` przez dołączony wrapper
+- VPS: Ubuntu `24.04`, Docker oraz Pterodactyl z Wings
 
-Build VPS-a używa oficjalnego obrazu `gradle:jdk25-noble`, więc host nie musi
-mieć lokalnie zainstalowanej Javy ani Gradle.
-
-## Zasady Lifesteal
-
-- Gracz zaczyna z `10` sercami.
-- Minimum to `1` serce, maksimum to `20` serc.
-- Śmierć PvP odejmuje ofierze jedno maksymalne serce.
-- Jeśli ofiara miała więcej niż jedno serce, wypada prawdziwy `Broken Heart`.
-- Śmierć PvP przy jednym sercu powoduje eliminację i ban na `24` godziny.
-- Po naturalnym wygaśnięciu bana gracz wraca z `3` sercami.
-- Gracz zabity przy maksymalnej liczbie serc może upuścić jeden `Revive Totem`
-  na sezon.
-- `/revive <player>` zużywa trzymany totem, natychmiast odbanowuje cel i ustawia
-  mu `10` serc.
-- Customowy Revive Totem nie działa jak zwykły Totem of Undying i nie może ominąć
-  eliminacji właściciela.
-- Śmierci inne niż PvP nie zmieniają liczby serc.
-- Serce gracza jest zapisywane po UUID w `plugins/LifestealCore/data.db`.
-
-### Craft Heart
-
-```text
-B D B
-D D D
-D D D
-```
-
-`B` oznacza prawdziwy `Broken Heart` oznaczony przez PDC, a `D` oznacza Diamond.
-PPM z gotowym `Heart` daje `+1` maksymalne serce (`+2 HP`). Przy limicie `20`
-przedmiot nie jest zużywany i customowy dźwięk nie jest odtwarzany.
-
-## Komendy i permissions
-
-| Komenda | Permission | Opis |
-| --- | --- | --- |
-| `/hearts` | `lifesteal.hearts` | Pokazuje aktualną liczbę maksymalnych serc. |
-| `/lifesteal sethearts <player> <amount>` | `lifesteal.admin` | Ustawia serca gracza online. |
-| `/lifesteal givebrokenheart <player> [amount]` | `lifesteal.admin` | Daje Broken Heart. |
-| `/lifesteal giveheart <player> [amount]` | `lifesteal.admin` | Daje gotowy Heart. |
-| `/lifesteal giverevivetotem <player>` | `lifesteal.admin` | Daje jeden Revive Totem do testów lub administracji. |
-| `/revive <player>` | `lifesteal.revive` | Zużywa trzymany Revive Totem i przywraca wyeliminowanego gracza. |
-
-`lifesteal.hearts` i `lifesteal.revive` są domyślnie dostępne dla graczy, a
-`lifesteal.admin` dla operatorów.
+Build VPS korzysta z obrazu `gradle:jdk25-noble`, dlatego Java i Gradle nie
+muszą być instalowane bezpośrednio na hoście.
 
 ## Build i testy
 
-Lokalnie, z Java 25:
+Pełny build lokalny:
 
 ```bash
 ./gradlew clean build
 ```
 
-Na VPS-ie z Dockerem:
+Build pojedynczego modułu lokalnie:
+
+```bash
+./gradlew :LifestealCore:clean :LifestealCore:build
+./gradlew :LifestealScoreboard:clean :LifestealScoreboard:build
+```
+
+Build w Dockerze na VPS:
 
 ```bash
 ./build-vps.sh
+./build-vps.sh all
+./build-vps.sh core
+./build-vps.sh scoreboard
 ```
 
-Obie ścieżki uruchamiają testy JUnit obu pluginów. Finalne JAR-y powstają jako:
+Brak argumentu oznacza `all`. Tryb `scoreboard` może skompilować klasy Core,
+ponieważ Scoreboard korzysta z jego API, ale nie uruchamia pełnego buildu ani
+testów Core.
+
+Finalne JAR-y powstają w katalogach modułów:
 
 ```text
 LifestealCore/build/libs/LifestealCore-0.2.1.jar
 LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
 ```
 
-Pakiet `org.sqlite` celowo nie jest relokowany. Relokacja psuje powiązanie z
-natywną biblioteką SQLite i prowadzi do `UnsatisfiedLinkError`.
+Wygenerowane JAR-y, ZIP-y, bazy danych oraz katalogi `build/` nie są
+commitowane.
 
-## ServerPack
+## Aktualizacja i deployment
 
-Katalog `ServerPack/` zawiera źródła, a nie wygenerowany ZIP. Zapewnia modele:
-
-- `serverpack:broken_heart`
-- `serverpack:heart`
-- `serverpack:revive_totem`
-
-oraz dźwięk:
-
-- `serverpack:heart_consume`
-
-`deploy.sh` automatycznie tworzy `build/ServerPack.zip`. Wygenerowany ZIP nie
-jest commitowany.
-
-## Deployment
-
-Pełny opis znajduje się w [DEPLOY_README.md](DEPLOY_README.md). Standardowa
-aktualizacja na VPS-ie:
+Najczęstsza operacja na VPS:
 
 ```bash
 cd ~/LifestealCore
-./update.sh
+./update.sh [all|core|scoreboard]
 ```
 
-`update.sh` wykonuje `git pull --ff-only`, a następnie `deploy.sh`. Skryptu nie
-uruchamia się przez `sudo`; sam korzysta z `sudo` wyłącznie tam, gdzie wymaga
-tego Docker, Pterodactyl lub katalog publikowany przez Nginx.
+`update.sh` wykonuje `git pull --ff-only`, a następnie przekazuje wybrany cel do
+`deploy.sh`. Brak argumentu oznacza pełną aktualizację.
 
-## Struktura
+| Cel | Build i testy | Deployment | ServerPack |
+| --- | --- | --- | --- |
+| `all` | wszystkie pluginy | wszystkie pluginy | tak |
+| `core` | LifestealCore | LifestealCore | tak |
+| `scoreboard` | LifestealScoreboard | LifestealScoreboard | nie |
 
-```text
-LifestealSMP/
-├── LifestealCore/       # plugin Core, konfiguracja Gradle i testy
-├── LifestealScoreboard/ # plugin Scoreboard, konfiguracja Gradle i testy
-├── gradle/              # Gradle Wrapper
-├── ServerPack/          # źródła resource packa
-├── docs/plugins/        # osobny README dla każdego pluginu
-├── build.gradle         # wspólny build wszystkich modułów
-├── settings.gradle
-├── build-vps.sh
-├── deploy.sh
-├── update.sh
-├── deploy.env
-├── README.md
-└── DEPLOY_README.md
-```
+`deploy.sh` wykonuje backup wybranych plików, atomowo podmienia JAR-y w katalogu
+Pterodactyla i sprawdza rezultat. Dla celów korzystających z ServerPacka tworzy
+również `build/ServerPack.zip`, publikuje go, aktualizuje SHA-1 w
+`server.properties` i weryfikuje publiczny adres paczki.
 
-Konfiguracja deploymentu nie zawiera haseł, tokenów ani innych sekretów.
+Skryptów `update.sh` i `deploy.sh` nie uruchamia się przez `sudo`. Same proszą o
+uprawnienia tylko dla operacji wymagających dostępu do Dockera, wolumenu
+Pterodactyla lub katalogu publikowanego przez serwer WWW.
+
+Pełna instrukcja znajduje się w [DEPLOY_README.md](DEPLOY_README.md), a skrócona
+instrukcja buildu VPS w [BUILD_ON_VPS.md](BUILD_ON_VPS.md).
+
+## ServerPack
+
+`ServerPack/` przechowuje wyłącznie źródła resource packa. Archiwum ZIP jest
+tworzone podczas deploymentu Core lub pełnego deploymentu i trafia do
+`build/ServerPack.zip`.
+
+Zmiana wyłącznie Scoreboardu nie przebudowuje ani nie publikuje ServerPacka.
+
+## Dodawanie kolejnego pluginu
+
+Nowy plugin powinien zostać dodany jako osobny moduł:
+
+1. Utwórz katalog modułu z `build.gradle` i standardowym układem `src/`.
+2. Dodaj moduł do `settings.gradle` oraz wspólnego zadania w `build.gradle`.
+3. Dodaj jego cel i oczekiwany JAR do skryptów buildu i deploymentu.
+4. Dodaj ścieżki deploymentu do `deploy.env`, jeśli plugin jest wdrażany na VPS.
+5. Utwórz `docs/plugins/<nazwa-pluginu>/README.md`.
+6. Uruchom `./verify-source.sh` oraz pełny build.
+
+`verify-source.sh` pilnuje między innymi, aby każdy deskryptor `plugin.yml` lub
+`paper-plugin.yml` posiadał dedykowany README i aby wygenerowane artefakty nie
+trafiły do drzewa źródeł.
+
+Konfiguracja deploymentu przechowywana w repozytorium nie zawiera haseł,
+tokenów ani innych sekretów.

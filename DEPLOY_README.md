@@ -16,10 +16,23 @@ cd ~/LifestealCore
 ./deploy.sh
 ```
 
+Bez argumentu wykonywany jest pełny deployment. Dostępne cele:
+
+```bash
+./deploy.sh all
+./deploy.sh core
+./deploy.sh scoreboard
+```
+
+- `all` — oba pluginy i ServerPack,
+- `core` — LifestealCore i ServerPack,
+- `scoreboard` — wyłącznie LifestealScoreboard, bez przebudowy i publikacji
+  ServerPacka.
+
 Nie uruchamiaj `sudo ./deploy.sh`.
 Skrypt sam poprosi o hasło sudo.
 
-Skrypt automatycznie:
+W trybie `all` skrypt automatycznie:
 1. uruchamia Gradle/JDK 25 build w Dockerze,
 2. uruchamia testy,
 3. tworzy `build/ServerPack.zip`,
@@ -41,12 +54,20 @@ cd ~/LifestealCore
 ./update.sh
 ```
 
+`update.sh` przyjmuje te same cele:
+
+```bash
+./update.sh all
+./update.sh core
+./update.sh scoreboard
+```
+
 `update.sh` zrobi:
 
 ```text
 git pull --ff-only
         ↓
-./deploy.sh
+./deploy.sh <wybrany cel>
         ↓
 Restart w Pterodactylu
 ```
@@ -68,10 +89,11 @@ Obecnie skonfigurowane są:
 
 ## Backupi
 
-Każdy deploy zapisuje poprzednią wersję w:
+Każdy deploy zapisuje poprzednią wersję wybranych pluginów w:
 
 ```text
 ~/.lifesteal-deploy-backups/
 ```
 
-Dzięki temu poprzednie JAR-y, `server.properties` i ServerPack można łatwo odzyskać.
+W trybach `all` i `core` backup obejmuje również `server.properties` oraz
+ServerPack. Dzięki temu poprzednią wdrożoną wersję można łatwo odzyskać.

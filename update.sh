@@ -1,6 +1,29 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+usage() {
+  echo "Usage: $0 [all|core|scoreboard]"
+}
+
+if [[ "$#" -gt 1 ]]; then
+  usage >&2
+  exit 64
+fi
+
+TARGET="${1:-all}"
+case "$TARGET" in
+  all|core|scoreboard) ;;
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  *)
+    echo "Unknown update target: $TARGET" >&2
+    usage >&2
+    exit 64
+    ;;
+esac
+
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
@@ -18,4 +41,4 @@ echo "Pobieranie zmian z GitHub..."
 git pull --ff-only
 echo
 
-exec "$ROOT/deploy.sh"
+exec "$ROOT/deploy.sh" "$TARGET"
