@@ -5,9 +5,11 @@ plugins {
 tasks.named('build') {
     dependsOn ':LifestealCore:build'
     dependsOn ':LifestealScoreboard:build'
+    dependsOn ':LifestealSouls:build'
 }
 
 tasks.named('clean') {
     dependsOn ':LifestealCore:clean'
     dependsOn ':LifestealScoreboard:clean'
+    dependsOn ':LifestealSouls:clean'
 }

@@ -13,6 +13,7 @@ komendy i uprawnienia są dokumentowane osobno dla każdego pluginu.
 LifestealSMP/
 ├── LifestealCore/       # moduł Gradle pluginu Core
 ├── LifestealScoreboard/ # moduł Gradle pluginu Scoreboard
+├── LifestealSouls/      # moduł Gradle waluty Souls
 ├── ServerPack/          # źródła resource packa
 ├── docs/plugins/        # dokumentacja poszczególnych pluginów
 ├── gradle/              # Gradle Wrapper
@@ -36,6 +37,7 @@ poleceniem.
 | --- | --- | --- |
 | `LifestealCore` | `0.2.1` | [README pluginu](docs/plugins/LifestealCore/README.md) |
 | `LifestealScoreboard` | `0.1.0` | [README pluginu](docs/plugins/LifestealScoreboard/README.md) |
+| `LifestealSouls` | `0.1.0` | [README pluginu](docs/plugins/LifestealSouls/README.md) |
 
 ## Wymagania
 
@@ -60,6 +62,7 @@ Build pojedynczego modułu lokalnie:
 ```bash
 ./gradlew :LifestealCore:clean :LifestealCore:build
 ./gradlew :LifestealScoreboard:clean :LifestealScoreboard:build
+./gradlew :LifestealSouls:clean :LifestealSouls:build
 ```
 
 Build w Dockerze na VPS:
@@ -69,6 +72,7 @@ Build w Dockerze na VPS:
 ./build-vps.sh all
 ./build-vps.sh core
 ./build-vps.sh scoreboard
+./build-vps.sh souls
 ```
 
 Brak argumentu oznacza `all`. Tryb `scoreboard` może skompilować klasy Core,
@@ -80,6 +84,7 @@ Finalne JAR-y powstają w katalogach modułów:
 ```text
 LifestealCore/build/libs/LifestealCore-0.2.1.jar
 LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
+LifestealSouls/build/libs/LifestealSouls-0.1.0.jar
 ```
 
 Wygenerowane JAR-y, ZIP-y, bazy danych oraz katalogi `build/` nie są
@@ -91,7 +96,7 @@ Najczęstsza operacja na VPS:
 
 ```bash
 cd ~/LifestealCore
-./update.sh [all|core|scoreboard]
+./update.sh [all|core|scoreboard|souls]
 ```
 
 `update.sh` wykonuje `git pull --ff-only`, a następnie przekazuje wybrany cel do
@@ -102,6 +107,7 @@ cd ~/LifestealCore
 | `all` | wszystkie pluginy | wszystkie pluginy | tak |
 | `core` | LifestealCore | LifestealCore | tak |
 | `scoreboard` | LifestealScoreboard | LifestealScoreboard | nie |
+| `souls` | LifestealSouls | LifestealSouls | nie |
 
 `deploy.sh` wykonuje backup wybranych plików, atomowo podmienia JAR-y w katalogu
 Pterodactyla i sprawdza rezultat. Dla celów korzystających z ServerPacka tworzy
@@ -121,7 +127,8 @@ instrukcja buildu VPS w [BUILD_ON_VPS.md](BUILD_ON_VPS.md).
 tworzone podczas deploymentu Core lub pełnego deploymentu i trafia do
 `build/ServerPack.zip`.
 
-Zmiana wyłącznie Scoreboardu nie przebudowuje ani nie publikuje ServerPacka.
+Zmiana wyłącznie Scoreboardu lub Souls nie przebudowuje ani nie publikuje
+ServerPacka.
 
 ## Dodawanie kolejnego pluginu
 

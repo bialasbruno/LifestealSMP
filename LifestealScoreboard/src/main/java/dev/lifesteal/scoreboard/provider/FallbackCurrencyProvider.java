@@ -4,7 +4,7 @@ import dev.lifesteal.scoreboard.api.CurrencyProvider;
 
 import java.util.UUID;
 
-/** Zero-value currency provider used until an economy plugin registers a real provider. */
+/** Zero-value currency provider used when no economy service is registered. */
 public final class FallbackCurrencyProvider implements CurrencyProvider {
 
     public static final FallbackCurrencyProvider INSTANCE = new FallbackCurrencyProvider();

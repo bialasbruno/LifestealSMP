@@ -85,7 +85,7 @@ The following placeholders are available in the configured title and lines:
 | `%player_ping%` | Current ping in milliseconds |
 | `%lifesteal_hearts%` | Current maximum hearts from LifestealCore |
 | `%lifesteal_money%` | Formatted Money balance, or `0` |
-| `%lifesteal_souls%` | Formatted Souls balance, or `0` |
+| `%lifesteal_souls%` | Formatted balance from LifestealSouls, or `0` |
 | `%lifesteal_kills%` | Minecraft player-kill statistic |
 | `%lifesteal_deaths%` | Minecraft death statistic |
 | `%server_online%` | Current online player count |
@@ -93,6 +93,10 @@ The following placeholders are available in the configured title and lines:
 
 Money and Souls are formatted as English whole numbers, for example `950`, `1,250`,
 `25,000`, and `1,000,000`.
+
+LifestealSouls registers its balance provider dynamically through Bukkit Services.
+The scoreboard detects registration and removal without requiring a restart or a hard
+plugin dependency.
 
 ## PlaceholderAPI integration
 

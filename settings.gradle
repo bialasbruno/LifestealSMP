@@ -2,3 +2,4 @@ rootProject.name = 'LifestealSMP'
 
 include('LifestealCore')
 include('LifestealScoreboard')
+include('LifestealSouls')

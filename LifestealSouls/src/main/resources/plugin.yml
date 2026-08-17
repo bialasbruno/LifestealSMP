@@ -1,0 +1,26 @@
+name: LifestealSouls
+version: '${version}'
+main: dev.lifesteal.souls.LifestealSoulsPlugin
+api-version: '26.2'
+description: Player-bound Souls currency for LifestealSMP.
+author: Bruno
+softdepend:
+  - LifestealScoreboard
+
+commands:
+  souls:
+    description: Shows your Souls balance or the balance leaderboard.
+    usage: /souls [top]
+    permission: lifestealsouls.balance
+  soulsadmin:
+    description: Administrative commands for LifestealSouls.
+    usage: /soulsadmin <balance|add|remove|set|purchase|history|reload> ...
+    permission: lifestealsouls.admin
+
+permissions:
+  lifestealsouls.balance:
+    description: Allows checking your own Souls balance and the leaderboard.
+    default: true
+  lifestealsouls.admin:
+    description: Allows managing balances and viewing transaction history.
+    default: op

@@ -13,6 +13,7 @@ pojedynczy moduł:
 ```bash
 ./build-vps.sh core
 ./build-vps.sh scoreboard
+./build-vps.sh souls
 ```
 
 Scoreboard korzysta z API Core, więc Gradle może skompilować klasy Core jako
@@ -26,8 +27,9 @@ Po udanym buildzie finalne pluginy znajdują się tutaj:
 ```text
 LifestealCore/build/libs/LifestealCore-0.2.1.jar
 LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
+LifestealSouls/build/libs/LifestealSouls-0.1.0.jar
 ```
 
-Do pełnego deploymentu obu pluginów i ServerPacka użyj `./deploy.sh`. Selektywny
-deployment wykonują `./deploy.sh core` i `./deploy.sh scoreboard`, zgodnie z
-`DEPLOY_README.md`.
+Do pełnego deploymentu wszystkich pluginów i ServerPacka użyj `./deploy.sh`.
+Selektywny deployment wykonują `./deploy.sh core`, `./deploy.sh scoreboard` i
+`./deploy.sh souls`, zgodnie z `DEPLOY_README.md`.

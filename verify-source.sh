@@ -9,10 +9,18 @@ if grep -n "relocate 'org.sqlite'" LifestealCore/build.gradle; then
   echo "ERROR: sqlite relocation still present" >&2
   exit 1
 fi
+if grep -n "relocate 'org.sqlite'" LifestealSouls/build.gradle; then
+  echo "ERROR: sqlite relocation still present in LifestealSouls" >&2
+  exit 1
+fi
 grep -q "junit-platform-launcher" LifestealCore/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealCore/build.gradle
 grep -q "include('LifestealCore')" settings.gradle
 grep -q "include('LifestealScoreboard')" settings.gradle
+grep -q "include('LifestealSouls')" settings.gradle
+grep -q "junit-platform-launcher" LifestealSouls/build.gradle
+grep -q "paper-api:26.2.build.112-stable" LifestealSouls/build.gradle
+grep -q "implements LifestealSoulsApi" LifestealSouls/src/main/java/dev/lifesteal/souls/LifestealSoulsPlugin.java
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
 grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml

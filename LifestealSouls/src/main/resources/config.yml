@@ -1,0 +1,29 @@
+balance:
+  maximum: 1000000000
+
+playtime:
+  enabled: true
+  reward-amount: 50
+  reward-interval-seconds: 3600
+  idle-timeout-seconds: 300
+  flush-interval-seconds: 60
+
+player-kill:
+  enabled: true
+  reward-amount: 3
+  same-victim-cooldown-seconds: 3600
+
+# Reserved for the dedicated AFK region planned for a later release.
+# Enabling this flag does not grant rewards until a zone provider is implemented.
+afk-zone:
+  enabled: false
+  reward-amount: 1
+  reward-interval-seconds: 120
+
+messages:
+  balance: "<gradient:#7dd3fc:#c084fc><bold>Souls</bold></gradient> <gray>Balance:</gray> <white>{balance}</white>"
+  playtime-reward: "<green>+{amount} Souls</green> <gray>for a full hour of active playtime.</gray>"
+  kill-reward: "<green>+{amount} Souls</green> <gray>for killing {victim}.</gray>"
+  no-permission: "<red>You do not have permission to use this command.</red>"
+  player-only: "<red>This command can only be used by a player.</red>"
+  invalid-command: "<red>Invalid command. Use /soulsadmin help.</red>"
