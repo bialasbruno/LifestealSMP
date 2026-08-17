@@ -1,8 +1,9 @@
 package dev.lifesteal.soulitems.item;
 
+import dev.lifesteal.soulitems.config.SoulItemsSettings;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -10,7 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public final class SoulItemFactory {
 
@@ -18,19 +20,25 @@ public final class SoulItemFactory {
             new NamespacedKey("serverpack", "soul_pickaxe");
 
     private final NamespacedKey soulPickaxeMarker;
+    private final Supplier<SoulItemsSettings> settingsSupplier;
+    private final Logger logger;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    public SoulItemFactory(NamespacedKey soulPickaxeMarker) {
+    public SoulItemFactory(
+            NamespacedKey soulPickaxeMarker,
+            Supplier<SoulItemsSettings> settingsSupplier,
+            Logger logger) {
         this.soulPickaxeMarker = soulPickaxeMarker;
+        this.settingsSupplier = settingsSupplier;
+        this.logger = logger;
     }
 
     public ItemStack createSoulPickaxe() {
+        SoulItemsSettings settings = settingsSupplier.get();
         ItemStack item = new ItemStack(Material.NETHERITE_PICKAXE);
         item.editMeta(meta -> {
-            meta.displayName(plain("Soul Pickaxe", NamedTextColor.AQUA));
-            meta.lore(List.of(
-                    plain("A netherite tool inhabited by restless souls.", NamedTextColor.GRAY),
-                    plain("Their whispers guide every strike.", NamedTextColor.DARK_PURPLE),
-                    plain("Mines a 3x3 area.", NamedTextColor.AQUA)));
+            meta.displayName(render(settings.soulPickaxeName()));
+            meta.lore(settings.soulPickaxeLore().stream().map(this::render).toList());
             meta.addEnchant(
                     Enchantment.EFFICIENCY, SoulPickaxeDefinition.EFFICIENCY_LEVEL, true);
             meta.addEnchant(Enchantment.FORTUNE, SoulPickaxeDefinition.FORTUNE_LEVEL, true);
@@ -57,7 +65,12 @@ public final class SoulItemFactory {
         return marker != null && marker == (byte) 1;
     }
 
-    private static Component plain(String text, NamedTextColor color) {
-        return Component.text(text, color).decoration(TextDecoration.ITALIC, false);
+    private Component render(String text) {
+        try {
+            return miniMessage.deserialize(text).decoration(TextDecoration.ITALIC, false);
+        } catch (RuntimeException exception) {
+            logger.warning("Invalid MiniMessage item text: " + exception.getMessage());
+            return Component.text(text).decoration(TextDecoration.ITALIC, false);
+        }
     }
 }

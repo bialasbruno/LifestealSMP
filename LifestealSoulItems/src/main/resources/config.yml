@@ -1,0 +1,12 @@
+soul-pickaxe:
+  # MiniMessage formatting is supported: https://docs.advntr.dev/minimessage/format.html
+  name: "<gradient:#22d3ee:#8b5cf6><bold>Soul Pickaxe</bold></gradient>"
+  lore:
+    - "<gray>A netherite tool inhabited by restless souls.</gray>"
+    - "<dark_purple>Their whispers guide every strike.</dark_purple>"
+    - "<aqua>Mines a 3x3 area.</aqua>"
+
+messages:
+  reloaded: "<green>LifestealSoulItems configuration reloaded.</green>"
+  usage: "<red>Usage: /soulitems reload</red>"
+  no-permission: "<red>You do not have permission to use this command.</red>"

@@ -62,10 +62,37 @@ Warstwa wizualna składa się z:
 `art/concepts/soul-pickaxe-concept-v1.png`. Po zmianie modelu lub tekstury należy
 wdrożyć jednocześnie plugin i ServerPack.
 
-## Komendy, uprawnienia i konfiguracja
+## Konfiguracja nazwy i opisu
 
-Plugin nie rejestruje komend ani uprawnień i nie tworzy pliku konfiguracyjnego.
-Dystrybucja przedmiotów odbywa się przez pluginy korzystające z jego API.
+Przy pierwszym uruchomieniu plugin tworzy
+`plugins/LifestealSoulItems/config.yml`. Nazwę i opis faktycznego przedmiotu
+można edytować bez przebudowywania pluginu:
+
+```yaml
+soul-pickaxe:
+  name: "<gradient:#22d3ee:#8b5cf6><bold>Soul Pickaxe</bold></gradient>"
+  lore:
+    - "<gray>A netherite tool inhabited by restless souls.</gray>"
+    - "<dark_purple>Their whispers guide every strike.</dark_purple>"
+    - "<aqua>Mines a 3x3 area.</aqua>"
+```
+
+Teksty obsługują MiniMessage, a pusta lista `lore: []` całkowicie usuwa opis.
+Po zapisaniu pliku wykonaj `/soulitems reload`. Zmiana dotyczy nowych kilofów
+tworzonych po przeładowaniu, w tym kolejnych zakupów w SoulShopie. Przedmioty
+już zapisane w ekwipunkach zachowują wcześniejsze metadane.
+
+SoulShop ma osobny opis ikony oferty w
+`plugins/LifestealSoulShop/config.yml`. Nie zmienia on opisu przedmiotu
+wydawanego po zakupie.
+
+## Komenda i uprawnienie
+
+| Komenda | Permission | Domyślnie | Opis |
+| --- | --- | --- | --- |
+| `/soulitems reload` | `lifestealsoulitems.admin` | operator | Przeładowuje nazwę, lore i komunikaty. |
+
+Dystrybucja przedmiotów odbywa się przez pluginy korzystające z API SoulItems.
 
 ## Build i instalacja
 

@@ -29,6 +29,8 @@ grep -q "paper-api:26.2.build.112-stable" LifestealSoulItems/build.gradle
 grep -q "junit-platform-launcher" LifestealSoulItems/build.gradle
 grep -q "implements LifestealSoulItemsApi" LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/LifestealSoulItemsPlugin.java
 grep -q 'setItemModel(SOUL_PICKAXE_MODEL)' LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/item/SoulItemFactory.java
+grep -q 'saveDefaultConfig' LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/LifestealSoulItemsPlugin.java
+test -f LifestealSoulItems/src/main/resources/config.yml
 grep -q 'player.breakBlock(target)' LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/mining/SoulPickaxeMiningListener.java
 grep -q "paper-api:26.2.build.112-stable" LifestealSoulShop/build.gradle
 grep -q "junit-platform-launcher" LifestealSoulShop/build.gradle

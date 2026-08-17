@@ -4,3 +4,13 @@ main: dev.lifesteal.soulitems.LifestealSoulItemsPlugin
 api-version: '26.2'
 description: Custom Soul items for LifestealSMP.
 author: Bruno
+
+commands:
+  soulitems:
+    description: Reloads the custom Soul item configuration.
+    usage: /soulitems reload
+
+permissions:
+  lifestealsoulitems.admin:
+    description: Allows reloading the SoulItems configuration.
+    default: op
