@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 usage() {
-  echo "Usage: $0 [all|core|scoreboard|souls|soulitems|soulshop|spawn|homes|sell]"
+  echo "Usage: $0 [all|core|scoreboard|souls|soulitems|soulshop|spawn|homes|sell|balancetop]"
 }
 
 if [[ "$#" -gt 1 ]]; then
@@ -19,6 +19,7 @@ DEPLOY_SOULSHOP=false
 DEPLOY_SPAWN=false
 DEPLOY_HOMES=false
 DEPLOY_SELL=false
+DEPLOY_BALANCETOP=false
 DEPLOY_PACK=false
 
 case "$TARGET" in
@@ -31,6 +32,7 @@ case "$TARGET" in
     DEPLOY_SPAWN=true
     DEPLOY_HOMES=true
     DEPLOY_SELL=true
+    DEPLOY_BALANCETOP=true
     DEPLOY_PACK=true
     ;;
   core)
@@ -58,6 +60,9 @@ case "$TARGET" in
     ;;
   sell)
     DEPLOY_SELL=true
+    ;;
+  balancetop)
+    DEPLOY_BALANCETOP=true
     ;;
   -h|--help)
     usage
@@ -155,6 +160,9 @@ fi
 if [[ "$DEPLOY_SELL" == true ]]; then
   EXPECTED_PLUGIN_JARS+=("$SELL_PLUGIN_BUILD_JAR")
 fi
+if [[ "$DEPLOY_BALANCETOP" == true ]]; then
+  EXPECTED_PLUGIN_JARS+=("$BALANCETOP_PLUGIN_BUILD_JAR")
+fi
 
 for plugin_jar in "${EXPECTED_PLUGIN_JARS[@]}"; do
   if [[ ! -f "$plugin_jar" ]]; then
@@ -175,7 +183,8 @@ for build_dir in \
   "$ROOT/LifestealSoulShop/build" \
   "$ROOT/LifestealSpawn/build" \
   "$ROOT/LifestealHomes/build" \
-  "$ROOT/LifestealSell/build"; do
+  "$ROOT/LifestealSell/build" \
+  "$ROOT/LifestealBalanceTop/build"; do
   if [[ -d "$build_dir" ]]; then
     BUILD_DIRS+=("$build_dir")
   fi
@@ -296,6 +305,14 @@ if [[ "$DEPLOY_SELL" == true ]]; then
       \( -name 'LifestealSell.jar' -o -name 'LifestealSell-*.jar' \) -print
   )
 fi
+if [[ "$DEPLOY_BALANCETOP" == true ]]; then
+  while IFS= read -r deployed_plugin; do
+    sudo cp -a "$deployed_plugin" "$BACKUP_DIR/plugins/"
+  done < <(
+    sudo find "$PLUGIN_DIR" -maxdepth 1 -type f \
+      \( -name 'LifestealBalanceTop.jar' -o -name 'LifestealBalanceTop-*.jar' \) -print
+  )
+fi
 if ! sudo find "$BACKUP_DIR/plugins" -mindepth 1 -print -quit | grep -q .; then
   sudo rmdir "$BACKUP_DIR/plugins"
 fi
@@ -363,6 +380,12 @@ if [[ "$DEPLOY_SELL" == true ]]; then
   sudo mv -f "$PLUGIN_DIR/.${SELL_PLUGIN_TARGET_NAME}.new" \
     "$PLUGIN_DIR/$SELL_PLUGIN_TARGET_NAME"
 fi
+if [[ "$DEPLOY_BALANCETOP" == true ]]; then
+  sudo install -o pterodactyl -g pterodactyl -m 0644 \
+    "$BALANCETOP_PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${BALANCETOP_PLUGIN_TARGET_NAME}.new"
+  sudo mv -f "$PLUGIN_DIR/.${BALANCETOP_PLUGIN_TARGET_NAME}.new" \
+    "$PLUGIN_DIR/$BALANCETOP_PLUGIN_TARGET_NAME"
+fi
 
 # Stable target names are now in place, so remove only versioned legacy copies to
 # prevent Paper loading the same plugin more than once after a version upgrade.
@@ -389,6 +412,9 @@ if [[ "$DEPLOY_HOMES" == true ]]; then
 fi
 if [[ "$DEPLOY_SELL" == true ]]; then
   sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealSell-*.jar' -delete
+fi
+if [[ "$DEPLOY_BALANCETOP" == true ]]; then
+  sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealBalanceTop-*.jar' -delete
 fi
 
 if [[ "$DEPLOY_PACK" == true ]]; then
@@ -480,6 +506,10 @@ if [[ "$DEPLOY_SELL" == true ]] && ! sudo test -s "$PLUGIN_DIR/$SELL_PLUGIN_TARG
   echo "ERROR: Brak wdrozonego pluginu Sell." >&2
   exit 1
 fi
+if [[ "$DEPLOY_BALANCETOP" == true ]] && ! sudo test -s "$PLUGIN_DIR/$BALANCETOP_PLUGIN_TARGET_NAME"; then
+  echo "ERROR: Brak wdrozonego pluginu BalanceTop." >&2
+  exit 1
+fi
 
 if [[ "$DEPLOY_PACK" == true ]]; then
   DEPLOYED_SHA1="$(sudo sha1sum "$WEB_PACK" | awk '{print $1}')"
@@ -541,6 +571,9 @@ if [[ "$DEPLOY_HOMES" == true ]]; then
 fi
 if [[ "$DEPLOY_SELL" == true ]]; then
   echo "Sell:         $PLUGIN_DIR/$SELL_PLUGIN_TARGET_NAME"
+fi
+if [[ "$DEPLOY_BALANCETOP" == true ]]; then
+  echo "BalanceTop:   $PLUGIN_DIR/$BALANCETOP_PLUGIN_TARGET_NAME"
 fi
 if [[ "$DEPLOY_PACK" == true ]]; then
   echo "ServerPack:   $WEB_PACK"

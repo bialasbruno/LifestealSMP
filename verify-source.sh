@@ -27,6 +27,7 @@ grep -q "include('LifestealSoulShop')" settings.gradle
 grep -q "include('LifestealSpawn')" settings.gradle
 grep -q "include('LifestealHomes')" settings.gradle
 grep -q "include('LifestealSell')" settings.gradle
+grep -q "include('LifestealBalanceTop')" settings.gradle
 grep -q "junit-platform-launcher" LifestealSouls/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealSouls/build.gradle
 grep -q "implements LifestealSoulsApi" LifestealSouls/src/main/java/dev/lifesteal/souls/LifestealSoulsPlugin.java
@@ -54,6 +55,10 @@ grep -q "SQLiteHomeRepository" LifestealHomes/src/main/java/dev/lifesteal/homes/
 grep -q "paper-api:26.2.build.112-stable" LifestealSell/build.gradle
 grep -q "junit-platform-launcher" LifestealSell/build.gradle
 grep -q 'SHOP_COMMAND_NAMESPACE' LifestealSell/src/main/java/dev/lifesteal/sell/command/SellCommand.java
+grep -q "paper-api:26.2.build.112-stable" LifestealBalanceTop/build.gradle
+grep -q "VaultUnlockedAPI:2.16" LifestealBalanceTop/build.gradle
+grep -q "MAX_ENTRIES = 100" LifestealBalanceTop/src/main/java/dev/lifesteal/balancetop/service/BalanceLeaderboardService.java
+grep -q "PlayerCommandPreprocessEvent" LifestealBalanceTop/src/main/java/dev/lifesteal/balancetop/command/BalanceTopCommandInterceptor.java
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
 grep -q "VaultUnlockedAPI:2.16" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml

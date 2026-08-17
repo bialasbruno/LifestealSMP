@@ -1,0 +1,22 @@
+name: LifestealBalanceTop
+version: '${version}'
+main: dev.lifesteal.balancetop.LifestealBalanceTopPlugin
+api-version: '26.2'
+description: Paginated GUI leaderboard for the server economy.
+author: Bruno
+depend:
+  - VaultUnlocked
+softdepend:
+  - Essentials
+
+commands:
+  baltop:
+    description: Opens the server balance leaderboard GUI.
+    usage: /baltop
+    aliases: [balancetop]
+    permission: lifestealbalancetop.use
+
+permissions:
+  lifestealbalancetop.use:
+    description: Allows opening the balance leaderboard GUI.
+    default: true

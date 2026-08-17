@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+}
+
+group = 'dev.lifesteal'
+version = '0.1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc'
+        url = uri('https://repo.papermc.io/repository/maven-public/')
+    }
+    maven {
+        name = 'vaultunlocked'
+        url = uri('https://repo.codemc.io/repository/creatorfromhell/')
+    }
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:26.2.build.112-stable'
+    compileOnly 'net.milkbowl.vault:VaultUnlockedAPI:2.16'
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'io.papermc.paper:paper-api:26.2.build.112-stable'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(25)
+    options.compilerArgs.add('-Xlint:deprecation')
+}
+
+processResources {
+    filteringCharset = 'UTF-8'
+    def props = [version: version]
+    inputs.properties props
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

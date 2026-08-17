@@ -1,0 +1,10 @@
+leaderboard:
+  # Results are cached to avoid scanning every known player on each click.
+  cache-seconds: 30
+  include-zero-balances: false
+
+messages:
+  no-permission: "<red>You do not have permission to use this command.</red>"
+  player-only: "<red>This command can only be used by a player.</red>"
+  economy-unavailable: "<red>The economy is currently unavailable. Please try again later.</red>"
+  usage: "<red>Usage: /baltop</red>"
