@@ -1,6 +1,7 @@
 package dev.lifesteal.scoreboard.placeholder;
 
 import dev.lifesteal.scoreboard.provider.CurrencyProviderRegistry;
+import dev.lifesteal.scoreboard.provider.BalanceProviderRegistry;
 import dev.lifesteal.scoreboard.provider.HeartProvider;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -12,12 +13,15 @@ import java.util.Objects;
 public final class PlaceholderResolver {
 
     private final HeartProvider heartProvider;
+    private final BalanceProviderRegistry balanceProviders;
     private final CurrencyProviderRegistry currencyProviders;
 
     public PlaceholderResolver(
             HeartProvider heartProvider,
+            BalanceProviderRegistry balanceProviders,
             CurrencyProviderRegistry currencyProviders) {
         this.heartProvider = Objects.requireNonNull(heartProvider, "heartProvider");
+        this.balanceProviders = Objects.requireNonNull(balanceProviders, "balanceProviders");
         this.currencyProviders = Objects.requireNonNull(currencyProviders, "currencyProviders");
     }
 
@@ -28,7 +32,7 @@ public final class PlaceholderResolver {
     public String resolveExternal(Player player, String parameter) {
         String key = "lifesteal_" + parameter.toLowerCase(Locale.ROOT);
         return switch (key) {
-            case "lifesteal_hearts", "lifesteal_money", "lifesteal_souls",
+            case "lifesteal_hearts", "lifesteal_balance", "lifesteal_money", "lifesteal_souls",
                     "lifesteal_kills", "lifesteal_deaths" -> resolveValue(player, key);
             default -> null;
         };
@@ -40,8 +44,8 @@ public final class PlaceholderResolver {
             case "player_ping" -> Integer.toString(player.getPing());
             case "lifesteal_hearts" -> Integer.toString(
                     heartProvider.getHearts(player.getUniqueId()));
-            case "lifesteal_money" -> NumberFormatter.format(
-                    currencyProviders.current().getMoney(player.getUniqueId()));
+            case "lifesteal_balance", "lifesteal_money" -> NumberFormatter.format(
+                    balanceProviders.current().getBalance(player.getUniqueId()));
             case "lifesteal_souls" -> NumberFormatter.format(
                     currencyProviders.current().getSouls(player.getUniqueId()));
             case "lifesteal_kills" -> Integer.toString(

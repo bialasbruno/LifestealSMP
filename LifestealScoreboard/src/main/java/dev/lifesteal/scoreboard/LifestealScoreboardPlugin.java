@@ -7,8 +7,10 @@ import dev.lifesteal.scoreboard.config.ScoreboardSettings;
 import dev.lifesteal.scoreboard.integration.PlaceholderApiBridge;
 import dev.lifesteal.scoreboard.integration.PlaceholderApiIntegration;
 import dev.lifesteal.scoreboard.placeholder.PlaceholderResolver;
+import dev.lifesteal.scoreboard.provider.BalanceProviderRegistry;
 import dev.lifesteal.scoreboard.provider.CoreHeartProvider;
 import dev.lifesteal.scoreboard.provider.CurrencyProviderRegistry;
+import dev.lifesteal.scoreboard.provider.VaultBalanceProvider;
 import dev.lifesteal.scoreboard.render.SidebarManager;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
@@ -20,10 +22,12 @@ public final class LifestealScoreboardPlugin extends JavaPlugin {
 
     private SidebarManager sidebarManager;
     private PlaceholderApiBridge placeholderApiBridge;
+    private VaultBalanceProvider vaultBalanceProvider;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        migrateConfig();
 
         LifestealCoreApi coreApi = findCoreApi();
         if (coreApi == null) {
@@ -37,12 +41,16 @@ public final class LifestealScoreboardPlugin extends JavaPlugin {
             return;
         }
 
+        registerVaultBalanceProvider();
+        BalanceProviderRegistry balanceProviders =
+                new BalanceProviderRegistry(getServer().getServicesManager());
         CurrencyProviderRegistry currencyProviders =
                 new CurrencyProviderRegistry(getServer().getServicesManager());
         PlaceholderResolver placeholders = new PlaceholderResolver(
-                new CoreHeartProvider(coreApi), currencyProviders);
+                new CoreHeartProvider(coreApi), balanceProviders, currencyProviders);
         sidebarManager = new SidebarManager(this, placeholders, bukkitScoreboards);
 
+        getServer().getPluginManager().registerEvents(balanceProviders, this);
         getServer().getPluginManager().registerEvents(currencyProviders, this);
         getServer().getPluginManager().registerEvents(sidebarManager, this);
         registerCommands();
@@ -64,13 +72,43 @@ public final class LifestealScoreboardPlugin extends JavaPlugin {
             sidebarManager.shutdown();
             sidebarManager = null;
         }
+        if (vaultBalanceProvider != null) {
+            vaultBalanceProvider.unregister();
+            vaultBalanceProvider = null;
+        }
         getLogger().info("LifestealScoreboard disabled.");
     }
 
     public void reloadScoreboards() {
         reloadConfig();
+        migrateConfig();
         ScoreboardSettings settings = ScoreboardSettings.load(getConfig(), getLogger());
         sidebarManager.reload(settings);
+    }
+
+    private void migrateConfig() {
+        if (ScoreboardSettings.migrateLegacyBalanceLine(getConfig())) {
+            saveConfig();
+            getLogger().info("Migrated the default Money scoreboard line to Balance.");
+        }
+    }
+
+    private void registerVaultBalanceProvider() {
+        try {
+            VaultBalanceProvider provider = new VaultBalanceProvider(getServer());
+            provider.register(this);
+            getServer().getPluginManager().registerEvents(provider, this);
+            vaultBalanceProvider = provider;
+            if (provider.available()) {
+                getLogger().info("Connected Balance to the active Vault economy provider.");
+            } else {
+                getLogger().warning(
+                        "Vault API is present, but no economy provider is registered; Balance is 0.");
+            }
+        } catch (LinkageError exception) {
+            getLogger().warning(
+                    "Vault/VaultUnlocked is not available; Balance will remain 0.");
+        }
     }
 
     private LifestealCoreApi findCoreApi() {

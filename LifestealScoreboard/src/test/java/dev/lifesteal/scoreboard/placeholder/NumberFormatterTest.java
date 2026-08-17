@@ -14,4 +14,12 @@ class NumberFormatterTest {
         assertEquals("25,000", NumberFormatter.format(25_000));
         assertEquals("1,000,000", NumberFormatter.format(1_000_000));
     }
+
+    @Test
+    void formatsBalancesWithUpToTwoDecimalPlaces() {
+        assertEquals("0.5", NumberFormatter.format(0.5D));
+        assertEquals("1,250.75", NumberFormatter.format(1_250.75D));
+        assertEquals("1,250.57", NumberFormatter.format(1_250.567D));
+        assertEquals("0", NumberFormatter.format(Double.NaN));
+    }
 }

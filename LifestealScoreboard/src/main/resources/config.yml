@@ -11,7 +11,7 @@ scoreboard:
   lines:
     - ""
     - "<red>❤</red> Hearts: <white>%lifesteal_hearts%</white>"
-    - "<green>$</green> Money: <white>%lifesteal_money%</white>"
+    - "<green>$</green> Balance: <white>%lifesteal_balance%</white>"
     - "<aqua>✦</aqua> Souls: <white>%lifesteal_souls%</white>"
     - ""
     - "<yellow>⚔</yellow> Kills: <white>%lifesteal_kills%</white>"

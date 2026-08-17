@@ -14,7 +14,8 @@ live server state.
 - Session-only player toggle.
 - Runtime configuration reload.
 - Optional internal PlaceholderAPI expansion.
-- A Bukkit services contract for a future economy plugin.
+- Live EssentialsX balance through Vault or VaultUnlocked.
+- A Bukkit services contract combining the Vault balance with LifestealSouls.
 - No database, file persistence, economy logic, or asynchronous database work.
 
 ## Requirements
@@ -25,15 +26,19 @@ live server state.
 | Java | `25` |
 | LifestealCore | `0.2.1` or newer; required |
 | PlaceholderAPI | Optional; compiled against `2.12.3` |
+| Vault/VaultUnlocked | Optional; required for the live Balance value |
+| Vault economy provider | EssentialsX or another compatible economy plugin |
 
 ## Installation
 
 1. Build the repository with `./gradlew clean build` or `./build-vps.sh`.
 2. Copy `LifestealCore/build/libs/LifestealCore-0.2.1.jar` to the server `plugins/` directory.
 3. Copy `LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar` to the same directory.
-4. Start or fully restart Paper.
-5. Edit `plugins/LifestealScoreboard/config.yml` if needed.
-6. Apply configuration changes with `/lifestealscoreboard reload`.
+4. Install VaultUnlocked and a compatible economy provider such as EssentialsX if
+   Balance should be displayed.
+5. Start or fully restart Paper.
+6. Edit `plugins/LifestealScoreboard/config.yml` if needed.
+7. Apply configuration changes with `/lifestealscoreboard reload`.
 
 The repository deployment scripts perform the build, backup, and atomic installation
 of both plugin JARs automatically.
@@ -46,7 +51,7 @@ read-only providers:
 | Value | Source |
 | --- | --- |
 | Hearts | `LifestealCoreApi#getHearts(UUID)` |
-| Money | Active `CurrencyProvider`, or `0` when none is registered |
+| Balance | Active Vault/VaultUnlocked `Economy` provider, or `0` when unavailable |
 | Souls | Active `CurrencyProvider`, or `0` when none is registered |
 | Kills | Paper `Statistic.PLAYER_KILLS` |
 | Deaths | Paper `Statistic.DEATHS` |
@@ -84,19 +89,21 @@ The following placeholders are available in the configured title and lines:
 | `%player_name%` | Current player name |
 | `%player_ping%` | Current ping in milliseconds |
 | `%lifesteal_hearts%` | Current maximum hearts from LifestealCore |
-| `%lifesteal_money%` | Formatted Money balance, or `0` |
+| `%lifesteal_balance%` | Formatted Vault economy balance, or `0` |
+| `%lifesteal_money%` | Compatibility alias for `%lifesteal_balance%` |
 | `%lifesteal_souls%` | Formatted balance from LifestealSouls, or `0` |
 | `%lifesteal_kills%` | Minecraft player-kill statistic |
 | `%lifesteal_deaths%` | Minecraft death statistic |
 | `%server_online%` | Current online player count |
 | `%server_max%` | Configured server player limit |
 
-Money and Souls are formatted as English whole numbers, for example `950`, `1,250`,
-`25,000`, and `1,000,000`.
+Balance is formatted with English grouping and up to two decimal places, for example
+`950`, `1,250.5`, and `25,000.75`. Souls remain formatted as whole numbers.
 
 LifestealSouls registers its balance provider dynamically through Bukkit Services.
 The scoreboard detects registration and removal without requiring a restart or a hard
-plugin dependency.
+plugin dependency. Balance and Souls use separate read-only providers, so the real
+EssentialsX balance and custom Souls can be displayed at the same time.
 
 ## PlaceholderAPI integration
 
@@ -105,6 +112,7 @@ when PlaceholderAPI is not installed. When it is enabled, the plugin registers a
 internal expansion with the `lifesteal` identifier and exposes:
 
 - `%lifesteal_hearts%`
+- `%lifesteal_balance%`
 - `%lifesteal_money%`
 - `%lifesteal_souls%`
 - `%lifesteal_kills%`
@@ -129,7 +137,7 @@ scoreboard:
   lines:
     - ""
     - "<red>❤</red> Hearts: <white>%lifesteal_hearts%</white>"
-    - "<green>$</green> Money: <white>%lifesteal_money%</white>"
+    - "<green>$</green> Balance: <white>%lifesteal_balance%</white>"
     - "<aqua>✦</aqua> Souls: <white>%lifesteal_souls%</white>"
     - ""
     - "<yellow>⚔</yellow> Kills: <white>%lifesteal_kills%</white>"
@@ -145,6 +153,10 @@ strict mode. Invalid title formatting falls back to the default title, while inv
 lines are ignored. If no valid configured lines remain, the default layout is used.
 Minecraft sidebars support at most 15 lines, so additional lines are ignored with a
 warning.
+
+During startup and configuration reload, the exact old default `Money` line is migrated
+to the new `Balance` line automatically. Custom lines containing different text are not
+modified.
 
 ## Commands
 
@@ -164,31 +176,33 @@ disconnects or the plugin restarts.
 | `lifestealscoreboard.toggle` | Everyone | Allows toggling the personal sidebar. |
 | `lifestealscoreboard.admin` | Server operators | Allows reloading the plugin configuration. |
 
-## Money and Souls provider
+## Balance and Souls providers
 
-`CurrencyProvider` is a public, read-only service contract:
+Regular money uses the dedicated `BalanceProvider` contract:
 
 ```java
-public interface CurrencyProvider {
-    long getMoney(UUID playerId);
-    long getSouls(UUID playerId);
+public interface BalanceProvider {
+    double getBalance(UUID playerId);
 }
 ```
 
-A future LifestealEconomy plugin can implement the interface and register it through
+LifestealScoreboard registers a normal-priority provider backed by the active Vault
+`Economy` service. LifestealSouls continues to use the separate legacy
+`CurrencyProvider` service, keeping selective Scoreboard deployment compatible with an
+already deployed Souls JAR. Another plugin can register its own Balance provider through
 the Bukkit services manager:
 
 ```java
 Bukkit.getServicesManager().register(
-        CurrencyProvider.class,
+        BalanceProvider.class,
         provider,
         economyPlugin,
         ServicePriority.Normal);
 ```
 
-LifestealScoreboard automatically switches to the highest-priority registered provider
-and returns to its zero-value fallback when that service is removed. It never queries or
-writes another plugin's database directly.
+LifestealScoreboard automatically switches to the highest-priority registered Balance
+provider and returns to its zero-value fallback when that service is removed. It reads
+through Vault and never queries or writes the EssentialsX database directly.
 
 ## Build
 
@@ -206,9 +220,10 @@ LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
 
 Unit tests cover placeholder replacement, unknown placeholders, static template reuse,
 duplicate visual lines, blank lines, ordering, the 15-line limit, number formatting, and
-the fallback Money/Souls provider. A runtime-linkage test also confirms that the main
-plugin class loads when PlaceholderAPI is absent and that LifestealCore implements the
-required read-only API.
+the fallback Balance/Souls provider, fractional Balance formatting, and migration of the
+legacy Money line. Runtime-linkage tests also confirm that the main plugin class loads
+when PlaceholderAPI or Vault API is absent and that LifestealCore implements the required
+read-only API.
 
 ## Deployment
 
@@ -226,7 +241,8 @@ Paper restart.
 ## Current limitations
 
 - The player toggle is not persisted across sessions.
-- Money and Souls remain `0` until a `CurrencyProvider` is registered.
+- Balance remains `0` when Vault/VaultUnlocked has no active economy provider.
+- Souls remain `0` until LifestealSouls registers its provider.
 - Kills and deaths use Minecraft statistics rather than a custom PvP database.
 - PlaceholderAPI placeholders are available only for online player contexts.
 - Minecraft exposes one sidebar display slot. Running another sidebar plugin at the same

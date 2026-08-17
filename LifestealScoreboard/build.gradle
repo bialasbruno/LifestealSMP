@@ -21,6 +21,10 @@ repositories {
         name = 'placeholderapi'
         url = uri('https://repo.extendedclip.com/releases/')
     }
+    maven {
+        name = 'vaultunlocked'
+        url = uri('https://repo.codemc.io/repository/creatorfromhell/')
+    }
 }
 
 dependencies {
@@ -30,6 +34,7 @@ dependencies {
 
     // Optional runtime integration. The API is never bundled into this plugin.
     compileOnly 'me.clip:placeholderapi:2.12.3'
+    compileOnly 'net.milkbowl.vault:VaultUnlockedAPI:2.16'
 
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'

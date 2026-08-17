@@ -8,6 +8,9 @@ depend:
   - LifestealCore
 softdepend:
   - PlaceholderAPI
+  - Vault
+  - VaultUnlocked
+  - Essentials
 
 commands:
   lifestealscoreboard:

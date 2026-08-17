@@ -55,8 +55,12 @@ grep -q "paper-api:26.2.build.112-stable" LifestealSell/build.gradle
 grep -q "junit-platform-launcher" LifestealSell/build.gradle
 grep -q 'SHOP_COMMAND_NAMESPACE' LifestealSell/src/main/java/dev/lifesteal/sell/command/SellCommand.java
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
+grep -q "VaultUnlockedAPI:2.16" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
 grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml
+grep -q "VaultUnlocked" LifestealScoreboard/src/main/resources/plugin.yml
+grep -q "VaultBalanceProvider" LifestealScoreboard/src/main/java/dev/lifesteal/scoreboard/LifestealScoreboardPlugin.java
+grep -q "Balance:.*%lifesteal_balance%" LifestealScoreboard/src/main/resources/config.yml
 grep -q "implements LifestealCoreApi" LifestealCore/src/main/java/dev/lifesteal/core/LifestealCorePlugin.java
 grep -q 'setItemModel(BROKEN_HEART_MODEL)' LifestealCore/src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java
 grep -q 'setItemModel(HEART_MODEL)' LifestealCore/src/main/java/dev/lifesteal/core/heart/HeartItemFactory.java

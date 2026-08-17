@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScoreboardSettingsTest {
@@ -42,5 +43,20 @@ class ScoreboardSettingsTest {
         assertEquals(15, settings.lineLayout().lines().size());
         assertEquals("Line 0", settings.lineLayout().lines().getFirst().template().raw());
         assertEquals("Line 14", settings.lineLayout().lines().getLast().template().raw());
+    }
+
+    @Test
+    void migratesOnlyTheLegacyDefaultMoneyLine() {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("scoreboard.lines", List.of(
+                "Custom",
+                "<green>$</green> Money: <white>%lifesteal_money%</white>"));
+
+        assertTrue(ScoreboardSettings.migrateLegacyBalanceLine(config));
+        assertEquals(List.of(
+                "Custom",
+                "<green>$</green> Balance: <white>%lifesteal_balance%</white>"),
+                config.getStringList("scoreboard.lines"));
+        assertFalse(ScoreboardSettings.migrateLegacyBalanceLine(config));
     }
 }

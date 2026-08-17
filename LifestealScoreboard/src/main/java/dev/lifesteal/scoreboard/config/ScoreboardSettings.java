@@ -22,10 +22,14 @@ public record ScoreboardSettings(
 
     private static final String DEFAULT_TITLE =
             "<gradient:#ff3b3b:#ff8c42><bold>LIFESTEAL SMP</bold></gradient>";
+    private static final String LEGACY_BALANCE_LINE =
+            "<green>$</green> Money: <white>%lifesteal_money%</white>";
+    private static final String DEFAULT_BALANCE_LINE =
+            "<green>$</green> Balance: <white>%lifesteal_balance%</white>";
     private static final List<String> DEFAULT_LINES = List.of(
             "",
             "<red>❤</red> Hearts: <white>%lifesteal_hearts%</white>",
-            "<green>$</green> Money: <white>%lifesteal_money%</white>",
+            DEFAULT_BALANCE_LINE,
             "<aqua>✦</aqua> Souls: <white>%lifesteal_souls%</white>",
             "",
             "<yellow>⚔</yellow> Kills: <white>%lifesteal_kills%</white>",
@@ -43,6 +47,27 @@ public record ScoreboardSettings(
         List<PlaceholderTemplate> lines = readLines(config, logger);
         return new ScoreboardSettings(
                 enabled, interval, title, ScoreboardLineLayout.create(lines));
+    }
+
+    /** Updates only the untouched legacy default line and preserves custom layouts. */
+    public static boolean migrateLegacyBalanceLine(FileConfiguration config) {
+        Object value = config.get("scoreboard.lines");
+        if (!(value instanceof List<?> configuredLines)) {
+            return false;
+        }
+
+        List<Object> migrated = new ArrayList<>(configuredLines);
+        boolean changed = false;
+        for (int index = 0; index < migrated.size(); index++) {
+            if (LEGACY_BALANCE_LINE.equals(migrated.get(index))) {
+                migrated.set(index, DEFAULT_BALANCE_LINE);
+                changed = true;
+            }
+        }
+        if (changed) {
+            config.set("scoreboard.lines", migrated);
+        }
+        return changed;
     }
 
     private static boolean readBoolean(FileConfiguration config, Logger logger) {

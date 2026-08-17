@@ -15,6 +15,7 @@ final class LifestealPlaceholderExpansion extends PlaceholderExpansion {
 
     private static final List<String> PLACEHOLDERS = List.of(
             "%lifesteal_hearts%",
+            "%lifesteal_balance%",
             "%lifesteal_money%",
             "%lifesteal_souls%",
             "%lifesteal_kills%",

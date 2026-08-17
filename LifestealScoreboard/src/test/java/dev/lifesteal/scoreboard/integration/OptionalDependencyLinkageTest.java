@@ -23,6 +23,16 @@ class OptionalDependencyLinkageTest {
     }
 
     @Test
+    void mainPluginClassLoadsWithoutVaultApiOnRuntimeClasspath() {
+        assertThrows(
+                ClassNotFoundException.class,
+                () -> Class.forName("net.milkbowl.vault.economy.Economy"));
+        assertDoesNotThrow(() -> Class.forName(
+                LifestealScoreboardPlugin.class.getName(), false,
+                LifestealScoreboardPlugin.class.getClassLoader()));
+    }
+
+    @Test
     void corePluginImplementsTheRequiredReadOnlyApi() {
         assertTrue(JavaPlugin.class.isAssignableFrom(LifestealScoreboardPlugin.class));
         assertTrue(LifestealCoreApi.class.isAssignableFrom(LifestealCorePlugin.class));
