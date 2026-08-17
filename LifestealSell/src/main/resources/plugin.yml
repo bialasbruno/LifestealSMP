@@ -1,0 +1,20 @@
+name: LifestealSell
+version: '${version}'
+main: dev.lifesteal.sell.LifestealSellPlugin
+api-version: '26.2'
+description: Simple EconomyShopGUI selling commands for LifestealSMP.
+author: Bruno
+softdepend:
+  - EconomyShopGUI
+  - EconomyShopGUI-Premium
+
+commands:
+  sell:
+    description: Open the sell GUI or sell every item matching the held material.
+    usage: /sell [hand|help]
+    permission: lifestealsell.use
+
+permissions:
+  lifestealsell.use:
+    description: Allows using the Lifesteal sell command.
+    default: true

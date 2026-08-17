@@ -26,6 +26,7 @@ grep -q "include('LifestealSoulItems')" settings.gradle
 grep -q "include('LifestealSoulShop')" settings.gradle
 grep -q "include('LifestealSpawn')" settings.gradle
 grep -q "include('LifestealHomes')" settings.gradle
+grep -q "include('LifestealSell')" settings.gradle
 grep -q "junit-platform-launcher" LifestealSouls/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealSouls/build.gradle
 grep -q "implements LifestealSoulsApi" LifestealSouls/src/main/java/dev/lifesteal/souls/LifestealSoulsPlugin.java
@@ -50,6 +51,9 @@ grep -q "paper-api:26.2.build.112-stable" LifestealHomes/build.gradle
 grep -q "junit-platform-launcher" LifestealHomes/build.gradle
 grep -q "lifestealhomes.limit.unlimited" LifestealHomes/src/main/resources/plugin.yml
 grep -q "SQLiteHomeRepository" LifestealHomes/src/main/java/dev/lifesteal/homes/LifestealHomesPlugin.java
+grep -q "paper-api:26.2.build.112-stable" LifestealSell/build.gradle
+grep -q "junit-platform-launcher" LifestealSell/build.gradle
+grep -q 'SHOP_COMMAND_NAMESPACE' LifestealSell/src/main/java/dev/lifesteal/sell/command/SellCommand.java
 grep -q "placeholderapi:2.12.3" LifestealScoreboard/build.gradle
 grep -q "softdepend:" LifestealScoreboard/src/main/resources/plugin.yml
 grep -q "PlaceholderAPI" LifestealScoreboard/src/main/resources/plugin.yml

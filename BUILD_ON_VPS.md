@@ -18,6 +18,7 @@ pojedynczy moduł:
 ./build-vps.sh soulshop
 ./build-vps.sh spawn
 ./build-vps.sh homes
+./build-vps.sh sell
 ```
 
 Scoreboard korzysta z API Core, więc Gradle może skompilować klasy Core jako
@@ -41,9 +42,11 @@ LifestealSoulItems/build/libs/LifestealSoulItems-0.1.0.jar
 LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar
 LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar
 LifestealHomes/build/libs/LifestealHomes-0.1.0.jar
+LifestealSell/build/libs/LifestealSell-0.1.0.jar
 ```
 
 Do pełnego deploymentu wszystkich pluginów i ServerPacka użyj `./deploy.sh`.
 Selektywny deployment wykonują `./deploy.sh core`, `./deploy.sh scoreboard`,
 `./deploy.sh souls`, `./deploy.sh soulitems`, `./deploy.sh soulshop` i
-`./deploy.sh spawn` i `./deploy.sh homes`, zgodnie z `DEPLOY_README.md`.
+`./deploy.sh spawn`, `./deploy.sh homes` i `./deploy.sh sell`, zgodnie z
+`DEPLOY_README.md`.
