@@ -24,6 +24,7 @@ grep -q "include('LifestealSpawn')" settings.gradle
 grep -q "junit-platform-launcher" LifestealSouls/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealSouls/build.gradle
 grep -q "implements LifestealSoulsApi" LifestealSouls/src/main/java/dev/lifesteal/souls/LifestealSoulsPlugin.java
+grep -q "afkUseCustomTeleportLocation" LifestealSouls/src/main/java/dev/lifesteal/souls/afk/AfkZone.java
 grep -q "paper-api:26.2.build.112-stable" LifestealSoulItems/build.gradle
 grep -q "junit-platform-launcher" LifestealSoulItems/build.gradle
 grep -q "implements LifestealSoulItemsApi" LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/LifestealSoulItemsPlugin.java

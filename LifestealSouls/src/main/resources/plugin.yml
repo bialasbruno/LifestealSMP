@@ -9,7 +9,7 @@ softdepend:
 
 commands:
   afk:
-    description: Teleports you to the center of the configured AFK zone.
+    description: Teleports you to the configured AFK location.
     usage: /afk
     aliases: [soulafk]
     permission: lifestealsouls.afk

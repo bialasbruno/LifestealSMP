@@ -27,6 +27,12 @@ public record SoulsSettings(
         int afkMaximumX,
         int afkMaximumY,
         int afkMaximumZ,
+        boolean afkUseCustomTeleportLocation,
+        double afkTeleportX,
+        double afkTeleportY,
+        double afkTeleportZ,
+        float afkTeleportYaw,
+        float afkTeleportPitch,
         String balanceMessage,
         String playtimeRewardMessage,
         String killRewardMessage,
@@ -127,6 +133,27 @@ public record SoulsSettings(
                 Math.max(
                         config.getInt("afk-zone.minimum.z", 0),
                         config.getInt("afk-zone.maximum.z", 0)),
+                config.getBoolean("afk-zone.teleport.use-custom-location", false),
+                readDouble(
+                        config,
+                        logger,
+                        "afk-zone.teleport.x",
+                        -30_000_000D,
+                        30_000_000D,
+                        0.5D),
+                readDouble(
+                        config, logger, "afk-zone.teleport.y", -2_048D, 2_048D, 100D),
+                readDouble(
+                        config,
+                        logger,
+                        "afk-zone.teleport.z",
+                        -30_000_000D,
+                        30_000_000D,
+                        0.5D),
+                (float) readDouble(
+                        config, logger, "afk-zone.teleport.yaw", -360D, 360D, 0D),
+                (float) readDouble(
+                        config, logger, "afk-zone.teleport.pitch", -90D, 90D, 0D),
                 config.getString(
                         "messages.balance",
                         "<aqua>Souls:</aqua> <white>{balance}</white>"),
@@ -172,6 +199,22 @@ public record SoulsSettings(
             long fallback) {
         long value = config.getLong(path, fallback);
         if (value < minimum || value > maximum) {
+            logger.warning("'" + path + "' must be between " + minimum + " and " + maximum
+                    + "; using " + fallback + '.');
+            return fallback;
+        }
+        return value;
+    }
+
+    private static double readDouble(
+            FileConfiguration config,
+            Logger logger,
+            String path,
+            double minimum,
+            double maximum,
+            double fallback) {
+        double value = config.getDouble(path, fallback);
+        if (!Double.isFinite(value) || value < minimum || value > maximum) {
             logger.warning("'" + path + "' must be between " + minimum + " and " + maximum
                     + "; using " + fallback + '.');
             return fallback;

@@ -29,6 +29,15 @@ afk-zone:
     x: 0
     y: 0
     z: 0
+  teleport:
+    # When false, /afk uses the center of the cuboid above.
+    # When true, /afk and LifestealSpawn use this exact location.
+    use-custom-location: false
+    x: 0.5
+    y: 100.0
+    z: 0.5
+    yaw: 0.0
+    pitch: 0.0
 
 messages:
   # Balance and reward notifications are displayed above the hotbar for 2 seconds.

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/** Teleports players to the exact center of the configured AFK cuboid. */
+/** Teleports players to the configured AFK location or the cuboid center. */
 public final class AfkCommand implements CommandExecutor {
 
     private final Plugin plugin;
@@ -55,7 +55,7 @@ public final class AfkCommand implements CommandExecutor {
             messages.send(player, settings.afkUnavailableMessage());
             return true;
         }
-        Location destination = zone.center(world, settings, player.getYaw());
+        Location destination = zone.destination(world, settings, player.getYaw());
         if (destination.getY() < world.getMinHeight()
                 || destination.getY() >= world.getMaxHeight()) {
             messages.send(player, settings.afkUnavailableMessage());

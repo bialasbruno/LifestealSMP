@@ -5,7 +5,7 @@
 go z powrotem na spawn.
 
 Plugin chroni również świat skonfigurowany dla `/afk`. Gdy gracz spadnie w nim
-poniżej `Y=3`, zostaje przeniesiony z powrotem do aktualnego środka strefy AFK.
+poniżej `Y=3`, zostaje przeniesiony z powrotem do aktualnego punktu `/afk`.
 
 Mechanika jest osobnym pluginem, ponieważ nie należy do systemu serc, waluty,
 sklepu ani scoreboardu.
@@ -47,10 +47,10 @@ problem jest zapisywany w logu najwyżej raz na 30 sekund.
 
 ## Ratowanie w świecie AFK
 
-LifestealSpawn korzysta z tej samej konfiguracji `afk-zone` i tej samej metody
-wyznaczania środka co komenda `/afk`. Nie trzeba wpisywać świata ani koordynatów
-po raz drugi. Po zmianie granic strefy przez `/soulsadmin reload` kolejne
-teleportacje ratunkowe automatycznie użyją nowego środka.
+LifestealSpawn korzysta z tej samej konfiguracji `afk-zone` i tego samego punktu
+docelowego co komenda `/afk`. Nie trzeba wpisywać świata ani koordynatów po raz
+drugi. Po zmianie `afk-zone.teleport` i wykonaniu `/soulsadmin reload` kolejne
+teleportacje ratunkowe automatycznie użyją nowego punktu.
 
 Ratunek uruchamia się dopiero poniżej progu, więc przy domyślnym `trigger-y: 3.0`
 pozycja dokładnie `Y=3` jest bezpieczna, a `Y=2.999` uruchamia teleport. Prędkość
@@ -62,8 +62,8 @@ afk-rescue:
   trigger-y: 3.0
 ```
 
-Jeżeli strefa AFK jest wyłączona, jej świat nie jest załadowany albo środek
-znajduje się poniżej progu ratunkowego, teleport nie zostanie wykonany.
+Jeżeli strefa AFK jest wyłączona, jej świat nie jest załadowany albo punkt
+docelowy znajduje się poniżej progu ratunkowego, teleport nie zostanie wykonany.
 
 ## Konfiguracja Multiverse
 

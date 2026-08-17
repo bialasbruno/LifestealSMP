@@ -32,7 +32,7 @@ public final class AfkDestinationResolver {
         if (world == null) {
             return null;
         }
-        Location destination = afkZone.center(world, settings, yaw);
+        Location destination = afkZone.destination(world, settings, yaw);
         if (destination.getY() < world.getMinHeight()
                 || destination.getY() >= world.getMaxHeight()) {
             return null;

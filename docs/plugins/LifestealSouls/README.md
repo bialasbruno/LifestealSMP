@@ -67,8 +67,9 @@ Po wejściu gracz widzi nad hotbarem interaktywny licznik, np. `02:00`, `01:59`,
 rozpoczyna następne odliczanie. Cykl trwa tak długo, jak gracz pozostaje w
 strefie.
 
-Komenda `/afk` teleportuje gracza dokładnie na geometryczny środek cuboidu,
-z zachowaniem kierunku, w którym patrzył. Jeżeli inny plugin zajmie nazwę
+Komenda `/afk` teleportuje gracza do sztywnego punktu ustawionego w
+`afk-zone.teleport` albo, opcjonalnie, na geometryczny środek cuboidu. Jeżeli
+inny plugin zajmie nazwę
 `/afk`, dostępny jest również alias `/soulafk` oraz namespaced command
 `/lifestealsouls:afk`.
 
@@ -105,7 +106,7 @@ przez konsolę, nie przez gracza.
 
 | Komenda | Opis |
 | --- | --- |
-| `/afk` | Teleportuje na środek skonfigurowanej strefy AFK. |
+| `/afk` | Teleportuje do skonfigurowanego punktu strefy AFK. |
 | `/souls` | Pokazuje własne saldo nad hotbarem przez 2 sekundy. |
 | `/soulstop` | Otwiera GUI z 10 najwyższymi saldami. |
 | `/soulsadmin balance <player\|uuid>` | Pokazuje saldo gracza. |
@@ -160,12 +161,26 @@ afk-zone:
     x: 0
     y: 0
     z: 0
+  teleport:
+    use-custom-location: false
+    x: 0.5
+    y: 100.0
+    z: 0.5
+    yaw: 0.0
+    pitch: 0.0
 ```
 
 Aby uruchomić strefę, wpisz nazwę świata, ustaw współrzędne dwóch przeciwległych
 narożników, zmień `enabled` na `true` i wykonaj `/soulsadmin reload`. Kolejność
 narożników nie ma znaczenia — plugin sam normalizuje wartości minimalne i
 maksymalne. Pusta wartość `world` bezpiecznie blokuje naliczanie nagród.
+
+Przy `use-custom-location: false` komenda zachowuje wcześniejsze działanie i
+wylicza środek cuboidu. Ustaw `use-custom-location: true`, aby `x`, `y`, `z`,
+`yaw` oraz `pitch` stały się niezależnym, sztywnym punktem teleportacji. Punkt
+powinien znajdować się wewnątrz cuboidu, jeśli gracz ma od razu otrzymywać
+nagrody AFK i ochronę PvP. `LifestealSpawn` używa dokładnie tego samego punktu,
+gdy ratuje gracza po spadnięciu poniżej progu.
 
 Wiadomości obsługują MiniMessage oraz placeholdery `{balance}`, `{amount}` i
 `{victim}` zależnie od komunikatu. Licznik `afk-countdown` obsługuje dodatkowo

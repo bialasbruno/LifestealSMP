@@ -27,6 +27,7 @@ class SoulsSettingsTest {
         assertEquals(1L, settings.afkRewardAmount());
         assertEquals(120_000L, settings.afkRewardIntervalMillis());
         assertEquals("", settings.afkWorldName());
+        assertFalse(settings.afkUseCustomTeleportLocation());
     }
 
     @Test
@@ -68,5 +69,26 @@ class SoulsSettingsTest {
         assertEquals(20, settings.afkMaximumX());
         assertEquals(90, settings.afkMaximumY());
         assertEquals(40, settings.afkMaximumZ());
+    }
+
+    @Test
+    void customAfkTeleportLocationIsLoadedIndependentlyFromTheCuboid() {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("afk-zone.teleport.use-custom-location", true);
+        config.set("afk-zone.teleport.x", 12.5D);
+        config.set("afk-zone.teleport.y", 75D);
+        config.set("afk-zone.teleport.z", -8.5D);
+        config.set("afk-zone.teleport.yaw", 90D);
+        config.set("afk-zone.teleport.pitch", -10D);
+
+        SoulsSettings settings = SoulsSettings.load(
+                config, Logger.getLogger("SoulsSettingsTest"));
+
+        assertTrue(settings.afkUseCustomTeleportLocation());
+        assertEquals(12.5D, settings.afkTeleportX());
+        assertEquals(75D, settings.afkTeleportY());
+        assertEquals(-8.5D, settings.afkTeleportZ());
+        assertEquals(90F, settings.afkTeleportYaw());
+        assertEquals(-10F, settings.afkTeleportPitch());
     }
 }

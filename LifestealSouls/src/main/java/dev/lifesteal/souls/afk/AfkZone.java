@@ -37,6 +37,19 @@ public final class AfkZone {
                 0.0F);
     }
 
+    public Location destination(World world, SoulsSettings settings, float fallbackYaw) {
+        if (!settings.afkUseCustomTeleportLocation()) {
+            return center(world, settings, fallbackYaw);
+        }
+        return new Location(
+                world,
+                settings.afkTeleportX(),
+                settings.afkTeleportY(),
+                settings.afkTeleportZ(),
+                settings.afkTeleportYaw(),
+                settings.afkTeleportPitch());
+    }
+
     static double centerCoordinate(int minimum, int maximum) {
         return minimum + (((long) maximum - minimum + 1L) / 2.0D);
     }
