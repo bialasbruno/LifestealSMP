@@ -4,6 +4,7 @@ Ten projekt zawiera jednocześnie:
 - LifestealCore (plugin Paper),
 - LifestealScoreboard (plugin Paper),
 - LifestealSouls (plugin Paper),
+- LifestealSoulItems (plugin Paper),
 - LifestealSoulShop (plugin Paper),
 - LifestealSpawn (plugin Paper),
 - `ServerPack/` (źródła resource packa),
@@ -26,6 +27,7 @@ Bez argumentu wykonywany jest pełny deployment. Dostępne cele:
 ./deploy.sh core
 ./deploy.sh scoreboard
 ./deploy.sh souls
+./deploy.sh soulitems
 ./deploy.sh soulshop
 ./deploy.sh spawn
 ```
@@ -35,6 +37,8 @@ Bez argumentu wykonywany jest pełny deployment. Dostępne cele:
 - `scoreboard` — wyłącznie LifestealScoreboard, bez przebudowy i publikacji
   ServerPacka,
 - `souls` — wyłącznie LifestealSouls, bez przebudowy i publikacji ServerPacka.
+- `soulitems` — LifestealSoulItems oraz ServerPack zawierający modele i tekstury
+  customowych przedmiotów.
 - `soulshop` — wyłącznie LifestealSoulShop, bez przebudowy i publikacji
   ServerPacka.
 - `spawn` — wyłącznie LifestealSpawn, bez przebudowy i publikacji ServerPacka.
@@ -71,6 +75,7 @@ cd ~/LifestealCore
 ./update.sh core
 ./update.sh scoreboard
 ./update.sh souls
+./update.sh soulitems
 ./update.sh soulshop
 ./update.sh spawn
 ```
@@ -99,10 +104,12 @@ Obecnie skonfigurowane są:
 - build Core JAR: `LifestealCore/build/libs/LifestealCore-0.2.1.jar`
 - build Scoreboard JAR: `LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar`
 - build Souls JAR: `LifestealSouls/build/libs/LifestealSouls-0.1.0.jar`
+- build SoulItems JAR: `LifestealSoulItems/build/libs/LifestealSoulItems-0.1.0.jar`
 - build SoulShop JAR: `LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar`
 - build Spawn JAR: `LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar`
 - docelowe JAR-y Paper: `LifestealCore.jar`, `LifestealScoreboard.jar`,
-  `LifestealSouls.jar`, `LifestealSoulShop.jar` i `LifestealSpawn.jar`
+  `LifestealSouls.jar`, `LifestealSoulItems.jar`, `LifestealSoulShop.jar` i
+  `LifestealSpawn.jar`
 
 ## Backupi
 
@@ -112,5 +119,6 @@ Każdy deploy zapisuje poprzednią wersję wybranych pluginów w:
 ~/.lifesteal-deploy-backups/
 ```
 
-W trybach `all` i `core` backup obejmuje również `server.properties` oraz
-ServerPack. Dzięki temu poprzednią wdrożoną wersję można łatwo odzyskać.
+W trybach `all`, `core` i `soulitems` backup obejmuje również
+`server.properties` oraz ServerPack. Dzięki temu poprzednią wdrożoną wersję
+można łatwo odzyskać.

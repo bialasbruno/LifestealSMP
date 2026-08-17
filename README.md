@@ -14,6 +14,7 @@ LifestealSMP/
 ├── LifestealCore/       # moduł Gradle pluginu Core
 ├── LifestealScoreboard/ # moduł Gradle pluginu Scoreboard
 ├── LifestealSouls/      # moduł Gradle waluty Souls
+├── LifestealSoulItems/  # moduł Gradle customowych przedmiotów Souls
 ├── LifestealSoulShop/   # moduł Gradle sklepu za Souls
 ├── LifestealSpawn/      # moduł Gradle bezpieczeństwa świata spawn
 ├── ServerPack/          # źródła resource packa
@@ -40,6 +41,7 @@ poleceniem.
 | `LifestealCore` | `0.2.1` | [README pluginu](docs/plugins/LifestealCore/README.md) |
 | `LifestealScoreboard` | `0.1.0` | [README pluginu](docs/plugins/LifestealScoreboard/README.md) |
 | `LifestealSouls` | `0.1.0` | [README pluginu](docs/plugins/LifestealSouls/README.md) |
+| `LifestealSoulItems` | `0.1.0` | [README pluginu](docs/plugins/LifestealSoulItems/README.md) |
 | `LifestealSoulShop` | `0.1.0` | [README pluginu](docs/plugins/LifestealSoulShop/README.md) |
 | `LifestealSpawn` | `0.1.0` | [README pluginu](docs/plugins/LifestealSpawn/README.md) |
 
@@ -67,6 +69,7 @@ Build pojedynczego modułu lokalnie:
 ./gradlew :LifestealCore:clean :LifestealCore:build
 ./gradlew :LifestealScoreboard:clean :LifestealScoreboard:build
 ./gradlew :LifestealSouls:clean :LifestealSouls:build
+./gradlew :LifestealSoulItems:clean :LifestealSoulItems:build
 ./gradlew :LifestealSoulShop:clean :LifestealSoulShop:build
 ./gradlew :LifestealSpawn:clean :LifestealSpawn:build
 ```
@@ -79,14 +82,15 @@ Build w Dockerze na VPS:
 ./build-vps.sh core
 ./build-vps.sh scoreboard
 ./build-vps.sh souls
+./build-vps.sh soulitems
 ./build-vps.sh soulshop
 ./build-vps.sh spawn
 ```
 
 Brak argumentu oznacza `all`. Tryb `scoreboard` może skompilować klasy Core,
 ponieważ Scoreboard korzysta z jego API, ale nie uruchamia pełnego buildu ani
-testów Core. Tak samo tryb `soulshop` może skompilować klasy Souls jako
-zależność, ale nie uruchamia testów modułu Souls.
+testów Core. Tak samo tryb `soulshop` może skompilować klasy Souls i SoulItems
+jako zależności, ale nie uruchamia testów tych modułów.
 
 Finalne JAR-y powstają w katalogach modułów:
 
@@ -94,6 +98,7 @@ Finalne JAR-y powstają w katalogach modułów:
 LifestealCore/build/libs/LifestealCore-0.2.1.jar
 LifestealScoreboard/build/libs/LifestealScoreboard-0.1.0.jar
 LifestealSouls/build/libs/LifestealSouls-0.1.0.jar
+LifestealSoulItems/build/libs/LifestealSoulItems-0.1.0.jar
 LifestealSoulShop/build/libs/LifestealSoulShop-0.1.0.jar
 LifestealSpawn/build/libs/LifestealSpawn-0.1.0.jar
 ```
@@ -107,7 +112,7 @@ Najczęstsza operacja na VPS:
 
 ```bash
 cd ~/LifestealCore
-./update.sh [all|core|scoreboard|souls|soulshop|spawn]
+./update.sh [all|core|scoreboard|souls|soulitems|soulshop|spawn]
 ```
 
 `update.sh` wykonuje `git pull --ff-only`, a następnie przekazuje wybrany cel do
@@ -119,6 +124,7 @@ cd ~/LifestealCore
 | `core` | LifestealCore | LifestealCore | tak |
 | `scoreboard` | LifestealScoreboard | LifestealScoreboard | nie |
 | `souls` | LifestealSouls | LifestealSouls | nie |
+| `soulitems` | LifestealSoulItems | LifestealSoulItems | tak |
 | `soulshop` | LifestealSoulShop | LifestealSoulShop | nie |
 | `spawn` | LifestealSpawn | LifestealSpawn | nie |
 
@@ -137,11 +143,12 @@ instrukcja buildu VPS w [BUILD_ON_VPS.md](BUILD_ON_VPS.md).
 ## ServerPack
 
 `ServerPack/` przechowuje wyłącznie źródła resource packa. Archiwum ZIP jest
-tworzone podczas deploymentu Core lub pełnego deploymentu i trafia do
-`build/ServerPack.zip`.
+tworzone podczas deploymentu Core, SoulItems lub pełnego deploymentu i trafia
+do `build/ServerPack.zip`.
 
 Zmiana wyłącznie Scoreboardu, Souls, SoulShopu lub Spawnu nie przebudowuje ani
-nie publikuje ServerPacka.
+nie publikuje ServerPacka. Cel SoulItems publikuje paczkę, ponieważ zawiera ona
+tekstury i modele customowych przedmiotów.
 
 ## Dodawanie kolejnego pluginu
 

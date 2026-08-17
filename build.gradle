@@ -6,6 +6,7 @@ tasks.named('build') {
     dependsOn ':LifestealCore:build'
     dependsOn ':LifestealScoreboard:build'
     dependsOn ':LifestealSouls:build'
+    dependsOn ':LifestealSoulItems:build'
     dependsOn ':LifestealSoulShop:build'
     dependsOn ':LifestealSpawn:build'
 }
@@ -14,6 +15,7 @@ tasks.named('clean') {
     dependsOn ':LifestealCore:clean'
     dependsOn ':LifestealScoreboard:clean'
     dependsOn ':LifestealSouls:clean'
+    dependsOn ':LifestealSoulItems:clean'
     dependsOn ':LifestealSoulShop:clean'
     dependsOn ':LifestealSpawn:clean'
 }

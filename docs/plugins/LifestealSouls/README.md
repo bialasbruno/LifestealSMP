@@ -206,7 +206,7 @@ provider waluty przez Bukkit Services. Istniejący placeholder:
 zaczyna wtedy pokazywać saldo z `LifestealSouls`. Integracja jest opcjonalna;
 brak Scoreboardu nie blokuje działania waluty.
 
-## API dla LifestealSoulShop i LifestealSoulItems
+## API dla LifestealSoulShop
 
 Plugin rejestruje w Bukkit Services interfejs:
 
@@ -221,8 +221,9 @@ Udostępnia on:
   salda.
 
 `LifestealSoulShop` ma twardą zależność od `LifestealSouls`, odczytuje API z
-Bukkit Services i wydaje przedmiot dopiero po udanym `trySpend`. Przyszły
-`LifestealSoulItems` może korzystać z tej samej integracji.
+Bukkit Services i wydaje przedmiot dopiero po udanym `trySpend`.
+`LifestealSoulItems` pozostaje niezależne od waluty: definiuje customowe
+przedmioty, a SoulShop łączy oba API w procesie zakupu.
 
 ## Build i instalacja
 

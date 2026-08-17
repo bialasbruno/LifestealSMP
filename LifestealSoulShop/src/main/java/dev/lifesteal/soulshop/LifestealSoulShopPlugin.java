@@ -1,5 +1,6 @@
 package dev.lifesteal.soulshop;
 
+import dev.lifesteal.soulitems.api.LifestealSoulItemsApi;
 import dev.lifesteal.soulshop.command.SoulShopCommand;
 import dev.lifesteal.soulshop.config.SoulShopSettings;
 import dev.lifesteal.soulshop.menu.SoulShopMenu;
@@ -9,6 +10,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
+
 public final class LifestealSoulShopPlugin extends JavaPlugin {
 
     private SoulShopSettings settings;
@@ -17,18 +20,32 @@ public final class LifestealSoulShopPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        migrateLaunchProductConfig();
         settings = SoulShopSettings.load(getConfig(), getLogger());
 
-        RegisteredServiceProvider<LifestealSoulsApi> registration =
+        RegisteredServiceProvider<LifestealSoulsApi> soulsRegistration =
                 getServer().getServicesManager().getRegistration(LifestealSoulsApi.class);
-        if (registration == null) {
+        if (soulsRegistration == null) {
             getLogger().severe("LifestealSouls API is unavailable; disabling LifestealSoulShop.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        RegisteredServiceProvider<LifestealSoulItemsApi> itemsRegistration =
+                getServer().getServicesManager().getRegistration(LifestealSoulItemsApi.class);
+        if (itemsRegistration == null) {
+            getLogger().severe(
+                    "LifestealSoulItems API is unavailable; disabling LifestealSoulShop.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         MessageService messages = new MessageService(this);
-        menu = new SoulShopMenu(this, registration.getProvider(), messages, this::settings);
+        menu = new SoulShopMenu(
+                this,
+                soulsRegistration.getProvider(),
+                itemsRegistration.getProvider(),
+                messages,
+                this::settings);
         getServer().getPluginManager().registerEvents(menu, this);
 
         PluginCommand soulShop = getCommand("soulshop");
@@ -57,5 +74,37 @@ public final class LifestealSoulShopPlugin extends JavaPlugin {
         if (menu != null) {
             menu.refreshOpenMenus();
         }
+    }
+
+    private void migrateLaunchProductConfig() {
+        if (getConfig().contains("config-version", true)
+                && getConfig().getInt("config-version", 1) >= 2) {
+            return;
+        }
+
+        getConfig().set("product.material", null);
+        getConfig().set("product.amount", null);
+        if (getConfig().getLong("product.price", 100L) == 100L) {
+            getConfig().set("product.price", 2_500L);
+        }
+        if ("<aqua><bold>Diamond Pickaxe</bold></aqua>"
+                .equals(getConfig().getString("menu.product-name"))) {
+            getConfig().set("menu.product-name", null);
+        }
+        if (getConfig().getStringList("menu.product-lore").equals(List.of(
+                "",
+                "<gray>Price:</gray> <light_purple>{price} Souls</light_purple>",
+                "",
+                "<green>Click to buy</green>"))) {
+            getConfig().set("menu.product-lore", null);
+        }
+        if ("<green>Purchased Diamond Pickaxe for {price} Souls.</green>"
+                        .concat(" <gray>Balance: {balance}</gray>")
+                        .equals(getConfig().getString("messages.success"))) {
+            getConfig().set("messages.success", null);
+        }
+        getConfig().set("config-version", 2);
+        saveConfig();
+        getLogger().info("Migrated SoulShop launch product to Soul Pickaxe.");
     }
 }

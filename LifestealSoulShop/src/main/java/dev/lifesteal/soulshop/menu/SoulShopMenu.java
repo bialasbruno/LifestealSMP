@@ -1,5 +1,6 @@
 package dev.lifesteal.soulshop.menu;
 
+import dev.lifesteal.soulitems.api.LifestealSoulItemsApi;
 import dev.lifesteal.soulshop.config.SoulShopSettings;
 import dev.lifesteal.soulshop.message.MessageService;
 import dev.lifesteal.soulshop.purchase.PurchaseClickGuard;
@@ -27,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-/** Three-row, read-only shop menu with one deliberately simple launch product. */
+/** Three-row, read-only shop menu offering the custom Soul Pickaxe. */
 public final class SoulShopMenu implements Listener {
 
     private static final int INVENTORY_SIZE = 27;
@@ -37,6 +38,7 @@ public final class SoulShopMenu implements Listener {
 
     private final Plugin plugin;
     private final LifestealSoulsApi soulsApi;
+    private final LifestealSoulItemsApi soulItemsApi;
     private final ShopPurchaseService purchases;
     private final MessageService messages;
     private final Supplier<SoulShopSettings> settingsSupplier;
@@ -45,10 +47,12 @@ public final class SoulShopMenu implements Listener {
     public SoulShopMenu(
             Plugin plugin,
             LifestealSoulsApi soulsApi,
+            LifestealSoulItemsApi soulItemsApi,
             MessageService messages,
             Supplier<SoulShopSettings> settingsSupplier) {
         this.plugin = plugin;
         this.soulsApi = soulsApi;
+        this.soulItemsApi = soulItemsApi;
         this.purchases = new ShopPurchaseService(soulsApi);
         this.messages = messages;
         this.settingsSupplier = settingsSupplier;
@@ -119,7 +123,7 @@ public final class SoulShopMenu implements Listener {
 
     private void purchase(Player player, Inventory menuInventory) {
         SoulShopSettings settings = settingsSupplier.get();
-        ItemStack reward = new ItemStack(settings.productMaterial(), settings.productAmount());
+        ItemStack reward = soulItemsApi.createSoulPickaxe();
 
         try {
             ShopPurchaseService.Result result = purchases.purchase(
@@ -208,10 +212,9 @@ public final class SoulShopMenu implements Listener {
     }
 
     private ItemStack createProductIcon(SoulShopSettings settings) {
-        Map<String, String> replacements = Map.of(
-                "price", Long.toString(settings.productPrice()),
-                "amount", Integer.toString(settings.productAmount()));
-        ItemStack item = new ItemStack(settings.productMaterial(), settings.productAmount());
+        Map<String, String> replacements =
+                Map.of("price", Long.toString(settings.productPrice()));
+        ItemStack item = soulItemsApi.createSoulPickaxe();
         ItemMeta meta = item.getItemMeta();
         meta.displayName(messages.renderItemText(settings.productName(), replacements));
         meta.lore(messages.renderItemLore(settings.productLore(), replacements));

@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShopPurchaseServiceTest {
 
@@ -57,7 +56,7 @@ class ShopPurchaseServiceTest {
         assertEquals(1, api.spendAttempts);
         assertEquals(1, deliveries[0]);
         assertEquals(50L, api.balance);
-        assertTrue(api.lastReason.startsWith("soulshop:"));
+        assertEquals("soulshop:soul_pickaxe", api.lastReason);
     }
 
     @Test

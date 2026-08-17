@@ -18,11 +18,16 @@ grep -q "paper-api:26.2.build.112-stable" LifestealCore/build.gradle
 grep -q "include('LifestealCore')" settings.gradle
 grep -q "include('LifestealScoreboard')" settings.gradle
 grep -q "include('LifestealSouls')" settings.gradle
+grep -q "include('LifestealSoulItems')" settings.gradle
 grep -q "include('LifestealSoulShop')" settings.gradle
 grep -q "include('LifestealSpawn')" settings.gradle
 grep -q "junit-platform-launcher" LifestealSouls/build.gradle
 grep -q "paper-api:26.2.build.112-stable" LifestealSouls/build.gradle
 grep -q "implements LifestealSoulsApi" LifestealSouls/src/main/java/dev/lifesteal/souls/LifestealSoulsPlugin.java
+grep -q "paper-api:26.2.build.112-stable" LifestealSoulItems/build.gradle
+grep -q "junit-platform-launcher" LifestealSoulItems/build.gradle
+grep -q "implements LifestealSoulItemsApi" LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/LifestealSoulItemsPlugin.java
+grep -q 'setItemModel(SOUL_PICKAXE_MODEL)' LifestealSoulItems/src/main/java/dev/lifesteal/soulitems/item/SoulItemFactory.java
 grep -q "paper-api:26.2.build.112-stable" LifestealSoulShop/build.gradle
 grep -q "junit-platform-launcher" LifestealSoulShop/build.gradle
 grep -q "LifestealSoulsApi" LifestealSoulShop/src/main/java/dev/lifesteal/soulshop/LifestealSoulShopPlugin.java
@@ -41,6 +46,9 @@ grep -q '"serverpack:heart_consume"' LifestealCore/src/main/java/dev/lifesteal/c
 test -f ServerPack/assets/serverpack/textures/item/broken_heart.png
 test -f ServerPack/assets/serverpack/textures/item/heart.png
 test -f ServerPack/assets/serverpack/textures/item/revive_totem.png
+test -f ServerPack/assets/serverpack/textures/item/soul_pickaxe.png
+test -f ServerPack/assets/serverpack/items/soul_pickaxe.json
+test -f ServerPack/assets/serverpack/models/item/soul_pickaxe.json
 test -f ServerPack/assets/serverpack/sounds/items/heart_consume.ogg
 
 # Every Paper plugin descriptor must have a dedicated, complete README.

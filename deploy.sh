@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 usage() {
-  echo "Usage: $0 [all|core|scoreboard|souls|soulshop|spawn]"
+  echo "Usage: $0 [all|core|scoreboard|souls|soulitems|soulshop|spawn]"
 }
 
 if [[ "$#" -gt 1 ]]; then
@@ -14,6 +14,7 @@ TARGET="${1:-all}"
 DEPLOY_CORE=false
 DEPLOY_SCOREBOARD=false
 DEPLOY_SOULS=false
+DEPLOY_SOULITEMS=false
 DEPLOY_SOULSHOP=false
 DEPLOY_SPAWN=false
 DEPLOY_PACK=false
@@ -23,6 +24,7 @@ case "$TARGET" in
     DEPLOY_CORE=true
     DEPLOY_SCOREBOARD=true
     DEPLOY_SOULS=true
+    DEPLOY_SOULITEMS=true
     DEPLOY_SOULSHOP=true
     DEPLOY_SPAWN=true
     DEPLOY_PACK=true
@@ -36,6 +38,10 @@ case "$TARGET" in
     ;;
   souls)
     DEPLOY_SOULS=true
+    ;;
+  soulitems)
+    DEPLOY_SOULITEMS=true
+    DEPLOY_PACK=true
     ;;
   soulshop)
     DEPLOY_SOULSHOP=true
@@ -124,6 +130,9 @@ fi
 if [[ "$DEPLOY_SOULS" == true ]]; then
   EXPECTED_PLUGIN_JARS+=("$SOULS_PLUGIN_BUILD_JAR")
 fi
+if [[ "$DEPLOY_SOULITEMS" == true ]]; then
+  EXPECTED_PLUGIN_JARS+=("$SOULITEMS_PLUGIN_BUILD_JAR")
+fi
 if [[ "$DEPLOY_SOULSHOP" == true ]]; then
   EXPECTED_PLUGIN_JARS+=("$SOULSHOP_PLUGIN_BUILD_JAR")
 fi
@@ -146,6 +155,7 @@ for build_dir in \
   "$ROOT/LifestealCore/build" \
   "$ROOT/LifestealScoreboard/build" \
   "$ROOT/LifestealSouls/build" \
+  "$ROOT/LifestealSoulItems/build" \
   "$ROOT/LifestealSoulShop/build" \
   "$ROOT/LifestealSpawn/build"; do
   if [[ -d "$build_dir" ]]; then
@@ -228,6 +238,14 @@ if [[ "$DEPLOY_SOULS" == true ]]; then
       \( -name 'LifestealSouls.jar' -o -name 'LifestealSouls-*.jar' \) -print
   )
 fi
+if [[ "$DEPLOY_SOULITEMS" == true ]]; then
+  while IFS= read -r deployed_plugin; do
+    sudo cp -a "$deployed_plugin" "$BACKUP_DIR/plugins/"
+  done < <(
+    sudo find "$PLUGIN_DIR" -maxdepth 1 -type f \
+      \( -name 'LifestealSoulItems.jar' -o -name 'LifestealSoulItems-*.jar' \) -print
+  )
+fi
 if [[ "$DEPLOY_SOULSHOP" == true ]]; then
   while IFS= read -r deployed_plugin; do
     sudo cp -a "$deployed_plugin" "$BACKUP_DIR/plugins/"
@@ -281,6 +299,12 @@ if [[ "$DEPLOY_SOULS" == true ]]; then
   sudo mv -f "$PLUGIN_DIR/.${SOULS_PLUGIN_TARGET_NAME}.new" \
     "$PLUGIN_DIR/$SOULS_PLUGIN_TARGET_NAME"
 fi
+if [[ "$DEPLOY_SOULITEMS" == true ]]; then
+  sudo install -o pterodactyl -g pterodactyl -m 0644 \
+    "$SOULITEMS_PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${SOULITEMS_PLUGIN_TARGET_NAME}.new"
+  sudo mv -f "$PLUGIN_DIR/.${SOULITEMS_PLUGIN_TARGET_NAME}.new" \
+    "$PLUGIN_DIR/$SOULITEMS_PLUGIN_TARGET_NAME"
+fi
 if [[ "$DEPLOY_SOULSHOP" == true ]]; then
   sudo install -o pterodactyl -g pterodactyl -m 0644 \
     "$SOULSHOP_PLUGIN_BUILD_JAR" "$PLUGIN_DIR/.${SOULSHOP_PLUGIN_TARGET_NAME}.new"
@@ -304,6 +328,9 @@ if [[ "$DEPLOY_SCOREBOARD" == true ]]; then
 fi
 if [[ "$DEPLOY_SOULS" == true ]]; then
   sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealSouls-*.jar' -delete
+fi
+if [[ "$DEPLOY_SOULITEMS" == true ]]; then
+  sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealSoulItems-*.jar' -delete
 fi
 if [[ "$DEPLOY_SOULSHOP" == true ]]; then
   sudo find "$PLUGIN_DIR" -maxdepth 1 -type f -name 'LifestealSoulShop-*.jar' -delete
@@ -381,6 +408,10 @@ if [[ "$DEPLOY_SOULS" == true ]] && ! sudo test -s "$PLUGIN_DIR/$SOULS_PLUGIN_TA
   echo "ERROR: Brak wdrozonego pluginu Souls." >&2
   exit 1
 fi
+if [[ "$DEPLOY_SOULITEMS" == true ]] && ! sudo test -s "$PLUGIN_DIR/$SOULITEMS_PLUGIN_TARGET_NAME"; then
+  echo "ERROR: Brak wdrozonego pluginu SoulItems." >&2
+  exit 1
+fi
 if [[ "$DEPLOY_SOULSHOP" == true ]] && ! sudo test -s "$PLUGIN_DIR/$SOULSHOP_PLUGIN_TARGET_NAME"; then
   echo "ERROR: Brak wdrozonego pluginu SoulShop." >&2
   exit 1
@@ -435,6 +466,9 @@ if [[ "$DEPLOY_SCOREBOARD" == true ]]; then
 fi
 if [[ "$DEPLOY_SOULS" == true ]]; then
   echo "Souls:        $PLUGIN_DIR/$SOULS_PLUGIN_TARGET_NAME"
+fi
+if [[ "$DEPLOY_SOULITEMS" == true ]]; then
+  echo "SoulItems:    $PLUGIN_DIR/$SOULITEMS_PLUGIN_TARGET_NAME"
 fi
 if [[ "$DEPLOY_SOULSHOP" == true ]]; then
   echo "SoulShop:     $PLUGIN_DIR/$SOULSHOP_PLUGIN_TARGET_NAME"

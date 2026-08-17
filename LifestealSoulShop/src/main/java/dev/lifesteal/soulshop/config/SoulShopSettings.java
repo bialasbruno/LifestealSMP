@@ -9,8 +9,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public record SoulShopSettings(
-        Material productMaterial,
-        int productAmount,
         long productPrice,
         Material fillerMaterial,
         String menuTitle,
@@ -34,11 +32,9 @@ public record SoulShopSettings(
         float failureSoundVolume,
         float failureSoundPitch) {
 
-    private static final Material DEFAULT_PRODUCT = Material.DIAMOND_PICKAXE;
     private static final Material DEFAULT_FILLER = Material.GRAY_STAINED_GLASS_PANE;
 
     public SoulShopSettings {
-        Objects.requireNonNull(productMaterial, "productMaterial");
         Objects.requireNonNull(fillerMaterial, "fillerMaterial");
         Objects.requireNonNull(menuTitle, "menuTitle");
         Objects.requireNonNull(balanceName, "balanceName");
@@ -59,15 +55,8 @@ public record SoulShopSettings(
     }
 
     public static SoulShopSettings load(FileConfiguration config, Logger logger) {
-        Material product = readMaterial(
-                config, logger, "product.material", DEFAULT_PRODUCT, true);
-        int amount = readInt(
-                config, logger, "product.amount", 1, product.getMaxStackSize(), 1);
-
         return new SoulShopSettings(
-                product,
-                amount,
-                readLong(config, logger, "product.price", 1L, 1_000_000_000L, 100L),
+                readLong(config, logger, "product.price", 1L, 1_000_000_000L, 2_500L),
                 readMaterial(config, logger, "menu.filler-material", DEFAULT_FILLER, true),
                 config.getString(
                         "menu.title",
@@ -78,11 +67,14 @@ public record SoulShopSettings(
                         "menu.balance-lore",
                         List.of("", "<gray>Balance:</gray> <white>{balance}</white>")),
                 config.getString(
-                        "menu.product-name", "<aqua><bold>Diamond Pickaxe</bold></aqua>"),
+                        "menu.product-name",
+                        "<gradient:#22d3ee:#8b5cf6><bold>Soul Pickaxe</bold></gradient>"),
                 readStringList(
                         config,
                         "menu.product-lore",
                         List.of(
+                                "<gray>A netherite tool inhabited by restless souls.</gray>",
+                                "<dark_purple>Their whispers guide every strike.</dark_purple>",
                                 "",
                                 "<gray>Price:</gray> <light_purple>{price} Souls</light_purple>",
                                 "",
@@ -90,7 +82,7 @@ public record SoulShopSettings(
                 config.getString("menu.close-name", "<red><bold>Close</bold></red>"),
                 config.getString(
                         "messages.success",
-                        "<green>Purchased Diamond Pickaxe for {price} Souls.</green>"
+                        "<green>Purchased Soul Pickaxe for {price} Souls.</green>"
                                 + " <gray>Balance: {balance}</gray>"),
                 config.getString(
                         "messages.insufficient-souls",
@@ -138,22 +130,6 @@ public record SoulShopSettings(
             return fallback;
         }
         return material;
-    }
-
-    private static int readInt(
-            FileConfiguration config,
-            Logger logger,
-            String path,
-            int minimum,
-            int maximum,
-            int fallback) {
-        int value = config.getInt(path, fallback);
-        if (value < minimum || value > maximum) {
-            logger.warning("'" + path + "' must be between " + minimum + " and " + maximum
-                    + "; using " + fallback + '.');
-            return fallback;
-        }
-        return value;
     }
 
     private static long readLong(

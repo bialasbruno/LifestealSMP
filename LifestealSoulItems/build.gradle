@@ -20,12 +20,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly project(':LifestealSoulItems')
-    compileOnly project(':LifestealSouls')
     compileOnly 'io.papermc.paper:paper-api:26.2.build.112-stable'
 
-    testImplementation project(':LifestealSoulItems')
-    testImplementation project(':LifestealSouls')
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'io.papermc.paper:paper-api:26.2.build.112-stable'

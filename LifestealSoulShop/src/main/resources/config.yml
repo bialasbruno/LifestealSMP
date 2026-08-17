@@ -1,7 +1,7 @@
+config-version: 2
+
 product:
-  material: DIAMOND_PICKAXE
-  amount: 1
-  price: 100
+  price: 2500
 
 menu:
   title: "<gradient:#38bdf8:#c084fc><bold>Soul Shop</bold></gradient>"
@@ -10,8 +10,10 @@ menu:
   balance-lore:
     - ""
     - "<gray>Balance:</gray> <white>{balance}</white>"
-  product-name: "<aqua><bold>Diamond Pickaxe</bold></aqua>"
+  product-name: "<gradient:#22d3ee:#8b5cf6><bold>Soul Pickaxe</bold></gradient>"
   product-lore:
+    - "<gray>A netherite tool inhabited by restless souls.</gray>"
+    - "<dark_purple>Their whispers guide every strike.</dark_purple>"
     - ""
     - "<gray>Price:</gray> <light_purple>{price} Souls</light_purple>"
     - ""
@@ -19,7 +21,7 @@ menu:
   close-name: "<red><bold>Close</bold></red>"
 
 messages:
-  success: "<green>Purchased Diamond Pickaxe for {price} Souls.</green> <gray>Balance: {balance}</gray>"
+  success: "<green>Purchased Soul Pickaxe for {price} Souls.</green> <gray>Balance: {balance}</gray>"
   insufficient-souls: "<red>You need {price} Souls.</red> <gray>Balance: {balance}</gray>"
   inventory-full: "<red>Your inventory is full.</red>"
   purchase-error: "<red>The purchase could not be completed. Try again.</red>"

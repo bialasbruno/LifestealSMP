@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "serverpack:item/soul_pickaxe"
+  }
+}

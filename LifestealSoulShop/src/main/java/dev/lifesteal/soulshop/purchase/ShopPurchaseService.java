@@ -24,7 +24,7 @@ public final class ShopPurchaseService {
         if (!inventoryHasSpace) {
             return Result.INVENTORY_FULL;
         }
-        if (!soulsApi.trySpend(playerId, price, "soulshop:diamond_pickaxe")) {
+        if (!soulsApi.trySpend(playerId, price, "soulshop:soul_pickaxe")) {
             return Result.INSUFFICIENT_SOULS;
         }
         delivery.run();

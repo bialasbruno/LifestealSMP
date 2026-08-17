@@ -6,6 +6,7 @@ description: Simple GUI shop using the player-bound Souls currency.
 author: Bruno
 depend:
   - LifestealSouls
+  - LifestealSoulItems
 
 commands:
   soulshop:
